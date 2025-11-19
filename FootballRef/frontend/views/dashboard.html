@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="../styles/pages/dashboard.css" />
+    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
+  </head>
+  <body>
+    <div
+      class="tabs-header d-flex justify-content-between align-items-center px-3 py-2"
+    >
+      <!-- LEVI DEO – LOGO + TABOVI -->
+      <div class="d-flex align-items-center gap-4">
+        <!-- LOGO -->
+        <img
+          src="../assets/images/fss-logo.png"
+          alt="Logo"
+          class="header-logo"
+        />
+
+        <!-- TABS -->
+        <ul class="nav nav-pills gap-2">
+          <li class="nav-item">
+            <a class="nav-link active" href="#">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">My scheduled matches</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">My past matches</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Leagues</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- DESNI DEO – USER DROPDOWN -->
+      <div class="dropdown user-box">
+        <button
+          class="btn dropdown-toggle d-flex align-items-center user-dropdown-btn"
+          type="button"
+          id="userMenuButton"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <img
+            src="../assets/images/random-photo.jpg"
+            alt="A"
+            class="user-avatar"
+          />
+          <span class="user-name ms-2">Aleksa</span>
+        </button>
+
+        <ul
+          class="dropdown-menu dropdown-menu-end"
+          aria-labelledby="userMenuButton"
+        >
+          <li><a class="dropdown-item" href="#">Profile</a></li>
+          <li><a class="dropdown-item" href="#">Settings</a></li>
+          <li><hr class="dropdown-divider" /></li>
+          <li><a class="dropdown-item text-danger" href="#">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- povezi sa pravim JS -->
+    <script src="../js/views/DashboardView.js"></script>
+  </body>
+</html>

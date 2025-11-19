@@ -1,0 +1,151 @@
+/* GENERISANO BY CHAT GPT */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* Pozadina: gradient */
+body {
+  background: #1e4d8b; /* fallback */
+  background: linear-gradient(
+    90deg,
+    rgba(30, 77, 139, 1) 0%,
+    rgba(45, 107, 183, 1) 50%,
+    rgba(60, 140, 232, 1) 100%
+  );
+}
+
+/* Centriranje kartice na sredinu ekrana */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+/* Bela kartica za login */
+.login-card {
+  background-color: #ffffff;
+  border-radius: 18px;
+  max-width: 415px;
+  width: 100%;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+/* Logo FSS */
+.login-logo {
+  max-width: 120px;
+  height: auto;
+  margin-bottom: 1.5rem;
+}
+
+/* Naslov */
+.login-title {
+  margin: 0 0 1.5rem;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #1e4d8b;
+}
+
+/* Forma */
+.login-form {
+  text-align: left;
+}
+
+/* Form grupe */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+/* Label */
+.form-group label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+/* Inputi */
+.form-group input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid #d0d4dd;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+  background-color: #f9fafb;
+}
+
+.form-group input:focus {
+  border-color: #3c8ce8;
+  box-shadow: 0 0 0 3px rgba(60, 140, 232, 0.2);
+  background-color: #ffffff;
+}
+
+/* Login dugme */
+.btn-login {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, #1e4d8b 0%, #3c8ce8 100%);
+  color: #ffffff;
+  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out,
+    filter 0.1s ease-out;
+}
+
+.btn-login:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.btn-login:active {
+  transform: translateY(1px) scale(0.99);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+/* Forgot password link */
+.forgot-wrapper {
+  margin-top: 0.8rem;
+  text-align: center;
+}
+
+.forgot-link {
+  font-size: 0.9rem;
+  color: #1e4d8b;
+  text-decoration: none;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+/* Malo prilagođavanje za manje ekrane */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .login-title {
+    font-size: 1.4rem;
+  }
+}
