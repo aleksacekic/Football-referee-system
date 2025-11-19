@@ -11,6 +11,68 @@
   --tab-radius: 999px;
 }
 
+/* Omotač da kalendar ne bude zalepljen uz ivice */
+#calendar-wrapper {
+  background-color: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 1rem;
+}
+
+/* Panel sa utakmicama */
+#matches-panel {
+  background-color: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 1rem 1.25rem;
+  min-height: 200px;
+}
+
+.matches-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #1e4d8b;
+}
+
+/* Ako očekuješ puno utakmica, dodaj scroll */
+#matches-list {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.match-item {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  margin-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  background-color: #2d6bb7;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.matchitem-firstrow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: -3px;
+}
+
+.match-teams {
+  font-weight: bold;
+  font-size: x-large;
+}
+
+/* Kalendar sam po sebi samo prati širinu omotača */
+#calendar {
+  max-width: 100%;
+}
+
 /* Osnovni stil za sve tabove */
 .nav-pills .nav-link {
   background-color: transparent;

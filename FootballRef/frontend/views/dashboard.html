@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <!-- bootstrap -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -12,10 +14,18 @@
     />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- kalendar -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js"></script>
+
+    <!-- css -->
     <link rel="stylesheet" href="../styles/pages/dashboard.css" />
-    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
+
+    <link rel="icon" href="../assets/images/whistle.png" type="image/x-icon" />
   </head>
   <body>
+    <!-- POCETAK HEADER -->
+    <!-- #region -->
+
     <div
       class="tabs-header d-flex justify-content-between align-items-center px-3 py-2"
     >
@@ -73,8 +83,58 @@
         </ul>
       </div>
     </div>
+    <!-- #endregion -->
 
-    <!-- povezi sa pravim JS -->
+    <div class="container-fluid mt-3 px-3">
+      <div class="row g-3">
+        <!-- LEVA KOLONA – KALENDAR -->
+        <div class="col-12 col-lg-7">
+          <div id="calendar-wrapper">
+            <div id="calendar"></div>
+          </div>
+        </div>
+
+        <!-- DESNA KOLONA – UTAKMICE ZA IZABRANI DATUM -->
+        <div class="col-12 col-lg-5">
+          <div id="matches-panel">
+            <!-- ovde ćeš JS-om ubacivati utakmice za izabrani datum -->
+            <h3 class="matches-title">Matches on selected date</h3>
+            <div id="matches-list">
+              <div class="match-item">
+                <div class="matchitem-firstrow">
+                  <span>23. Nov 2025. 11:00</span>
+                  <span>Round: 3</span>
+                </div>
+                <span class="match-teams">Kopernikus Zeleznicar - Sloga Leskovac</span>
+                <span>Competition: Druga kadetska liga "JUG"</span>
+                <span>Stadium: Nis, Cair</span>
+              </div>
+
+              <div class="match-item">
+                <div class="matchitem-firstrow">
+                  <span>23. Nov 2025. 11:00</span>
+                  <span>Round: 3</span>
+                </div>
+                <span class="match-teams">Kopernikus Zeleznicar - Sloga Leskovac</span>
+                <span>Competition: Druga kadetska liga "JUG"</span>
+                <span>Stadium: Nis, Cair</span>
+              </div>
+
+              <div class="match-item">
+                <div class="matchitem-firstrow">
+                  <span>23. Nov 2025. 11:00</span>
+                  <span>Round: 3</span>
+                </div>
+                <span class="match-teams">Kopernikus Zeleznicar - Sloga Leskovac</span>
+                <span>Competition: Druga kadetska liga "JUG"</span>
+                <span>Stadium: Nis, Cair</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="../js/views/DashboardView.js"></script>
   </body>
 </html>
