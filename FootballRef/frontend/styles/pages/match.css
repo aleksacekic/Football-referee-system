@@ -15,7 +15,6 @@
 }
 
 .result-numbers-container {
-
   min-width: 150px;
   /*  */
   font-weight: 600;
@@ -30,7 +29,6 @@
   border-radius: 10px;
   background: #0d9488;
   color: white;
-
 }
 
 .team-logo-container {
@@ -41,30 +39,28 @@
   width: 94px;
 }
 
-
-.team-logo{
+.team-logo {
   display: block;
   max-width: 70px;
   max-height: 70px;
   border-radius: 4px;
 }
 
-.team-name{
+.team-name {
   flex: 1;
   font-weight: 600;
   font-size: large;
 }
 
-.team-name1{
+.team-name1 {
   text-align: end;
- 
 }
 
-.team-name2{
+.team-name2 {
   text-align: start;
 }
 
-.other-info{
+.other-info {
   display: flex;
   flex-direction: column;
 }
@@ -80,7 +76,6 @@
   border-radius: 10px;
   border: 1px solid #e2e8f0; /* svetli border */
 }
-
 
 /* svaka stavka */
 .other-info span {
@@ -101,7 +96,6 @@
   flex-shrink: 0;
   opacity: 0.7;
 }
-
 
 .referee-info {
   margin-top: 1.5rem;
@@ -135,7 +129,7 @@
   border-radius: 14px;
   border: 1px solid #e2e8f0;
   padding: 1.5rem;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
 }
 
 .match-time-info h4 {
@@ -145,10 +139,12 @@
   color: #334155;
 }
 
-/* Header labels */
+/* ===== Responsive fix for match-time (desktop preserved, mobile card-style) ===== */
+
+/* Improve desktop robustness: minimum column width so items don't collapse */
 .match-time-labels {
   display: grid;
-  grid-template-columns: 1.4fr repeat(4, 1fr);
+  grid-template-columns: 1.4fr repeat(4, minmax(90px, 1fr)); /* allow min width */
   font-weight: 600;
   color: #475569;
   font-size: 0.9rem;
@@ -157,35 +153,258 @@
   margin-bottom: 0.8rem;
 }
 
-/* Rows */
 .match-time > div {
   display: grid;
-  grid-template-columns: 1.4fr repeat(4, 1fr);
+  grid-template-columns: 1.4fr repeat(4, minmax(90px, 1fr));
   padding: 0.6rem 0;
   border-bottom: 1px solid #f1f5f9;
-}
-
-.match-time > div:last-child {
-  border-bottom: none;
+  gap: 0.25rem 0.75rem;
 }
 
 .match-time span {
   font-size: 0.92rem;
   color: #374151;
-  display: flex;
-  align-items: center;
+  display: block; /* block so grid cells behave predictably */
+  line-height: 1.25;
+  word-break: break-word; /* prevent overflow */
 }
 
-/* Prva kolona – naziv poluvremena */
+/* first column styling on desktop */
 .match-time span:first-child {
   font-weight: 600;
   color: #0f766e;
 }
 
-/* Hover efekat */
-.match-time > div:hover {
-  background: #f8fafc;
-  border-radius: 8px;
-  transition: 0.15s ease;
+/* ===== Mobile / small devices ===== */
+@media (max-width: 768px) {
+  /* Hide header row to save vertical space (we will show labels above values) */
+  .match-time-labels {
+    display: none;
+  }
+
+  /* Make rows stacked as cards */
+  .match-time {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .match-time > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* two columns: value pairs */
+    gap: 6px 12px;
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #eef2f6;
+    align-items: start;
+  }
+
+  /* Phase title spans use full width */
+  .match-time > div span:first-child {
+    grid-column: 1 / -1;
+    font-weight: 700;
+    color: #0f766e;
+    margin-bottom: 6px;
+    font-size: 0.98rem;
+  }
+
+  /* All other spans get an inline label above them using ::before */
+  /* 2nd span -> Start, 3rd -> End, 4th -> Extra time, 5th -> Result */
+  .match-time > div span:nth-child(2)::before {
+    content: "Start";
+    display: block;
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-bottom: 4px;
+  }
+  .match-time > div span:nth-child(3)::before {
+    content: "End";
+    display: block;
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-bottom: 4px;
+  }
+  .match-time > div span:nth-child(4)::before {
+    content: "Extra time";
+    display: block;
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-bottom: 4px;
+  }
+  .match-time > div span:nth-child(5)::before {
+    content: "Result";
+    display: block;
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-bottom: 4px;
+  }
+
+  /* small visual tweaks */
+  .match-time > div span {
+    font-size: 0.92rem;
+    color: #334155;
+  }
+
+  /* reduce paddings and margins on small devices to avoid overflow */
+  .match-info {
+    margin: 16px 12px;
+    padding: 12px;
+    min-height: auto;
+  }
+  .match-time-info {
+    padding: 12px;
+  }
 }
 
+/* Extra small phones */
+@media (max-width: 420px) {
+  .match-time > div {
+    padding: 8px;
+    gap: 6px;
+  }
+  .match-time > div span:first-child {
+    font-size: 0.95rem;
+  }
+  .match-time > div span {
+    font-size: 0.88rem;
+  }
+  .match-info {
+    margin: 10px 8px;
+    padding: 10px;
+  }
+}
+
+/* ---------- Responsive: fixed 3-column grid for very narrow screens ---------- */
+/* aktivira se kad viewport bude <= 760px (možeš prilagoditi breakpoint) */
+@media (max-width: 760px) {
+  /* Pretvori result u 3-kolonski grid:
+     - kolona 1: lijevi tim (logo + name)
+     - kolona 2: rezultat centriran
+     - kolona 3: desni tim (name + logo) */
+  .result {
+    display: grid;
+    grid-template-columns: 84px 1fr 84px; /* fiksne uske kolone za grbove, sredina fleks */
+    grid-template-rows: auto auto; /* dva reda: logo/naziv i (opcionalno druga linija) */
+    align-items: center;
+    justify-items: center;
+    gap: 6px 12px;
+    padding: 6px 0;
+  }
+
+  /* LEVI grb (prvi .team-logo-container) */
+  .result > .team-logo-container:first-of-type {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: center;
+    padding: 4px;
+  }
+
+  /* LEVO ime - staje POD grb i zauzima prvu kolonu */
+  .result > .team-name.team-name1 {
+    grid-column: 1;
+    grid-row: 2;
+    text-align: center;
+    font-size: 0.95rem; /* smanjen font */
+    line-height: 1.15;
+    padding: 0 6px;
+    word-break: normal;
+    overflow-wrap: normal;
+    white-space: normal;
+    margin-left: auto;
+  }
+
+  /* REZULTAT u srednjoj koloni, centriran i vertikalno i horizontalno */
+  .result-numbers-container {
+    grid-column: 2;
+    grid-row: 1 / span 2; /* zauzima oba reda (centar) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+  }
+
+  .result-numbers {
+    padding: 0.55rem 0.9rem;
+    margin: 0;
+    font-weight: 600;
+    font-size: x-large;
+  }
+
+  /* DESNO ime - ispod desnog grba, ali u centru treće kolone */
+  .result > .team-name.team-name2 {
+    grid-column: 3;
+    grid-row: 2;
+    text-align: center;
+    font-size: 0.95rem;
+    line-height: 1.15;
+    padding: 0 6px;
+    word-break: normal;
+    overflow-wrap: normal;
+    white-space: normal;
+    /* margin-right: auto; */
+  }
+
+  /* DESNI grb (poslednji .team-logo-container) */
+  .result > .team-logo-container:last-of-type {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: center;
+    padding: 4px;
+  }
+
+  /* smanji sliku grba da stane uredno */
+  .team-logo {
+    max-width: 56px;
+    max-height: 56px;
+    width: auto;
+    height: auto;
+    display: block;
+  }
+
+  .team-logo1 {
+    margin-left: auto;
+  }
+
+  /* osiguraj da ime ekipe ne biva prelomljeno po slovima */
+  .team-name {
+    word-break: keep-all;
+    overflow-wrap: normal;
+    hyphens: auto;
+    min-width: 0; /* omogućava da flex/grid ponaša ispravno */
+  }
+
+  /* smanji padding kartice na malim ekranima */
+  .match-info {
+    padding: 10px;
+    margin: 12px;
+  }
+}
+
+/* dodatna fina podešavanja za još manje ekrane (<= 420px) */
+@media (max-width: 420px) {
+  .result {
+    grid-template-columns: 64px 1fr 64px; /* još manjе grbovi */
+    gap: 6px 8px;
+  }
+  .team-logo {
+    max-width: 50px;
+    max-height: 50px;
+  }
+  .team-name.team-name1,
+  .team-name.team-name2 {
+    font-size: 0.9rem;
+  }
+  .result-numbers {
+    padding: 0.45rem 0.6rem;
+    font-weight: 600;
+    font-size: large;
+
+    margin-left: 30px;
+  }
+
+  .result-numbers-container {
+    min-width: 50px;
+  }
+}
