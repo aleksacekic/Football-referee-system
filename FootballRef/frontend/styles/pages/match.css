@@ -1,3 +1,61 @@
+.hidden {
+  display: none;
+}
+
+.green {
+  color: #0d9488;
+}
+
+.icon {
+  max-width: 30px;
+  max-height: 30px;
+}
+
+.match-info-preview {
+  display: flex;
+  flex-direction: row;
+  background-color: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 1rem 1.25rem;
+  /* min-height: 200px; */
+  margin: 30px;
+  max-width: 1200px;
+  cursor: pointer;
+
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none; /* Standard syntax */
+}
+
+.match-info-preview-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.match-info-preview-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  flex: 1;
+
+  /* margin-left: 15px; */
+}
+
+.match-info-preview:hover {
+  background-color: #f8fafc;
+}
+.match-info-preview-left {
+  padding-bottom: 6px;
+}
+
+.team-name-preview {
+  font-weight: 900;
+  font-size: xx-large;
+}
+
 .match-info {
   background-color: #ffffff;
   border-radius: 14px;
@@ -9,9 +67,12 @@
 }
 
 .result {
-  display: flex;
-  justify-content: space-between;
+  display: grid !important; /* enforce grid (overrides accidental flex rules) */
+  grid-template-columns: minmax(56px, 94px) 1fr auto 1fr minmax(56px, 94px);
   align-items: center;
+  gap: 0 12px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .result-numbers-container {
@@ -45,19 +106,33 @@
   max-height: 70px;
   border-radius: 4px;
 }
-
+/* ----------------------------------------------------------------------------------------------------------------------------------------- */
 .team-name {
-  flex: 1;
+  min-width: 0; /* critical: allows name to shrink inside grid */
+  /* overflow-wrap: anywhere; */
+  word-break: normal;
+  white-space: normal;
+  padding: 0 6px;
   font-weight: 600;
   font-size: large;
 }
 
-.team-name1 {
-  text-align: end;
+/* 5) Logo columns stay in columns 1 and 5 (left/right) */
+.team-logo-container:first-of-type {
+  grid-column: 1;
+}
+.team-logo-container:last-of-type {
+  grid-column: 5;
 }
 
+/* Left name and right name explicitly assigned to columns 2 and 4 */
+.team-name1 {
+  grid-column: 2;
+  text-align: right;
+}
 .team-name2 {
-  text-align: start;
+  grid-column: 4;
+  text-align: left;
 }
 
 .other-info {
@@ -176,7 +251,7 @@
 }
 
 /* ===== Mobile / small devices ===== */
-@media (max-width: 768px) {
+@media (max-width: 760px) {
   /* Hide header row to save vertical space (we will show labels above values) */
   .match-time-labels {
     display: none;
@@ -256,6 +331,62 @@
   .match-time-info {
     padding: 12px;
   }
+
+  .result {
+    grid-template-columns: 64px 1fr 64px; /* left col | center | right col */
+    grid-template-rows: auto auto; /* top row: logos, bottom: names */
+    gap: 6px 8px;
+  }
+
+  /* left logo in col 1 row1 */
+  .team-logo-container:first-of-type {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: center;
+    padding: 4px;
+  }
+
+  /* left name under logo (col 1 row2) */
+  .team-name1 {
+    grid-column: 1;
+    grid-row: 2;
+    text-align: center;
+    font-size: 0.95rem;
+  }
+
+  /* result occupies middle column across both rows - still exactly centered */
+  .result-numbers-container {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    justify-self: center;
+    align-self: center;
+  }
+
+  /* right name under logo (col 3 row2) */
+  .team-name2 {
+    grid-column: 3;
+    grid-row: 2;
+    text-align: center;
+    font-size: 0.95rem;
+  }
+
+  /* right logo in col 3 row1 */
+  .team-logo-container:last-of-type {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: center;
+    padding: 4px;
+  }
+
+  /* reduce logo size slightly */
+  .team-logo {
+    max-width: 56px;
+    max-height: 56px;
+  }
+
+  .match-info-preview {
+    margin: 16px 12px;
+  }
 }
 
 /* Extra small phones */
@@ -274,137 +405,34 @@
     margin: 10px 8px;
     padding: 10px;
   }
-}
-
-/* ---------- Responsive: fixed 3-column grid for very narrow screens ---------- */
-/* aktivira se kad viewport bude <= 760px (možeš prilagoditi breakpoint) */
-@media (max-width: 760px) {
-  /* Pretvori result u 3-kolonski grid:
-     - kolona 1: lijevi tim (logo + name)
-     - kolona 2: rezultat centriran
-     - kolona 3: desni tim (name + logo) */
-  .result {
-    display: grid;
-    grid-template-columns: 84px 1fr 84px; /* fiksne uske kolone za grbove, sredina fleks */
-    grid-template-rows: auto auto; /* dva reda: logo/naziv i (opcionalno druga linija) */
-    align-items: center;
-    justify-items: center;
-    gap: 6px 12px;
-    padding: 6px 0;
-  }
-
-  /* LEVI grb (prvi .team-logo-container) */
-  .result > .team-logo-container:first-of-type {
-    grid-column: 1;
-    grid-row: 1;
-    justify-self: center;
-    padding: 4px;
-  }
-
-  /* LEVO ime - staje POD grb i zauzima prvu kolonu */
-  .result > .team-name.team-name1 {
-    grid-column: 1;
-    grid-row: 2;
-    text-align: center;
-    font-size: 0.95rem; /* smanjen font */
-    line-height: 1.15;
-    padding: 0 6px;
-    word-break: normal;
-    overflow-wrap: normal;
-    white-space: normal;
-    margin-left: auto;
-  }
-
-  /* REZULTAT u srednjoj koloni, centriran i vertikalno i horizontalno */
-  .result-numbers-container {
-    grid-column: 2;
-    grid-row: 1 / span 2; /* zauzima oba reda (centar) */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 6px;
-  }
 
   .result-numbers {
-    padding: 0.55rem 0.9rem;
-    margin: 0;
-    font-weight: 600;
-    font-size: x-large;
+    margin: 0rem;
   }
 
-  /* DESNO ime - ispod desnog grba, ali u centru treće kolone */
-  .result > .team-name.team-name2 {
-    grid-column: 3;
-    grid-row: 2;
-    text-align: center;
-    font-size: 0.95rem;
-    line-height: 1.15;
-    padding: 0 6px;
-    word-break: normal;
-    overflow-wrap: normal;
-    white-space: normal;
-    /* margin-right: auto; */
+  .result-numbers-container {
+    min-width: 0px;
   }
 
-  /* DESNI grb (poslednji .team-logo-container) */
-  .result > .team-logo-container:last-of-type {
-    grid-column: 3;
-    grid-row: 1;
-    justify-self: center;
-    padding: 4px;
-  }
-
-  /* smanji sliku grba da stane uredno */
-  .team-logo {
-    max-width: 56px;
-    max-height: 56px;
-    width: auto;
-    height: auto;
-    display: block;
-  }
-
-  .team-logo1 {
-    margin-left: auto;
-  }
-
-  /* osiguraj da ime ekipe ne biva prelomljeno po slovima */
   .team-name {
-    word-break: keep-all;
-    overflow-wrap: normal;
-    hyphens: auto;
-    min-width: 0; /* omogućava da flex/grid ponaša ispravno */
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    white-space: normal;
+    padding: 0 6px;
+    font-weight: 400 !important;
   }
 
-  /* smanji padding kartice na malim ekranima */
-  .match-info {
+  .match-info-preview {
+    margin: 10px 8px;
     padding: 10px;
-    margin: 12px;
   }
-}
 
-/* dodatna fina podešavanja za još manje ekrane (<= 420px) */
-@media (max-width: 420px) {
-  .result {
-    grid-template-columns: 64px 1fr 64px; /* još manjе grbovi */
-    gap: 6px 8px;
+  .match-info-preview-left span {
+    font-size: medium;
   }
-  .team-logo {
-    max-width: 50px;
-    max-height: 50px;
-  }
-  .team-name.team-name1,
-  .team-name.team-name2 {
-    font-size: 0.9rem;
-  }
-  .result-numbers {
-    padding: 0.45rem 0.6rem;
+  .team-name-preview {
     font-weight: 600;
-    font-size: large;
-
-    margin-left: 30px;
-  }
-
-  .result-numbers-container {
-    min-width: 50px;
+    font-size: x-large !important;
   }
 }

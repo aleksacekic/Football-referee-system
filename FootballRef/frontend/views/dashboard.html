@@ -19,6 +19,7 @@
 
     <!-- css -->
     <link rel="stylesheet" href="../styles/pages/dashboard.css" />
+    <link rel="stylesheet" href="../styles/pages/match.css" />
 
     <link rel="icon" href="../assets/images/whistle.png" type="image/x-icon" />
   </head>
@@ -39,18 +40,55 @@
         />
 
         <!-- TABS -->
-        <ul class="nav nav-pills gap-2">
-          <li class="nav-item">
-            <a class="nav-link active" href="#">Dashboard</a>
+        <!-- TAB NAV (u headeru) -->
+        <ul class="nav nav-pills gap-2" id="mainTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <a
+              class="nav-link active"
+              id="tab-dashboard"
+              data-bs-toggle="tab"
+              href="#panel-dashboard"
+              role="tab"
+              aria-controls="panel-dashboard"
+              aria-selected="true"
+              >Dashboard</a
+            >
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">My scheduled matches</a>
+          <li class="nav-item" role="presentation">
+            <a
+              class="nav-link"
+              id="tab-scheduled"
+              data-bs-toggle="tab"
+              href="#panel-scheduled"
+              role="tab"
+              aria-controls="panel-scheduled"
+              aria-selected="false"
+              >My scheduled matches</a
+            >
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">My past matches</a>
+          <li class="nav-item" role="presentation">
+            <a
+              class="nav-link"
+              id="tab-past"
+              data-bs-toggle="tab"
+              href="#panel-past"
+              role="tab"
+              aria-controls="panel-past"
+              aria-selected="false"
+              >My past matches</a
+            >
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Leagues</a>
+          <li class="nav-item" role="presentation">
+            <a
+              class="nav-link"
+              id="tab-leagues"
+              data-bs-toggle="tab"
+              href="#panel-leagues"
+              role="tab"
+              aria-controls="panel-leagues"
+              aria-selected="false"
+              >Leagues</a
+            >
           </li>
         </ul>
       </div>
@@ -85,56 +123,287 @@
     </div>
     <!-- #endregion -->
 
-    <div class="container-fluid mt-3 px-3">
-      <div class="row g-3">
-        <!-- LEVA KOLONA – KALENDAR -->
-        <div class="col-12 col-lg-7">
-          <div id="calendar-wrapper">
-            <div id="calendar"></div>
-          </div>
-        </div>
+    <div class="tab-content mt-3 px-3" id="mainTabContent">
+      <!-- DASHBOARD -->
+      <div
+        class="tab-pane fade show active"
+        id="panel-dashboard"
+        role="tabpanel"
+        aria-labelledby="tab-dashboard"
+      >
+        <!-- ovde stavi ceo tvoj dashboard layout (kalendar + matches panel) -->
+        <div class="container-fluid mt-3 px-3">
+          <div class="row g-3">
+            <div class="col-12 col-lg-7">
+              <div id="calendar-wrapper"><div id="calendar"></div></div>
+            </div>
+            <div class="col-12 col-lg-5">
+              <div id="matches-panel">
+                <!-- ovde ćeš JS-om ubacivati utakmice za izabrani datum -->
+                <h3 class="matches-title">Matches on selected date</h3>
+                <div id="matches-list">
+                  <div class="match-item">
+                    <div class="matchitem-firstrow">
+                      <span>23. Nov 2025. 11:00</span>
+                      <span>Round: 3</span>
+                    </div>
+                    <span class="match-teams"
+                      >Kopernikus Zeleznicar - Sloga Leskovac</span
+                    >
+                    <span>Competition: Druga kadetska liga "JUG"</span>
+                    <span>Stadium: Nis, Cair</span>
+                  </div>
 
-        <!-- DESNA KOLONA – UTAKMICE ZA IZABRANI DATUM -->
-        <div class="col-12 col-lg-5">
-          <div id="matches-panel">
-            <!-- ovde ćeš JS-om ubacivati utakmice za izabrani datum -->
-            <h3 class="matches-title">Matches on selected date</h3>
-            <div id="matches-list">
-              <div class="match-item">
-                <div class="matchitem-firstrow">
-                  <span>23. Nov 2025. 11:00</span>
-                  <span>Round: 3</span>
-                </div>
-                <span class="match-teams">Kopernikus Zeleznicar - Sloga Leskovac</span>
-                <span>Competition: Druga kadetska liga "JUG"</span>
-                <span>Stadium: Nis, Cair</span>
-              </div>
+                  <div class="match-item">
+                    <div class="matchitem-firstrow">
+                      <span>23. Nov 2025. 11:00</span>
+                      <span>Round: 3</span>
+                    </div>
+                    <span class="match-teams"
+                      >Kopernikus Zeleznicar - Sloga Leskovac</span
+                    >
+                    <span>Competition: Druga kadetska liga "JUG"</span>
+                    <span>Stadium: Nis, Cair</span>
+                  </div>
 
-              <div class="match-item">
-                <div class="matchitem-firstrow">
-                  <span>23. Nov 2025. 11:00</span>
-                  <span>Round: 3</span>
+                  <div class="match-item">
+                    <div class="matchitem-firstrow">
+                      <span>23. Nov 2025. 11:00</span>
+                      <span>Round: 3</span>
+                    </div>
+                    <span class="match-teams"
+                      >Kopernikus Zeleznicar - Sloga Leskovac</span
+                    >
+                    <span>Competition: Druga kadetska liga "JUG"</span>
+                    <span>Stadium: Nis, Cair</span>
+                  </div>
                 </div>
-                <span class="match-teams">Kopernikus Zeleznicar - Sloga Leskovac</span>
-                <span>Competition: Druga kadetska liga "JUG"</span>
-                <span>Stadium: Nis, Cair</span>
-              </div>
-
-              <div class="match-item">
-                <div class="matchitem-firstrow">
-                  <span>23. Nov 2025. 11:00</span>
-                  <span>Round: 3</span>
-                </div>
-                <span class="match-teams">Kopernikus Zeleznicar - Sloga Leskovac</span>
-                <span>Competition: Druga kadetska liga "JUG"</span>
-                <span>Stadium: Nis, Cair</span>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- SCHEDULED -->
+      <div
+        class="tab-pane fade"
+        id="panel-scheduled"
+        role="tabpanel"
+        aria-labelledby="tab-scheduled"
+      >
+        <div class="p-3">
+          Sadržaj za scheduled matches (možeš ajax ili JS render ovde)
+        </div>
+      </div>
+
+      <!-- PAST -->
+      <div
+        class="tab-pane fade"
+        id="panel-past"
+        role="tabpanel"
+        aria-labelledby="tab-past"
+      >
+        <div class="p-3">
+          <main>
+            <div>
+              DODAJ FILTER BY
+              A DESNO MOZE NEKA STATISTIKA
+            </div>
+            <div
+              class="match-info-preview"
+              role="button"
+              tabindex="0"
+              aria-expanded="false"
+            >
+              <div class="match-info-preview-left">
+                <span>Status: <span class="green">PLAYED</span></span>
+                <span>23. Nov 2025. 11:00</span>
+                <span>Druga kadetska liga "JUG"</span>
+                <span class="team-name-preview"
+                  >KOPERNIKUS-ZELEZNICAR - SLOGA LESKOVAC</span
+                >
+              </div>
+              <div class="match-info-preview-right">
+                <img class="icon" src="../assets/images/down-arrow.png" />
+              </div>
+            </div>
+
+            <div class="match-info hidden">
+              <div class="result">
+                <div class="team-logo-container">
+                  <img
+                    class="team-logo team-logo1"
+                    src="../assets/images/team1.jpeg"
+                  />
+                </div>
+
+                <div class="team-name team-name1">KOPERNIKUS-ZELEZNICAR</div>
+
+                <div class="result-numbers-container">
+                  <div class="result-numbers">2:3</div>
+                </div>
+
+                <div class="team-name team-name2">SLOGA LESKOVAC</div>
+
+                <div class="team-logo-container">
+                  <img
+                    class="team-logo team-logo2"
+                    src="../assets/images/team2.png"
+                  />
+                </div>
+              </div>
+              <div class="other-info">
+                <span>Status: PLAYED</span>
+                <span>Date: 23. Nov 2025. 11:00</span>
+                <span>Round: 3</span>
+
+                <span>Competition: Druga kadetska liga "JUG"</span>
+                <span>Stadium: Nis, Cair</span>
+              </div>
+              <div class="referee-info">
+                <h4>Match Officials</h4>
+                <span>Referee: Zvonko Zvonkovic</span>
+                <span>1st Assistant Referee: Bogdan Bogdanovic</span>
+                <span>2nd Assistant Referee: Milan Milanovic</span>
+                <span>4th Official: Zvonko Zvonkovic</span>
+                <span>Match delegate: Bogdan Bogdanovic</span>
+                <span>VAR: Milan Milanovic</span>
+                <span>AVAR: Milan Milanovic</span>
+              </div>
+
+              <div class="match-time-info">
+                <h4>Match phases</h4>
+                <div class="match-time-labels">
+                  <label></label>
+                  <label>Start</label>
+                  <label>End</label>
+                  <label>Extra time</label>
+                  <label>Result</label>
+                </div>
+                <div class="match-time">
+                  <div>
+                    <span>1st HALFTIME</span>
+                    <span>11:01:44</span>
+                    <span>11:47:05</span>
+                    <span>0</span>
+                    <span>0:0</span>
+                  </div>
+                  <div>
+                    <span>2nd HALFTIME</span>
+                    <span>11:58:25</span>
+                    <span>12:45:09</span>
+                    <span>2</span>
+                    <span>1:3</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="match-info-preview"
+              role="button"
+              tabindex="0"
+              aria-expanded="false"
+            >
+              <div class="match-info-preview-left">
+                <span>Status: <span class="green">PLAYED</span></span>
+                <span>23. Nov 2025. 11:00</span>
+                <span>Druga kadetska liga "JUG"</span>
+                <span class="team-name-preview"
+                  >KOPERNIKUS-ZELEZNICAR - SLOGA LESKOVAC</span
+                >
+              </div>
+              <div class="match-info-preview-right">
+                <img class="icon" src="../assets/images/down-arrow.png" />
+              </div>
+            </div>
+
+            <div class="match-info hidden">
+              <div class="result">
+                <div class="team-logo-container">
+                  <img
+                    class="team-logo team-logo1"
+                    src="../assets/images/team1.jpeg"
+                  />
+                </div>
+
+                <div class="team-name team-name1">KOPERNIKUS-ZELEZNICAR</div>
+
+                <div class="result-numbers-container">
+                  <div class="result-numbers">2:3</div>
+                </div>
+
+                <div class="team-name team-name2">SLOGA LESKOVAC</div>
+
+                <div class="team-logo-container">
+                  <img
+                    class="team-logo team-logo2"
+                    src="../assets/images/team2.png"
+                  />
+                </div>
+              </div>
+              <div class="other-info">
+                <span>Status: PLAYED</span>
+                <span>Date: 23. Nov 2025. 11:00</span>
+                <span>Round: 3</span>
+
+                <span>Competition: Druga kadetska liga "JUG"</span>
+                <span>Stadium: Nis, Cair</span>
+              </div>
+              <div class="referee-info">
+                <h4>Match Officials</h4>
+                <span>Referee: Zvonko Zvonkovic</span>
+                <span>1st Assistant Referee: Bogdan Bogdanovic</span>
+                <span>2nd Assistant Referee: Milan Milanovic</span>
+                <span>4th Official: Zvonko Zvonkovic</span>
+                <span>Match delegate: Bogdan Bogdanovic</span>
+                <span>VAR: Milan Milanovic</span>
+                <span>AVAR: Milan Milanovic</span>
+              </div>
+
+              <div class="match-time-info">
+                <h4>Match phases</h4>
+                <div class="match-time-labels">
+                  <label></label>
+                  <label>Start</label>
+                  <label>End</label>
+                  <label>Extra time</label>
+                  <label>Result</label>
+                </div>
+                <div class="match-time">
+                  <div>
+                    <span>1st HALFTIME</span>
+                    <span>11:01:44</span>
+                    <span>11:47:05</span>
+                    <span>0</span>
+                    <span>0:0</span>
+                  </div>
+                  <div>
+                    <span>2nd HALFTIME</span>
+                    <span>11:58:25</span>
+                    <span>12:45:09</span>
+                    <span>2</span>
+                    <span>1:3</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <!-- LEAGUES -->
+      <div
+        class="tab-pane fade"
+        id="panel-leagues"
+        role="tabpanel"
+        aria-labelledby="tab-leagues"
+      >
+        <div class="p-3">Sadržaj za leagues</div>
+      </div>
     </div>
 
     <script src="../js/views/DashboardView.js"></script>
+    <script src="../js/views/MatchView.js"></script>
   </body>
 </html>
