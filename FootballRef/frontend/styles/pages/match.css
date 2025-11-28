@@ -250,6 +250,37 @@
   color: #0f766e;
 }
 
+/* match tabs */
+.match-tabs {
+  padding: 0 0 0.75rem 0;
+}
+
+.match-tabs-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* use bootstrap look for .nav-link but slightly smaller */
+.match-tabs-list .nav-link {
+  padding: .35rem .6rem;
+  font-size: .85rem;
+  border-radius: 8px;
+  background: transparent;
+  color: #334155;
+  border: 1px solid transparent;
+}
+
+.match-tabs-list .nav-link.active {
+  background: #0d9488; /* brand color */
+  color: #fff;
+  border-color: rgba(13,148,136,0.15);
+  box-shadow: 0 4px 10px rgba(13,148,136,0.08);
+}
+
 /* ===== Mobile / small devices ===== */
 @media (max-width: 760px) {
   /* Hide header row to save vertical space (we will show labels above values) */
@@ -435,4 +466,23 @@
     font-weight: 600;
     font-size: x-large !important;
   }
+
+  .match-tabs-list {
+    gap: 0.35rem;
+    flex-wrap: wrap;
+  }
+  .match-tabs-list .nav-link { font-size: .8rem; padding: .3rem .5rem; }
+}
+
+/* tab panels: keep existing content responsive — hide/show */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* placeholders style */
+.placeholder-panel {
+  padding: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px dashed #e6eef0;
+  color: #475569;
 }
