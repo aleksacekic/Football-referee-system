@@ -60,3 +60,43 @@ Sve se radi sinhrono, i uvek je jasno koji je trenutno otvoren.
 Ikonice se menjanju samo za relevantne elemente, ne sve na stranici.
 
 Brzi klikovi više ne prave problem, jer currentlyOpen je jedini izvor istine. */
+
+
+//--------------MENJANJE TABOVA------------------------------------------------------------
+const matchTabs = document.querySelectorAll('.nav-link-match');
+
+matchTabs.forEach((tab)=>{
+  tab.addEventListener("click", function(){
+
+    // Aktiviraj dugme
+    matchTabs.forEach((t) => {
+      t.classList.remove("active");
+      t.setAttribute("aria-selected", "false");
+    });
+    this.classList.add('active');
+    this.setAttribute("aria-selected", "true");
+
+    // PROMENA PANELA
+    const target = this.dataset.target;
+    console.log(target);
+
+    const container = this.closest('.match-info');
+    console.log(container);
+    const panels = container.querySelectorAll('.tab-panel');
+
+    panels.forEach(p => {
+      // p.classList.add('hidden');
+      p.setAttribute('aria-hidden', 'true');
+      p.classList.remove('active');
+    });
+
+    const activePanel = container.querySelector(`#${target}`);
+    console.log(activePanel);
+    // activePanel.classList.remove('hidden');
+    activePanel.classList.add('active');
+    activePanel.setAttribute('aria-hidden', 'false');
+
+  })
+})
+
+//---------------MENJANJE SADRZAJA TABOVA----------------------------------------------------------

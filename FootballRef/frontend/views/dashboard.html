@@ -205,10 +205,7 @@
       >
         <div class="p-3">
           <main>
-            <div>
-              DODAJ FILTER BY
-              A DESNO MOZE NEKA STATISTIKA
-            </div>
+            <div>DODAJ FILTER BY A DESNO MOZE NEKA STATISTIKA</div>
             <div
               class="match-info-preview"
               role="button"
@@ -228,73 +225,440 @@
               </div>
             </div>
 
-            <div class="match-info hidden">
-              <div class="result">
-                <div class="team-logo-container">
-                  <img
-                    class="team-logo team-logo1"
-                    src="../assets/images/team1.jpeg"
-                  />
-                </div>
-
-                <div class="team-name team-name1">KOPERNIKUS-ZELEZNICAR</div>
-
-                <div class="result-numbers-container">
-                  <div class="result-numbers">2:3</div>
-                </div>
-
-                <div class="team-name team-name2">SLOGA LESKOVAC</div>
-
-                <div class="team-logo-container">
-                  <img
-                    class="team-logo team-logo2"
-                    src="../assets/images/team2.png"
-                  />
-                </div>
-              </div>
-              <div class="other-info">
-                <span>Status: PLAYED</span>
-                <span>Date: 23. Nov 2025. 11:00</span>
-                <span>Round: 3</span>
-
-                <span>Competition: Druga kadetska liga "JUG"</span>
-                <span>Stadium: Nis, Cair</span>
-              </div>
-              <div class="referee-info">
-                <h4>Match Officials</h4>
-                <span>Referee: Zvonko Zvonkovic</span>
-                <span>1st Assistant Referee: Bogdan Bogdanovic</span>
-                <span>2nd Assistant Referee: Milan Milanovic</span>
-                <span>4th Official: Zvonko Zvonkovic</span>
-                <span>Match delegate: Bogdan Bogdanovic</span>
-                <span>VAR: Milan Milanovic</span>
-                <span>AVAR: Milan Milanovic</span>
+            <div class="match-info hidden" aria-hidden="true">
+              <!-- TABS (gornji levi deo) -->
+              <div class="match-tabs">
+                <ul class="nav match-tabs-list" role="tablist">
+                  <li role="presentation">
+                    <button
+                      class="nav-link-match active"
+                      role="tab"
+                      aria-selected="true"
+                      data-target="info"
+                    >
+                      INFO
+                    </button>
+                  </li>
+                  <li role="presentation">
+                    <button
+                      class="nav-link-match"
+                      role="tab"
+                      aria-selected="false"
+                      data-target="home"
+                    >
+                      HOME
+                    </button>
+                  </li>
+                  <li role="presentation">
+                    <button
+                      class="nav-link-match"
+                      role="tab"
+                      aria-selected="false"
+                      data-target="away"
+                    >
+                      AWAY
+                    </button>
+                  </li>
+                </ul>
               </div>
 
-              <div class="match-time-info">
-                <h4>Match phases</h4>
-                <div class="match-time-labels">
-                  <label></label>
-                  <label>Start</label>
-                  <label>End</label>
-                  <label>Extra time</label>
-                  <label>Result</label>
-                </div>
-                <div class="match-time">
-                  <div>
-                    <span>1st HALFTIME</span>
-                    <span>11:01:44</span>
-                    <span>11:47:05</span>
-                    <span>0</span>
-                    <span>0:0</span>
+              <!-- TAB PANELS -->
+              <div class="match-tab-panels">
+                <!-- INFO panel (OVO JE TVOJ POSTOJEĆI SADRŽAJ) -->
+                <div
+                  class="tab-panel tab-panel--info active"
+                  id="info"
+                  role="tabpanel"
+                >
+                  <div class="result">
+                    <div class="team-logo-container">
+                      <img
+                        class="team-logo team-logo1"
+                        src="../assets/images/team1.jpeg"
+                      />
+                    </div>
+
+                    <div class="team-name team-name1">
+                      KOPERNIKUS-ZELEZNICAR
+                    </div>
+
+                    <div class="result-numbers-container">
+                      <div class="result-numbers">2:3</div>
+                    </div>
+
+                    <div class="team-name team-name2">SLOGA LESKOVAC</div>
+
+                    <div class="team-logo-container">
+                      <img
+                        class="team-logo team-logo2"
+                        src="../assets/images/team2.png"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <span>2nd HALFTIME</span>
-                    <span>11:58:25</span>
-                    <span>12:45:09</span>
-                    <span>2</span>
-                    <span>1:3</span>
+
+                  <div class="other-info">
+                    <span>Status: PLAYED</span>
+                    <span>Date: 23. Nov 2025. 11:00</span>
+                    <span>Round: 3</span>
+                    <span>Competition: Druga kadetska liga "JUG"</span>
+                    <span>Stadium: Nis, Cair</span>
                   </div>
+
+                  <div class="referee-info">
+                    <h4>Match Officials</h4>
+                    <span>Referee: Zvonko Zvonkovic</span>
+                    <span>1st Assistant Referee: Bogdan Bogdanovic</span>
+                    <span>2nd Assistant Referee: Milan Milanovic</span>
+                    <span>4th Official: Zvonko Zvonkovic</span>
+                    <span>Match delegate: Bogdan Bogdanovic</span>
+                    <span>VAR: Milan Milanovic</span>
+                    <span>AVAR: Milan Milanovic</span>
+                  </div>
+
+                  <div class="match-time-info">
+                    <h4>Match phases</h4>
+                    <div class="match-time-labels">
+                      <label></label>
+                      <label>Start</label>
+                      <label>End</label>
+                      <label>Extra time</label>
+                      <label>Result</label>
+                    </div>
+                    <div class="match-time">
+                      <div>
+                        <span>1st HALFTIME</span>
+                        <span>11:01:44</span>
+                        <span>11:47:05</span>
+                        <span>0</span>
+                        <span>0:0</span>
+                      </div>
+                      <div>
+                        <span>2nd HALFTIME</span>
+                        <span>11:58:25</span>
+                        <span>12:45:09</span>
+                        <span>2</span>
+                        <span>1:3</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- HOME panel (placeholder, fill later) -->
+                <div
+                  class="tab-panel tab-panel--home"
+                  id="home"
+                  role="tabpanel"
+                  aria-hidden="true"
+                >
+                  <div class="result">
+                    <div class="team-logo-container">
+                      <img
+                        class="team-logo team-logo1"
+                        src="../assets/images/team1.jpeg"
+                      />
+                    </div>
+
+                    <div class="team-name team-name1">
+                      KOPERNIKUS-ZELEZNICAR
+                    </div>
+
+                    <div class="result-numbers-container">
+                      <div class="result-numbers">2:3</div>
+                    </div>
+
+                    <div class="team-name team-name2">SLOGA LESKOVAC</div>
+
+                    <div class="team-logo-container">
+                      <img
+                        class="team-logo team-logo2"
+                        src="../assets/images/team2.png"
+                      />
+                    </div>
+                  </div>
+
+                <div class="players">
+  <!-- STARTING LINEUP -->
+  <section class="players-block starting-lineup-block" aria-labelledby="starting-lineup-title">
+    <h5 id="starting-lineup-title" class="players-block-title">Starting lineup</h5>
+    <ul class="players-list" role="list">
+      <!-- ponovi ovaj li za svakog od 11 igraca -->
+      <li class="player-card" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">11</div>
+        <div class="player-info">
+          <div class="player-name">Nikola Nikolić</div>
+          <div class="player-action">Goal (23'), Subbed off (70')</div>
+        </div>
+      </li>
+
+      <!-- primer jos jednog -->
+      <li class="player-card" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">9</div>
+        <div class="player-info">
+          <div class="player-name">Marko Marković</div>
+          <div class="player-action">Yellow card (55')</div>
+        </div>
+      </li>
+
+      <li class="player-card" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">9</div>
+        <div class="player-info">
+          <div class="player-name">Marko Marković</div>
+          <div class="player-action">Yellow card (55')</div>
+        </div>
+      </li>
+
+      <li class="player-card" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">9</div>
+        <div class="player-info">
+          <div class="player-name">Marko Marković</div>
+          <div class="player-action">Yellow card (55')</div>
+        </div>
+      </li>
+
+      <li class="player-card" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">9</div>
+        <div class="player-info">
+          <div class="player-name">Marko Marković</div>
+          <div class="player-action">Yellow card (55')</div>
+        </div>
+      </li>
+
+       <li class="player-card" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">9</div>
+        <div class="player-info">
+          <div class="player-name">Marko Marković</div>
+          <div class="player-action">Yellow card (55')</div>
+        </div>
+      </li>
+
+      <li class="player-card" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">9</div>
+        <div class="player-info">
+          <div class="player-name">Marko Marković</div>
+          <div class="player-action">Yellow card (55')</div>
+        </div>
+      </li>
+
+      <li class="player-card" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">9</div>
+        <div class="player-info">
+          <div class="player-name">Marko Marković</div>
+          <div class="player-action">Yellow card (55')</div>
+        </div>
+      </li>
+
+      <li class="player-card" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">9</div>
+        <div class="player-info">
+          <div class="player-name">Marko Marković</div>
+          <div class="player-action">Yellow card (55')</div>
+        </div>
+      </li>
+
+      <!-- ... dodaj ukupno 11 elemenata -->
+    </ul>
+  </section>
+
+  <!-- SUBSTITUTES -->
+  <section class="players-block substitutes-block" aria-labelledby="substitutes-title">
+    <h5 id="substitutes-title" class="players-block-title">Substitutes</h5>
+    <ul class="players-list">
+      <li class="player-card substitute" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">18</div>
+        <div class="player-info">
+          <div class="player-name">Petar Petrović</div>
+          <div class="player-action">On (70')</div>
+        </div>
+      </li>
+      <!-- ... -->
+    </ul>
+  </section>
+
+  <!-- TEAM OFFICIALS -->
+  <section class="players-block officials-block" aria-labelledby="officials-title">
+    <h5 id="officials-title" class="players-block-title">Team officials</h5>
+    <ul class="officials-list">
+      <li class="official-item">
+        <div class="official-role">Coach</div>
+        <div class="official-name">Milan Jovanović</div>
+      </li>
+      <li class="official-item">
+        <div class="official-role">Assistant</div>
+        <div class="official-name">Petar Stanković</div>
+      </li>
+      <!-- ... -->
+    </ul>
+  </section>
+</div>
+
+                </div>
+
+                <!-- AWAY panel (placeholder, fill later) -->
+                <div
+                  class="tab-panel tab-panel--away"
+                  id="away"
+                  role="tabpanel"
+                  aria-hidden="true"
+                >
+                  <div class="result">
+                    <div class="team-logo-container">
+                      <img
+                        class="team-logo team-logo1"
+                        src="../assets/images/team1.jpeg"
+                      />
+                    </div>
+
+                    <div class="team-name team-name1">
+                      KOPERNIKUS-ZELEZNICAR
+                    </div>
+
+                    <div class="result-numbers-container">
+                      <div class="result-numbers">2:3</div>
+                    </div>
+
+                    <div class="team-name team-name2">SLOGA LESKOVAC</div>
+
+                    <div class="team-logo-container">
+                      <img
+                        class="team-logo team-logo2"
+                        src="../assets/images/team2.png"
+                      />
+                    </div>
+                  </div>
+                                  <div class="players">
+  <!-- STARTING LINEUP -->
+  <section class="players-block starting-lineup-block" aria-labelledby="starting-lineup-title">
+    <h5 id="starting-lineup-title" class="players-block-title">Starting lineup</h5>
+    <ul class="players-list" role="list">
+      <!-- ponovi ovaj li za svakog od 11 igraca -->
+      <li class="player-card" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">11</div>
+        <div class="player-info">
+          <div class="player-name">Nikola Nikolić</div>
+          <div class="player-action">Goal (23'), Subbed off (70')</div>
+        </div>
+      </li>
+
+      <!-- primer jos jednog -->
+      <li class="player-card" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">9</div>
+        <div class="player-info">
+          <div class="player-name">Marko Marković</div>
+          <div class="player-action">Yellow card (55')</div>
+        </div>
+      </li>
+
+      <li class="player-card" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">9</div>
+        <div class="player-info">
+          <div class="player-name">Marko Marković</div>
+          <div class="player-action">Yellow card (55')</div>
+        </div>
+      </li>
+
+      <li class="player-card" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">9</div>
+        <div class="player-info">
+          <div class="player-name">Marko Marković</div>
+          <div class="player-action">Yellow card (55')</div>
+        </div>
+      </li>
+
+      <li class="player-card" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">9</div>
+        <div class="player-info">
+          <div class="player-name">Marko Marković</div>
+          <div class="player-action">Yellow card (55')</div>
+        </div>
+      </li>
+
+       <li class="player-card" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">9</div>
+        <div class="player-info">
+          <div class="player-name">Marko Marković</div>
+          <div class="player-action">Yellow card (55')</div>
+        </div>
+      </li>
+
+      <li class="player-card" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">9</div>
+        <div class="player-info">
+          <div class="player-name">Marko Marković</div>
+          <div class="player-action">Yellow card (55')</div>
+        </div>
+      </li>
+
+      <li class="player-card" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">9</div>
+        <div class="player-info">
+          <div class="player-name">Marko Marković</div>
+          <div class="player-action">Yellow card (55')</div>
+        </div>
+      </li>
+
+      <li class="player-card" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">9</div>
+        <div class="player-info">
+          <div class="player-name">Marko Marković</div>
+          <div class="player-action">Yellow card (55')</div>
+        </div>
+      </li>
+
+      <!-- ... dodaj ukupno 11 elemenata -->
+    </ul>
+  </section>
+
+  <!-- SUBSTITUTES -->
+  <section class="players-block substitutes-block" aria-labelledby="substitutes-title">
+    <h5 id="substitutes-title" class="players-block-title">Substitutes</h5>
+    <ul class="players-list">
+      <li class="player-card substitute" role="listitem">
+        <img class="player-photo" src="../assets/images/random-photo.jpg" alt="ph" />
+        <div class="player-number">18</div>
+        <div class="player-info">
+          <div class="player-name">Petar Petrović</div>
+          <div class="player-action">On (70')</div>
+        </div>
+      </li>
+      <!-- ... -->
+    </ul>
+  </section>
+
+  <!-- TEAM OFFICIALS -->
+  <section class="players-block officials-block" aria-labelledby="officials-title">
+    <h5 id="officials-title" class="players-block-title">Team officials</h5>
+    <ul class="officials-list">
+      <li class="official-item">
+        <div class="official-role">Coach</div>
+        <div class="official-name">Milan Jovanović</div>
+      </li>
+      <li class="official-item">
+        <div class="official-role">Assistant</div>
+        <div class="official-name">Petar Stanković</div>
+      </li>
+      <!-- ... -->
+    </ul>
+  </section>
+</div>
                 </div>
               </div>
             </div>
