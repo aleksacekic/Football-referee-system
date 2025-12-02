@@ -1,0 +1,173 @@
+.league-preview {
+  display: flex;
+  flex-direction: row;
+  background-color: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 1rem 1.25rem;
+  /* min-height: 200px; */
+  margin-left: 30px;
+   margin-right: 30px;
+  margin-bottom: 10px !important;
+  margin-top: 10px !important;
+  max-width: 1200px;
+  cursor: pointer;
+
+  font-weight: 600;
+  font-size: x-large;
+
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none; /* Standard syntax */
+}
+
+@media (max-width: 420px) {
+  .league-preview {
+    margin:0px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    font-size: large;
+  }
+}
+
+
+/* --- card wrapper style (usklađeno sa league-preview) --- */
+.league-table {
+  margin: 12px 30px 20px;
+  max-width: 1200px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  padding: 12px;
+  overflow: hidden;
+}
+
+/* table basics */
+.standings {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color: #0f1720;
+}
+
+/* header */
+.standings thead th {
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.92rem;
+  padding: 10px 12px;
+  color: #334155;
+  border-bottom: 1px solid #eef2f6;
+  vertical-align: middle;
+}
+
+/* rows */
+.standings tbody tr {
+  transition: background .12s ease, transform .08s ease;
+}
+.standings tbody tr:hover {
+  background: #fbfdff;
+  transform: translateY(-1px);
+}
+
+/* cells */
+.standings td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f5f7fb;
+  vertical-align: middle;
+  font-size: 0.95rem;
+  color: #1f2937;
+}
+
+/* team cell (logo + name) */
+.team-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.team-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #eef2f6;
+  flex-shrink: 0;
+}
+.team-meta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  min-width: 0;
+}
+.team-name {
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.team-short {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+/* position cell smaller */
+.col-pos { width: 48px; text-align: left; font-weight: 700; }
+
+/* numeric columns center */
+.col-played, .col-w, .col-d, .col-l, .col-gd, .col-points, .col-g {
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* visually emphasize points */
+.col-points { font-weight: 800; color: #0d9488; }
+
+/* --- RESPONSIVE: hide less important cols progressively --- */
+
+/* At medium widths hide GD (goal difference) */
+@media (max-width: 1000px) {
+  .standings th.col-gd,
+  .standings td.col-gd {
+    display: none;
+  }
+}
+
+/* At smaller widths hide W/D/L (show only M, G and P) */
+@media (max-width: 760px) {
+  .standings th.col-w, .standings td.col-w,
+  .standings th.col-d, .standings td.col-d,
+  .standings th.col-l, .standings td.col-l {
+    display: none;
+  }
+}
+
+/* At very small widths show only Team | M | G | P (and collapse team text) */
+@media (max-width: 520px) {
+  /* keep team, played, goals, points visible; hide others */
+  .standings th.col-pos, .standings td.col-pos { display: none; } /* optional hide rank */
+  .standings th.col-gd, .standings td.col-gd,
+  .standings th.col-w, .standings td.col-w,
+  .standings th.col-d, .standings td.col-d,
+  .standings th.col-l, .standings td.col-l {
+    display: none;
+  }
+
+  /* team cell: allow wrapping or shorten */
+  .team-name {
+    white-space: normal;
+    font-size: 0.95rem;
+  }
+
+  /* make logos a bit bigger for touch */
+  .team-logo { width: 42px; height: 42px; }
+
+  /* tighten paddings */
+  .standings thead th, .standings td { padding: 8px 10px; font-size: 0.92rem; }
+}
+
+/* Ultra-small 320px tweaks */
+@media (max-width: 360px) {
+  .team-logo { width: 36px; height: 36px; }
+  .standings thead th, .standings td { padding: 6px 8px; font-size: 0.9rem; }
+}
