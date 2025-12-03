@@ -11,6 +11,167 @@
   max-height: 30px;
 }
 
+#desc-wrapper,
+#reason-wrapper {
+  display: none;
+}
+
+/* ============================= */
+/*        MODAL OVERLAY          */
+/* ============================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55); /* tamniji navy overlay */
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* Fade-in animacija */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ============================= */
+/*         MODAL CONTAINER        */
+/* ============================= */
+.team-modal {
+  background: #ffffff;
+  padding: 22px;
+  border-radius: 14px;
+
+  width: 95%;
+  max-width: 430px;
+
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+
+  transform: translateY(20px);
+  opacity: 0;
+  animation: slideUp 0.28s ease-out forwards;
+}
+
+/* Slide-up animacija */
+@keyframes slideUp {
+  to {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+
+/* ============================= */
+/*          CLOSE BUTTON         */
+/* ============================= */
+.team-modal__close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  background: transparent;
+  border: none;
+
+  font-size: 26px;
+  cursor: pointer;
+  color: #475569;
+  transition: 0.2s;
+}
+
+.team-modal__close:hover {
+  color: #0f766e;
+  transform: scale(1.1);
+}
+
+/* ============================= */
+/*            TITLE              */
+/* ============================= */
+.team-modal__title {
+  margin-bottom: 16px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* ============================= */
+/*          FORM LAYOUT          */
+/* ============================= */
+.team-modal__form {
+  display: grid;
+  gap: 14px;
+}
+
+/* ============================= */
+/*       INPUTS + DROPDOWNS      */
+/* ============================= */
+
+.team-modal__form select,
+.team-modal__form input,
+.team-modal__form textarea {
+  width: 100%;
+  padding: 10px 12px;
+
+  border-radius: 10px;
+  background: #f8fafc;
+
+  border: 1px solid #cbd5e1;
+  font-size: 15px;
+  color: #0f172a;
+
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+/* Hover efekat */
+.team-modal__form select:hover,
+.team-modal__form input:hover,
+.team-modal__form textarea:hover {
+  border-color: #94a3b8;
+}
+
+/* Focus efekat (lep za UI) */
+.team-modal__form select:focus,
+.team-modal__form input:focus,
+.team-modal__form textarea:focus {
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.25);
+  outline: none;
+}
+
+/* Textarea lepša */
+.team-modal__form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* ============================= */
+/*         SUBMIT BUTTON         */
+/* ============================= */
+.submit-button {
+  background: #0d9488;
+  color: white;
+  border: none;
+
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+
+  font-size: 17px;
+  font-weight: 600;
+  transition: 0.25s;
+}
+
+.submit-button:hover {
+  background: #0f766e;
+  transform: translateY(-1px);
+}
+
+.submit-button:active {
+  transform: translateY(1px);
+}
+
+
 .start-game-button {
   margin-top: 1.5rem;
  width: 100%;

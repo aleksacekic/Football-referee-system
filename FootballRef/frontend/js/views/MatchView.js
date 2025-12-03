@@ -78,10 +78,10 @@ matchTabs.forEach((tab)=>{
 
     // PROMENA PANELA
     const target = this.dataset.target;
-    console.log(target);
+    //console.log(target);
 
     const container = this.closest('.match-info');
-    console.log(container);
+    //console.log(container);
     const panels = container.querySelectorAll('.tab-panel');
 
     panels.forEach(p => {
@@ -91,7 +91,7 @@ matchTabs.forEach((tab)=>{
     });
 
     const activePanel = container.querySelector(`#${target}`);
-    console.log(activePanel);
+    //console.log(activePanel);
     // activePanel.classList.remove('hidden');
     activePanel.classList.add('active');
     activePanel.setAttribute('aria-hidden', 'false');

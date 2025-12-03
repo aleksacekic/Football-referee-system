@@ -136,88 +136,109 @@ gamePlayers.forEach((playerElement) => {
         value: name,
       };
     });
+    //console.log(startingPlayers);
 
     // KREIRAMO OVERLAY + MINIMALNI MODAL
     const overlay = document.createElement("div");
     overlay.className = "modal-overlay";
+
     overlay.innerHTML = `
-      <div class="team-modal" style="max-width:460px;padding:12px;">
-        <button class="team-modal__close" style="position:absolute;right:10px;top:8px;border:0;background:transparent;font-size:20px;">&times;</button>
+  <div class="team-modal">
+    <button class="team-modal__close">&times;</button> 
 
-        <h3 style="margin-bottom:10px;">${playerName} — Add action</h3>
+    <h3 class="team-modal__title">${playerName} — Add action</h3>
 
-        <form id="actionForm" style="display:grid;gap:8px">
-          <select name="action" required>
-            <option value="GOL">GOL</option>
-            <option value="AUTOGOL">AUTOGOL</option>
-            <option value="PENAL">PENAL (goal)</option>
-            <option value="PROMASEN_PENAL">PROMAŠEN PENAL</option>
-            <option value="ZUTI">ŽUTI KARTON</option>
-            <option value="CRVENI">CRVENI KARTON</option>
-            ${isSub ? '<option value="SUBSTITUTION">SUBSTITUTION</option>' : ""}
-          </select>
+    <form id="actionForm" class="team-modal__form">
 
-          <input type="number" name="minute" placeholder="Minute" />
+      <select name="action" class="action-select" required>
+        <option value="Goal">Goal</option>
+        <option value="OwnGoal">OwnGoal</option>
+        <option value="Penalty">Penalty</option>
+        <option value="MissedPenalty">Missed penalty</option>
+        <option value="YellowCard">Yellow card</option>
+        <option value="RedCard">Red card</option>
+        ${isSub ? '<option value="Substitution">Substitution</option>' : ""}
+      </select>
 
-          <select name="when">
-            <option value="TOKOM MECA">TOKOM MECA</option>
-            <option value="PRE MECA">PRE MECA</option>
-            <option value="POSLE MECA">POSLE MECA</option>
-          </select>
+      <input type="number" name="minute" class="minute-input" placeholder="Minute" />
 
-          <select name="reason">
-            <option>Rough start</option>
-            <option>Preventing a promising attack</option>
-            <option>Preventing obvious opportunity to obtain a goal</option>
-            <option>Pausing the game</option>
-            <option>Neglecting words or movements</option>
-            <option>Frequent violation of the game rules</option>
-            <option>Misconduct</option>
-          </select>
+      <select name="when" class="when-select">
+        <option value="DuringMatch">During match</option>
+        <option value="BeforeMatch">Before match</option>
+        <option value="AfterMatch">After match</option>
+      </select>
 
-          ${
-            isSub
-              ? `
-          <select name="sub_with">
-            ${startingPlayers
-              .map(
-                (p) => `<option value="${p.value}">${p.label}</option>`
-              )
-              .join("")}
-          </select>`
-              : ""
-          }
-
-          <textarea name="desc" rows="3" placeholder="Description (optional)"></textarea>
-
-          <button type="submit" style="background:#0d9488;color:white;border:0;padding:8px;border-radius:6px;cursor:pointer;">
-            Add action
-          </button>
-        </form>
+      <div id="reason-wrapper">
+        <select name="reason" class="reason-select">
+          <option>Rough start</option>
+          <option>Preventing a promising attack</option>
+          <option>Preventing obvious opportunity to obtain a goal</option>
+          <option>Pausing the game</option>
+          <option>Neglecting words or movements</option>
+          <option>Frequent violation of the game rules</option>
+          <option>Misconduct</option>
+        </select>
       </div>
-    `;
+
+      ${
+        isSub
+          ? `
+            <select name="sub_with" class="sub-with-select">
+              ${startingPlayers
+                .map((p) => `<option value="${p.value}">${p.label}</option>`)
+                .join("")}
+            </select>
+          `
+          : ""
+      }
+
+      <div id="desc-wrapper">
+        <textarea name="desc" rows="3" class="description-input"
+          placeholder="Description (optional)"></textarea>
+      </div>
+
+      <button type="submit" class="submit-button">Add action</button>
+    </form>
+  </div>
+`;
 
     document.body.appendChild(overlay);
 
     const form = overlay.querySelector("#actionForm");
+    //console.log(form);
     const closeBtn = overlay.querySelector(".team-modal__close");
 
-    // PRIKAZ/SKRIVANJE POLJA
-    const updateVisibility = () => {
-      const a = form.elements["action"].value;
+    const actionSelect = overlay.querySelector('select[name="action"]'); // padajuca lista za akcije
+    const descWrapper = overlay.querySelector("#desc-wrapper");
+    const reasonWrapper = overlay.querySelector("#reason-wrapper");
+    const descTextarea = overlay.querySelector('textarea[name="desc"]'); // padajuca lista za opis
 
-      const isCard = a === "ZUTI" || a === "CRVENI";
+    function updateVisibility() {
+      // const a = form.elements["action"].value;
+
+      const value = actionSelect.value;
+
+      const isCard = value === "YellowCard" || value === "RedCard";
+
+      // opis i razlog samo za zuti/crveni
+      descWrapper.style.display = isCard ? "block" : "none";
+      reasonWrapper.style.display = isCard ? "block" : "none";
 
       form.elements["when"].style.display = isCard ? "block" : "none";
-      form.elements["reason"].style.display = isCard ? "block" : "none";
-      form.elements["minute"].style.display = "block";
+
+      // ako nije karton — očisti description
+      if (!isCard) {
+        descTextarea.value = "";
+      }
 
       if (form.elements["sub_with"])
         form.elements["sub_with"].style.display =
-          a === "SUBSTITUTION" ? "block" : "none";
-    };
+          value === "Substitution" ? "block" : "none";
+    }
 
-    form.elements["action"].addEventListener("change", updateVisibility);
+    actionSelect.addEventListener("change", updateVisibility);
+
+    // pozovi odmah da inicijalno podesi vidljivost
     updateVisibility();
 
     // ZATVARANJE
@@ -240,13 +261,14 @@ gamePlayers.forEach((playerElement) => {
 
       let text = "";
 
-      if (a === "GOL") text = `Goal (${minute}')`;
-      else if (a === "AUTOGOL") text = `Own goal (${minute}')`;
-      else if (a === "PENAL") text = `Penalty scored (${minute}')`;
-      else if (a === "PROMASEN_PENAL") text = `Missed penalty (${minute}')`;
-      else if (a === "ZUTI") text = `Yellow card (${minute}') — ${reason}`;
-      else if (a === "CRVENI") text = `Red card (${minute}') — ${reason}`;
-      else if (a === "SUBSTITUTION")
+      if (a === "Goal") text = `Goal (${minute}')`;
+      else if (a === "OwnGoal") text = `Own goal (${minute}')`;
+      else if (a === "Penalty") text = `Penalty scored (${minute}')`;
+      else if (a === "MissedPenalty") text = `Missed penalty (${minute}')`;
+      else if (a === "YellowCard")
+        text = `Yellow card (${minute}') — ${reason}`;
+      else if (a === "RedCard") text = `Red card (${minute}') — ${reason}`;
+      else if (a === "Substitution")
         text = `Substitution: on ${subWith} (${minute}')`;
 
       if (desc) text += ` — ${desc}`;
