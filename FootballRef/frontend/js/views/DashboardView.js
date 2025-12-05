@@ -285,3 +285,218 @@ gamePlayers.forEach((playerElement) => {
     });
   });
 });
+
+
+
+// ISTO TO, ALI ZA KLUPU
+const officialsActions = document.querySelectorAll(".officials-list");
+
+officialsActions.forEach((official) => {
+  official.addEventListener("click", function () {
+    /* 
+    1. napravi overlay
+    2. dodaj mu izgled
+    3. na klik otvori overlay
+    4. na overlay ponudi samo zuti i crveni
+    */
+
+    //1
+    const overlay = document.createElement("div");
+    overlay.className = "modal-overlay";
+
+    //2
+    overlay.innerHTML = `
+    <div class="team-modal">
+    <button class="team-modal__close">&times;</button> 
+
+    <h3 class="team-modal__title">Official — Add action</h3>
+
+    <form id="actionForm" class="team-modal__form">
+
+      <select name="action" class="action-select" required>
+        <option value="Yellow card">Yellow card</option>
+        <option value="Red card">Red card</option>
+      </select>
+
+      <input type="number" name="minute" class="minute-input" placeholder="Minute" required/>
+
+      <select name="when" class="when-select">
+        <option value="DuringMatch">During match</option>
+        <option value="BeforeMatch">Before match</option>
+        <option value="AfterMatch">After match</option>
+      </select>
+
+      
+      <textarea name="desc" rows="3" class="description-input"
+        placeholder="Description (optional)"></textarea>
+      
+
+      <button type="submit" class="submit-button">Add action</button>
+    </form>
+  </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    const closeBtn = overlay.querySelector(".team-modal__close");
+    // ZATVARANJE
+    const close = () => overlay.remove();
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) close();
+    });
+    closeBtn.addEventListener("click", close);
+
+   
+    const form = overlay.querySelector("#actionForm");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      let text = "";
+      const action = form.elements["action"].value;
+      const min = form.elements["minute"].value;
+      const when = form.elements["when"].value;
+      const desc = form.elements["desc"].value;
+
+      const description = desc ? `- ${desc}` : ``;
+      text = `${action} (${min}') ${description}`
+      console.log(text);
+
+      const officialAct = document.querySelector(".official-action");
+      officialAct.textContent += `; ${text}`;
+      close();
+    });
+  });
+});
+
+//----------------------------------------------------ZA DASHBOARD---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------ZA DASHBOARD--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------ZA DASHBOARD--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------ZA DASHBOARD-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------ZA DASHBOARD--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//ZA DASHBOARD
+
+const matchesForDate = [
+  {
+    id: 1, 
+    date: "2025-11-23",
+    time: "11:00",
+    round: 3,
+    homeTeam: "Kopernikus Zeleznicar",
+    awayTeam: "Sloga Leskovac",
+    competition: 'Druga kadetska liga "JUG"',
+    stadium: {
+      city: "Nis",
+      name: "Cair"
+    }
+  },
+  {
+    id: 2,
+    date: "2025-11-23",
+    time: "13:30",
+    round: 3,
+    homeTeam: "Radnicki Nis",
+    awayTeam: "FK Jagodina",
+    competition: 'Druga kadetska liga "JUG"',
+    stadium: {
+      city: "Nis",
+      name: "Cair – teren 2"
+    }
+  },
+  {
+    id: 3,
+    date: "2025-11-23",
+    time: "15:00",
+    round: 3,
+    homeTeam: "OFK Belgrad",
+    awayTeam: "TSC Backa Topola",
+    competition: 'Omladinska liga Srbije',
+    stadium: {
+      city: "Belgrade",
+      name: "Omladinski stadion"
+    }
+  }
+];
+
+
+
+// ROOT kontejner u HTML-u
+// <div id="matches-panel"></div>
+const root = document.getElementById('matches-panel');
+
+function createMatchNode(match) {
+  const wrap = document.createElement('div');
+  wrap.className = 'match-item';
+  wrap.dataset.matchId = match.id; // korisno za identifikaciju
+
+  const firstRow = document.createElement('div');
+  firstRow.className = 'matchitem-firstrow';
+
+  const timeSpan = document.createElement('span');
+  const timeEl = document.createElement('time');
+  timeEl.dateTime = `${match.date}T${match.time}`;
+  timeEl.textContent = `${formatDisplayDate(match.date)} ${match.time}`;
+  timeSpan.appendChild(timeEl);
+
+  const roundSpan = document.createElement('span');
+  roundSpan.textContent = `Round: ${match.round}`;
+
+  firstRow.appendChild(timeSpan);
+  firstRow.appendChild(roundSpan);
+
+  const teams = document.createElement('span');
+  teams.className = 'match-teams';
+  teams.textContent = `${match.homeTeam} - ${match.awayTeam}`;
+
+  const comp = document.createElement('span');
+  comp.textContent = `Competition: ${match.competition}`;
+
+  const stadium = document.createElement('span');
+  stadium.textContent = `Stadium: ${match.stadium.city}, ${match.stadium.name}`;
+
+  wrap.appendChild(firstRow);
+  wrap.appendChild(teams);
+  wrap.appendChild(comp);
+  wrap.appendChild(stadium);
+
+  return wrap;
+}
+
+function formatDisplayDate(isoDate) {
+  // jednostavno formatiranje: "23. Nov 2025."
+  const d = new Date(isoDate);
+  const day = d.getDate();
+  const month = d.toLocaleString('en-GB', { month: 'short' }); // "Nov"
+  const year = d.getFullYear();
+  return `${String(day).padStart(2,'0')}. ${month} ${year}.`;
+}
+
+function renderMatches(matches, container) {
+  container.innerHTML = ''; // clear (idempotent)
+  const frag = document.createDocumentFragment();
+  matches.forEach(m => frag.appendChild(createMatchNode(m)));
+  container.appendChild(frag);
+
+  // Document fragment je predobar za optimizaciju kad imam 1000 elemenata npr - sada bi npr. bolje bilo da radim klasicno. Ostavicu zbog VEZBE - nauceno nesto novo
+  /*
+  matches.forEach(m => {
+    container.appendChild(createMatchNode(m));
+  });
+   */
+
+  //objasnjenje gpt: DocumentFragment je mini, nevidljivi DOM koji postoji samo u memoriji i nije deo stranice.Možeš ga zamisliti kao:„kutiju u koju privremeno sklapaš HTML elemente, a na kraju celu kutiju dodaš u DOM u jednom potezu“.
+
+
+}
+
+// Event delegation: hvata klik na match-item
+root.addEventListener('click', (e) => {
+  const matchEl = e.target.closest('.match-item');
+  if (!matchEl || !root.contains(matchEl)) return;
+  const id = matchEl.dataset.matchId;
+  console.log('clicked match id', id);
+  openMatchDetails(id); // DODAJ
+});
+
+// CALL (render)
+renderMatches(matchesForDate, root);
