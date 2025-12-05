@@ -45,74 +45,6 @@ document.addEventListener("DOMContentLoaded", function () {
   calendar.render();
 });
 
-const leagues = document.querySelectorAll(".league-preview");
-const leagueTables = document.querySelectorAll(".league-table");
-
-leagues.forEach((league) => {
-  league.addEventListener("click", function () {
-    //NAPOMENA: this pokazuje na konkretni .league-preview koji je kliknut
-    //ako bi bila arrow funkcija gore kod eventListenera
-    //  onda bismo morali da imamo (umesto this jer ne postoji) dole liniju-
-    //  const clicked = e.currentTarget;
-    const table = league.nextElementSibling;
-    if (this.classList.contains("opened")) {
-      //ako je vec otvoren, i opet kliknemo na njega.
-      this.classList.remove("opened");
-      table.classList.remove("active");
-      return;
-    }
-
-    leagues.forEach((le) => le.classList.remove("opened"));
-    leagueTables.forEach((le) => le.classList.remove("active"));
-
-    this.classList.add("opened");
-    table.classList.add("active");
-  });
-});
-
-const teamsOnTable = document.querySelectorAll(".team-table");
-
-teamsOnTable.forEach((team) => {
-  team.addEventListener("click", () => {
-    const teamName = team
-      .querySelector(".team-name-standings")
-      .textContent.trim();
-    const logo = team.querySelector(".team-logo-standings").src;
-
-    const overlay = document.createElement("div");
-    overlay.className = "modal-overlay";
-
-    overlay.innerHTML = `
-      <div class="team-modal">
-        <button class="team-modal__close">&times;</button>
-        <div class="team-modal__header">
-          <img src="${logo}" class="team-modal__logo" />
-          <div class="team-modal__title">${teamName}</div>
-        </div>
-
-        <div class="team-modal__body">
-          <div class="team-modal__section">
-            <strong>Recent matches</strong>
-            <div>2025-01-01 vs Team X — 2:1</div>
-            <div>2025-01-08 vs Team Y — 0:0</div>
-            <div>2025-01-15 vs Team Z — 1:3</div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    document.body.appendChild(overlay);
-
-    overlay.addEventListener("click", (e) => {
-      if (
-        e.target === overlay ||
-        e.target.classList.contains("team-modal__close")
-      )
-        overlay.remove();
-    });
-  });
-});
-
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // SUPER-SIMPLE player action modal
@@ -286,8 +218,6 @@ gamePlayers.forEach((playerElement) => {
   });
 });
 
-
-
 // ISTO TO, ALI ZA KLUPU
 const officialsActions = document.querySelectorAll(".officials-list");
 
@@ -346,7 +276,6 @@ officialsActions.forEach((official) => {
     });
     closeBtn.addEventListener("click", close);
 
-   
     const form = overlay.querySelector("#actionForm");
     form.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -358,7 +287,7 @@ officialsActions.forEach((official) => {
       const desc = form.elements["desc"].value;
 
       const description = desc ? `- ${desc}` : ``;
-      text = `${action} (${min}') ${description}`
+      text = `${action} (${min}') ${description}`;
       console.log(text);
 
       const officialAct = document.querySelector(".official-action");
@@ -378,7 +307,7 @@ officialsActions.forEach((official) => {
 
 const matchesForDate = [
   {
-    id: 1, 
+    id: 1,
     date: "2025-11-23",
     time: "11:00",
     round: 3,
@@ -387,8 +316,8 @@ const matchesForDate = [
     competition: 'Druga kadetska liga "JUG"',
     stadium: {
       city: "Nis",
-      name: "Cair"
-    }
+      name: "Cair",
+    },
   },
   {
     id: 2,
@@ -400,8 +329,8 @@ const matchesForDate = [
     competition: 'Druga kadetska liga "JUG"',
     stadium: {
       city: "Nis",
-      name: "Cair – teren 2"
-    }
+      name: "Cair – teren 2",
+    },
   },
   {
     id: 3,
@@ -410,48 +339,46 @@ const matchesForDate = [
     round: 3,
     homeTeam: "OFK Belgrad",
     awayTeam: "TSC Backa Topola",
-    competition: 'Omladinska liga Srbije',
+    competition: "Omladinska liga Srbije",
     stadium: {
       city: "Belgrade",
-      name: "Omladinski stadion"
-    }
-  }
+      name: "Omladinski stadion",
+    },
+  },
 ];
-
-
 
 // ROOT kontejner u HTML-u
 // <div id="matches-panel"></div>
-const root = document.getElementById('matches-panel');
+const root = document.getElementById("matches-panel");
 
 function createMatchNode(match) {
-  const wrap = document.createElement('div');
-  wrap.className = 'match-item';
+  const wrap = document.createElement("div");
+  wrap.className = "match-item";
   wrap.dataset.matchId = match.id; // korisno za identifikaciju
 
-  const firstRow = document.createElement('div');
-  firstRow.className = 'matchitem-firstrow';
+  const firstRow = document.createElement("div");
+  firstRow.className = "matchitem-firstrow";
 
-  const timeSpan = document.createElement('span');
-  const timeEl = document.createElement('time');
+  const timeSpan = document.createElement("span");
+  const timeEl = document.createElement("time");
   timeEl.dateTime = `${match.date}T${match.time}`;
   timeEl.textContent = `${formatDisplayDate(match.date)} ${match.time}`;
   timeSpan.appendChild(timeEl);
 
-  const roundSpan = document.createElement('span');
+  const roundSpan = document.createElement("span");
   roundSpan.textContent = `Round: ${match.round}`;
 
   firstRow.appendChild(timeSpan);
   firstRow.appendChild(roundSpan);
 
-  const teams = document.createElement('span');
-  teams.className = 'match-teams';
+  const teams = document.createElement("span");
+  teams.className = "match-teams";
   teams.textContent = `${match.homeTeam} - ${match.awayTeam}`;
 
-  const comp = document.createElement('span');
+  const comp = document.createElement("span");
   comp.textContent = `Competition: ${match.competition}`;
 
-  const stadium = document.createElement('span');
+  const stadium = document.createElement("span");
   stadium.textContent = `Stadium: ${match.stadium.city}, ${match.stadium.name}`;
 
   wrap.appendChild(firstRow);
@@ -466,15 +393,15 @@ function formatDisplayDate(isoDate) {
   // jednostavno formatiranje: "23. Nov 2025."
   const d = new Date(isoDate);
   const day = d.getDate();
-  const month = d.toLocaleString('en-GB', { month: 'short' }); // "Nov"
+  const month = d.toLocaleString("en-GB", { month: "short" }); // "Nov"
   const year = d.getFullYear();
-  return `${String(day).padStart(2,'0')}. ${month} ${year}.`;
+  return `${String(day).padStart(2, "0")}. ${month} ${year}.`;
 }
 
 function renderMatches(matches, container) {
-  container.innerHTML = ''; // clear (idempotent)
+  container.innerHTML = ""; // clear (idempotent)
   const frag = document.createDocumentFragment();
-  matches.forEach(m => frag.appendChild(createMatchNode(m)));
+  matches.forEach((m) => frag.appendChild(createMatchNode(m)));
   container.appendChild(frag);
 
   // Document fragment je predobar za optimizaciju kad imam 1000 elemenata npr - sada bi npr. bolje bilo da radim klasicno. Ostavicu zbog VEZBE - nauceno nesto novo
@@ -485,16 +412,14 @@ function renderMatches(matches, container) {
    */
 
   //objasnjenje gpt: DocumentFragment je mini, nevidljivi DOM koji postoji samo u memoriji i nije deo stranice.Možeš ga zamisliti kao:„kutiju u koju privremeno sklapaš HTML elemente, a na kraju celu kutiju dodaš u DOM u jednom potezu“.
-
-
 }
 
 // Event delegation: hvata klik na match-item
-root.addEventListener('click', (e) => {
-  const matchEl = e.target.closest('.match-item');
+root.addEventListener("click", (e) => {
+  const matchEl = e.target.closest(".match-item");
   if (!matchEl || !root.contains(matchEl)) return;
   const id = matchEl.dataset.matchId;
-  console.log('clicked match id', id);
+  console.log("clicked match id", id);
   openMatchDetails(id); // DODAJ
 });
 
