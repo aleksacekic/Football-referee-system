@@ -113,73 +113,8 @@ let fakeJSON = {
   ],
 };
 
-const leagues = document.querySelectorAll(".league-preview");
-const leagueTables = document.querySelectorAll(".league-table");
 
-leagues.forEach((league) => {
-  league.addEventListener("click", function () {
-    //NAPOMENA: this pokazuje na konkretni .league-preview koji je kliknut
-    //ako bi bila arrow funkcija gore kod eventListenera
-    //  onda bismo morali da imamo (umesto this jer ne postoji) dole liniju-
-    //  const clicked = e.currentTarget;
-    const table = league.nextElementSibling;
-    if (this.classList.contains("opened")) {
-      //ako je vec otvoren, i opet kliknemo na njega.
-      this.classList.remove("opened");
-      table.classList.remove("active");
-      return;
-    }
 
-    leagues.forEach((le) => le.classList.remove("opened"));
-    leagueTables.forEach((le) => le.classList.remove("active"));
-
-    this.classList.add("opened");
-    table.classList.add("active");
-  });
-});
-
-const teamsOnTable = document.querySelectorAll(".team-table");
-
-teamsOnTable.forEach((team) => {
-  team.addEventListener("click", () => {
-    const teamName = team
-      .querySelector(".team-name-standings")
-      .textContent.trim();
-    const logo = team.querySelector(".team-logo-standings").src;
-
-    const overlay = document.createElement("div");
-    overlay.className = "modal-overlay";
-
-    overlay.innerHTML = `
-      <div class="team-modal">
-        <button class="team-modal__close">&times;</button>
-        <div class="team-modal__header">
-          <img src="${logo}" class="team-modal__logo" />
-          <div class="team-modal__title">${teamName}</div>
-        </div>
-
-        <div class="team-modal__body">
-          <div class="team-modal__section">
-            <strong>Recent matches</strong>
-            <div>2025-01-01 vs Team X — 2:1</div>
-            <div>2025-01-08 vs Team Y — 0:0</div>
-            <div>2025-01-15 vs Team Z — 1:3</div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    document.body.appendChild(overlay);
-
-    overlay.addEventListener("click", (e) => {
-      if (
-        e.target === overlay ||
-        e.target.classList.contains("team-modal__close")
-      )
-        overlay.remove();
-    });
-  });
-});
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 // PRAVIMO HTML DEO.
 
@@ -303,150 +238,201 @@ const leaguesData = [
 ];
 
 function createLeagueNode(league) {
-  const leaguePreview = document.createElement("div");
-  leaguePreview.className = "league-preview";
+  // wrapper koji sadrzi preview + tabelu
+  const wrapper = document.createElement('div');
+  wrapper.classList.add('league-block');
+
+  const leaguePreview = document.createElement('div');
+  leaguePreview.type = 'div';
+  leaguePreview.classList.add('league-preview');
   leaguePreview.textContent = league.leagueName;
+  // leaguePreview.setAttribute('aria-expanded', 'false');
+  // leaguePreview.setAttribute('aria-controls', `league-table-${id}`);
 
-  const leagueTable = document.createElement("div");
-  leagueTable.className = "league-table";
+  const leagueTableWrap = document.createElement('div');
+  leagueTableWrap.classList.add('league-table');
 
-  const leagueTableTag = document.createElement("table");
-  leagueTableTag.className = "standings";
-  leagueTableTag.setAttribute("role", "table");
-  leagueTableTag.setAttribute("aria-label", "League standings");
+  const table = document.createElement('table');
+  table.classList.add('standings');
+  table.setAttribute('aria-label', `League standings — ${league.leagueName}`);
 
-  // -------------------------------
-  const tableThead = document.createElement("thead");
-  const tableHeadTr = document.createElement("tr");
+  //za screen readere
+  const caption = document.createElement('caption');
+  caption.classList.add('visually-hidden'); // definisi u css ?? OVO JE NEDOVRSENO! ali je dobra praksa.
+  caption.textContent = `Standings — ${league.leagueName}`;
+  table.appendChild(caption);
 
-  const thPos = document.createElement("th");
-  thPos.className = "col-pos";
-  thPos.setAttribute("scope", "col");
-  thPos.textContent = "#";
+  // THEAD
+  const thead = document.createElement('thead');
+  const headTr = document.createElement('tr');
 
-  const thTeam = document.createElement("th");
-  thTeam.className = "col-team";
-  thTeam.setAttribute("scope", "col");
-  thTeam.textContent = "Team";
+  const cols = [
+    { cls: 'col-pos', text: '#' },
+    { cls: 'col-team', text: 'Team' },
+    { cls: 'col-played', text: 'M' },
+    { cls: 'col-w', text: 'W' },
+    { cls: 'col-d', text: 'D' },
+    { cls: 'col-l', text: 'L' },
+    { cls: 'col-g', text: 'G' },
+    { cls: 'col-gd', text: 'GD' },
+    { cls: 'col-points', text: 'Pts' }
+  ];
 
-  const thPlayed = document.createElement("th");
-  thPlayed.className = "col-played";
-  thPlayed.setAttribute("scope", "col");
-  thPlayed.textContent = "M";
-
-  const thWin = document.createElement("th");
-  thWin.className = "col-w";
-  thWin.setAttribute("scope", "col");
-  thWin.textContent = "W";
-
-  const thDraw = document.createElement("th");
-  thDraw.className = "col-d";
-  thDraw.setAttribute("scope", "col");
-  thDraw.textContent = "D";
-
-  const thLose = document.createElement("th");
-  thLose.className = "col-l";
-  thLose.setAttribute("scope", "col");
-  thLose.textContent = "L";
-
-  const thG = document.createElement("th");
-  thG.className = "col-g";
-  thG.setAttribute("scope", "col");
-  thG.textContent = "G";
-
-  const thGD = document.createElement("th");
-  thGD.className = "col-gd";
-  thGD.setAttribute("scope", "col");
-  thGD.textContent = "GD";
-
-  const thPoints = document.createElement("th");
-  thPoints.className = "col-points";
-  thPoints.setAttribute("scope", "col");
-  thPoints.textContent = "Pts";
-
-  tableHeadTr.appendChild(thPos);
-  tableHeadTr.appendChild(thTeam);
-  tableHeadTr.appendChild(thPlayed);
-  tableHeadTr.appendChild(thWin);
-  tableHeadTr.appendChild(thDraw);
-  tableHeadTr.appendChild(thLose);
-  tableHeadTr.appendChild(thG);
-  tableHeadTr.appendChild(thGD);
-  tableHeadTr.appendChild(thPoints);
-  tableThead.appendChild(tableHeadTr);
-  // -----------------
-
-  const tableTbody = document.createElement("tbody");
-
-  league.standings.forEach((team) => {
-    const tableBodyTr = document.createElement("tr");
-    tableBodyTr.className = "team-table";
-
-    const tdPos = document.createElement("td");
-    tdPos.className = "col-pos";
-    tdPos.textContent = `${team.pos}`;
-
-    const tdTeam = document.createElement("td");
-    tdTeam.className = "col-team";
-    tdTeam.textContent = `${team.teamName}`;
-    const teamCell = document.createElement("div");
-    teamCell.className = "team-cell";
-    tdTeam.appendChild(teamCell);
-
-    const teamCellImg = document.createElement("img");
-    teamCellImg.className = "team-logo-standings";
-    teamCellImg.setAttribute("src", "../assets/images/team1.jpeg");
-    teamCellImg.setAttribute("alt", "Sloga Leskovac logo");
-    teamCell.appendChild(teamCellImg);
-
-    const teamCellDiv = document.createElement("div");
-    teamCellDiv.className = "team-meta";
-    teamCell.appendChild(teamCellDiv);
-
-    const teamCellDivName = document.createElement("div");
-    teamCellDivName.className = "team-name-standings";
-    teamCellDiv.appendChild(teamCellDivName);
-    // -------------dodaj
-
-    const tdPlayed = document.createElement("td");
-    tdPlayed.className = "col-played";
-    tdPlayed.textContent = `${team.played}`;
-
-    const tdWin = document.createElement("td");
-    tdWin.className = "col-w";
-    tdWin.textContent = `${team.w}`;
-
-    const tdDraw = document.createElement("td");
-    tdDraw.className = "col-d";
-    tdDraw.textContent = `${team.d}`;
-
-    const tdLose = document.createElement("td");
-    tdLose.className = "col-l";
-    tdLose.textContent = `${team.l}`;
-
-    const tdG = document.createElement("td");
-    tdG.className = "col-g";
-    tdG.textContent = `${team.g}`;
-
-    const tdGD = document.createElement("td");
-    tdGD.className = "col-gd";
-    tdGD.textContent = `${team.gd}`;
-
-    tableBodyTr.appendChild(tdPos);
-    tableBodyTr.appendChild(tdTeam);
-    tableBodyTr.appendChild(tdPlayed);
-    tableBodyTr.appendChild(tdWin);
-    tableBodyTr.appendChild(tdDraw);
-    tableBodyTr.appendChild(tdLose);
-    tableBodyTr.appendChild(tdG);
-    tableBodyTr.appendChild(tdGD);
-    tableBodyTr.appendChild(tdPoints);
-    tableTbody.appendChild(tableBodyTr);
+  cols.forEach(c => {
+    const th = document.createElement('th');
+    th.classList.add(c.cls);
+    th.setAttribute('scope', 'col');
+    th.textContent = c.text;
+    headTr.appendChild(th);
   });
 
-  leagueTableTag.appendChild(tableTbody);
-  leagueTableTag.appendChild(tableThead);
-  leagueTable.appendChild(leagueTableTag);
+  thead.appendChild(headTr);
+  table.appendChild(thead);
+
+  // TBODY
+  const tbody = document.createElement('tbody');
+
+  league.standings.forEach(team => {
+    const tr = document.createElement('tr');
+    tr.classList.add('team-table');
+    tr.dataset.teamId = team.short || team.teamName;// ??
+
+    const tdPos = document.createElement('td');
+    tdPos.classList.add('col-pos');
+    tdPos.textContent = String(team.pos);
+    tr.appendChild(tdPos);
+
+    const tdTeam = document.createElement('td');
+    tdTeam.classList.add('col-team');
+
+    const teamCell = document.createElement('div');
+    teamCell.classList.add('team-cell');
+
+    const img = document.createElement('img');
+    img.classList.add('team-logo-standings');
+    img.setAttribute('src', team.logo || '../assets/images/team1.jpeg');
+    img.setAttribute('alt', `Grb ${team.teamName}`);
+    teamCell.appendChild(img);
+
+    const meta = document.createElement('div');
+    meta.classList.add('team-meta');
+
+    const nameDiv = document.createElement('div');
+    nameDiv.classList.add('team-name-standings');
+    nameDiv.textContent = team.teamName;
+    meta.appendChild(nameDiv);
+
+    // optional short code
+    if (team.short) {
+      const shortDiv = document.createElement('div');
+      shortDiv.classList.add('team-short');
+      shortDiv.textContent = team.short;
+      meta.appendChild(shortDiv);
+    }
+
+    teamCell.appendChild(meta);
+    tdTeam.appendChild(teamCell);
+    tr.appendChild(tdTeam);
+
+    // played, w, d, l, g, gd, points
+    const tdPlayed = document.createElement('td'); tdPlayed.classList.add('col-played'); tdPlayed.textContent = String(team.played); tr.appendChild(tdPlayed);
+    const tdW = document.createElement('td'); tdW.classList.add('col-w'); tdW.textContent = String(team.w); tr.appendChild(tdW);
+    const tdD = document.createElement('td'); tdD.classList.add('col-d'); tdD.textContent = String(team.d); tr.appendChild(tdD);
+    const tdL = document.createElement('td'); tdL.classList.add('col-l'); tdL.textContent = String(team.l); tr.appendChild(tdL);
+    const tdG = document.createElement('td'); tdG.classList.add('col-g'); tdG.textContent = String(team.g); tr.appendChild(tdG);
+    const tdGD = document.createElement('td'); tdGD.classList.add('col-gd'); tdGD.textContent = String(team.gd); tr.appendChild(tdGD);
+
+    const tdPoints = document.createElement('td');
+    tdPoints.classList.add('col-points');
+    tdPoints.textContent = String(team.points);
+    tr.appendChild(tdPoints);
+
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+  leagueTableWrap.appendChild(table);
+
+  // assemble wrapper
+  wrapper.appendChild(leaguePreview);
+  wrapper.appendChild(leagueTableWrap);
+
+  return wrapper;
 }
 
-createLeagueNode(lig);
+const container = document.querySelector('.leagues-root');
+const frag = document.createDocumentFragment();
+leaguesData.forEach(league => frag.appendChild(createLeagueNode(league)));
+container.appendChild(frag);
+
+
+//MEHANIZAM OTVARANJA-ZATVARANJA KLIKOM NA PREVIEW
+const leagues = document.querySelectorAll(".league-preview");
+const leagueTables = document.querySelectorAll(".league-table");
+
+leagues.forEach((league) => {
+  league.addEventListener("click", function () {
+    //NAPOMENA: this pokazuje na konkretni .league-preview koji je kliknut
+    //ako bi bila arrow funkcija gore kod eventListenera
+    //  onda bismo morali da imamo (umesto this jer ne postoji) dole liniju-
+    //  const clicked = e.currentTarget;
+    const table = league.nextElementSibling;
+    if (this.classList.contains("opened")) {
+      //ako je vec otvoren, i opet kliknemo na njega.
+      this.classList.remove("opened");
+      table.classList.remove("active");
+      return;
+    }
+
+    leagues.forEach((le) => le.classList.remove("opened"));
+    leagueTables.forEach((le) => le.classList.remove("active"));
+
+    this.classList.add("opened");
+    table.classList.add("active");
+  });
+});
+
+
+//KLIK NA TIM OTVARA OVERLAY
+const teamsOnTable = document.querySelectorAll(".team-table");
+
+teamsOnTable.forEach((team) => {
+  team.addEventListener("click", () => {
+    const teamName = team
+      .querySelector(".team-name-standings")
+      .textContent.trim();
+    const logo = team.querySelector(".team-logo-standings").src;
+
+    const overlay = document.createElement("div");
+    overlay.className = "modal-overlay";
+
+    overlay.innerHTML = `
+      <div class="team-modal">
+        <button class="team-modal__close">&times;</button>
+        <div class="team-modal__header">
+          <img src="${logo}" class="team-modal__logo" />
+          <div class="team-modal__title">${teamName}</div>
+        </div>
+
+        <div class="team-modal__body">
+          <div class="team-modal__section">
+            <strong>Recent matches</strong>
+            <div>2025-01-01 vs Team X — 2:1</div>
+            <div>2025-01-08 vs Team Y — 0:0</div>
+            <div>2025-01-15 vs Team Z — 1:3</div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener("click", (e) => {
+      if (
+        e.target === overlay ||
+        e.target.classList.contains("team-modal__close")
+      )
+        overlay.remove();
+    });
+  });
+});

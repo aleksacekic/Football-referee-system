@@ -48,10 +48,747 @@ document.addEventListener("DOMContentLoaded", function () {
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // SUPER-SIMPLE player action modal
+
+//----------------------------------------------------ZA DASHBOARD---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------ZA DASHBOARD--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------ZA DASHBOARD--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------ZA DASHBOARD-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------ZA DASHBOARD--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//ZA DASHBOARD
+
+const matchesForDate = [
+  {
+    id: 1,
+    date: "2025-11-23",
+    time: "11:00",
+    round: 3,
+    homeTeam: "Kopernikus Zeleznicar",
+    awayTeam: "Sloga Leskovac",
+    competition: 'Druga kadetska liga "JUG"',
+    stadium: {
+      city: "Nis",
+      name: "Cair",
+    },
+  },
+  {
+    id: 2,
+    date: "2025-11-23",
+    time: "13:30",
+    round: 3,
+    homeTeam: "Radnicki Nis",
+    awayTeam: "FK Jagodina",
+    competition: 'Druga kadetska liga "JUG"',
+    stadium: {
+      city: "Nis",
+      name: "Cair – teren 2",
+    },
+  },
+  {
+    id: 3,
+    date: "2025-11-23",
+    time: "15:00",
+    round: 3,
+    homeTeam: "OFK Belgrad",
+    awayTeam: "TSC Backa Topola",
+    competition: "Omladinska liga Srbije",
+    stadium: {
+      city: "Belgrade",
+      name: "Omladinski stadion",
+    },
+  },
+];
+
+// ROOT kontejner u HTML-u
+// <div id="matches-panel"></div>
+const root = document.getElementById("matches-panel");
+
+function createMatchNodeOnDashboard(match) {
+  const wrap = document.createElement("div");
+  wrap.className = "match-item";
+  wrap.dataset.matchId = match.id; // korisno za identifikaciju
+
+  const firstRow = document.createElement("div");
+  firstRow.className = "matchitem-firstrow";
+
+  const timeSpan = document.createElement("span");
+  const timeEl = document.createElement("time");
+  timeEl.dateTime = `${match.date}T${match.time}`;
+  timeEl.textContent = `${formatDisplayDate(match.date)} ${match.time}`;
+  timeSpan.appendChild(timeEl);
+
+  const roundSpan = document.createElement("span");
+  roundSpan.textContent = `Round: ${match.round}`;
+
+  firstRow.appendChild(timeSpan);
+  firstRow.appendChild(roundSpan);
+
+  const teams = document.createElement("span");
+  teams.className = "match-teams";
+  teams.textContent = `${match.homeTeam} - ${match.awayTeam}`;
+
+  const comp = document.createElement("span");
+  comp.textContent = `Competition: ${match.competition}`;
+
+  const stadium = document.createElement("span");
+  stadium.textContent = `Stadium: ${match.stadium.city}, ${match.stadium.name}`;
+
+  wrap.appendChild(firstRow);
+  wrap.appendChild(teams);
+  wrap.appendChild(comp);
+  wrap.appendChild(stadium);
+
+  return wrap;
+}
+
+function formatDisplayDate(isoDate) {
+  // jednostavno formatiranje: "23. Nov 2025."
+  const d = new Date(isoDate);
+  const day = d.getDate();
+  const month = d.toLocaleString("en-GB", { month: "short" }); // "Nov"
+  const year = d.getFullYear();
+  return `${String(day).padStart(2, "0")}. ${month} ${year}.`;
+}
+
+function renderMatchesOnDashboard(matches, container) {
+  container.innerHTML = ""; // clear (idempotent)
+  const frag = document.createDocumentFragment();
+  matches.forEach((m) => frag.appendChild(createMatchNodeOnDashboard(m)));
+  container.appendChild(frag);
+
+  // Document fragment je predobar za optimizaciju kad imam 1000 elemenata npr - sada bi npr. bolje bilo da radim klasicno. Ostavicu zbog VEZBE - nauceno nesto novo
+  /*
+  matches.forEach(m => {
+    container.appendChild(createMatchNodeOnDashboard(m));
+  });
+   */
+
+  //objasnjenje gpt: DocumentFragment je mini, nevidljivi DOM koji postoji samo u memoriji i nije deo stranice.Možeš ga zamisliti kao:„kutiju u koju privremeno sklapaš HTML elemente, a na kraju celu kutiju dodaš u DOM u jednom potezu“.
+}
+
+// Event delegation: hvata klik na match-item
+root.addEventListener("click", (e) => {
+  const matchEl = e.target.closest(".match-item");
+  if (!matchEl || !root.contains(matchEl)) return;
+  const id = matchEl.dataset.matchId;
+  //console.log("clicked match id", id);
+  openMatchDetails(id); // DODAJ
+});
+
+// CALL (render)
+renderMatchesOnDashboard(matchesForDate, root);
+
+// ---------- FAKE DATA ----------
+const fakeMatches = [
+  {
+    id: "m-played-001",
+    status: "PLAYED",
+    datetime: "23. Nov 2025. 11:00",
+    competition: 'Druga kadetska liga "JUG"',
+    stadium: "Nis, Cair",
+    teams: {
+      home: {
+        name: "KOPERNIKUS-ZELEZNICAR",
+        logo: "../assets/images/team1.jpeg",
+      },
+      away: { name: "SLOGA LESKOVAC", logo: "../assets/images/team2.png" },
+      score: "2:3",
+    },
+    round: "3",
+    officials: [
+      "Referee: Zvonko Zvonkovic",
+      "1st Assistant Referee: Bogdan Bogdanovic",
+      "2nd Assistant Referee: Milan Milanovic",
+      "4th Official: Zvonko Zvonkovic",
+      "Match delegate: Bogdan Bogdanovic",
+      "VAR: Milan Milanovic",
+      "AVAR: Milan Milanovic",
+    ],
+    matchTimes: [
+      {
+        phase: "1st HALFTIME",
+        start: "11:01:44",
+        end: "11:47:05",
+        extra: "0",
+        result: "0:0",
+      },
+      {
+        phase: "2nd HALFTIME",
+        start: "11:58:25",
+        end: "12:45:09",
+        extra: "2",
+        result: "2:3",
+      },
+    ],
+    players: {
+      home: {
+        starting: [
+          { num: 11, name: "Nikola Nikolić", action: "Goal (23')" },
+          { num: 9, name: "Marko Marković", action: "Yellow card (55')" },
+        ],
+        substitutes: [{ num: 18, name: "Petar Petrović", action: "On (70')" }],
+        officials: [{ role: "Coach", name: "Milan Jovanović" }],
+      },
+      away: {
+        starting: [
+          { num: 7, name: "Stefan Stojanović", action: "" },
+          { num: 6, name: "Jovan Jović", action: "" },
+        ],
+        substitutes: [{ num: 19, name: "Milan Marić", action: "" }],
+        officials: [{ role: "Assistant", name: "Petar Stanković" }],
+      },
+    },
+  },
+
+  {
+    id: "m-sched-002",
+    status: "SCHEDULED",
+    datetime: "24. Nov 2025. 10:00",
+    competition: 'Zona "Centar" FSRIS 25/26',
+    stadium: "Leskovac, Main",
+    teams: {
+      home: { name: "TEAM A", logo: "../assets/images/team1.jpeg" },
+      away: { name: "TEAM B", logo: "../assets/images/team2.png" },
+      score: "-:-",
+    },
+    round: "1",
+    officials: [
+      "Referee: Zvonko Zvonkovic",
+      "1st Assistant Referee: Bogdan Bogdanovic",
+      "2nd Assistant Referee: Milan Milanovic",
+      "4th Official: Zvonko Zvonkovic",
+      "Match delegate: Bogdan Bogdanovic",
+      "VAR: Milan Milanovic",
+      "AVAR: Milan Milanovic",
+    ],
+    matchTimes: [],
+    players: {
+      home: {
+        starting: [
+          { num: 1, name: "Miloš Milošević", action: "" },
+          { num: 4, name: "Petar Petković", action: "" },
+        ],
+        substitutes: [{ num: 14, name: "Ivan Ivanović", action: "" }],
+        officials: [{ role: "Coach", name: "Nenad Novaković", action: "" }],
+      },
+      away: {
+        starting: [
+          { num: 2, name: "Ivan I.", action: "" },
+          { num: 3, name: "Marko M.", action: "" },
+        ],
+        substitutes: [{ num: 15, name: "Jovan J.", action: "" }],
+        officials: [
+          { role: "Coach", name: "Dragan D.", action: "Yellow card (55')" },
+        ],
+      },
+    },
+  },
+
+  {
+    id: "m-live-003",
+    status: "LIVE",
+    datetime: "24. Nov 2025. 12:00",
+    competition: "Prva kadetska liga FSRIS 25/26",
+    stadium: "City Stadium",
+    teams: {
+      home: { name: "RADNIČKI NIŠ", logo: "../assets/images/team2.png" },
+      away: { name: "OFK NIŠ", logo: "../assets/images/team1.jpeg" },
+      score: "0:0",
+    },
+    round: "2",
+    officials: [
+      "Referee: Zvonko Zvonkovic",
+      "1st Assistant Referee: Bogdan Bogdanovic",
+      "2nd Assistant Referee: Milan Milanovic",
+      "4th Official: Zvonko Zvonkovic",
+      "Match delegate: Bogdan Bogdanovic",
+      "VAR: Milan Milanovic",
+      "AVAR: Milan Milanovic",
+    ],
+    matchTimes: [],
+    players: {
+      home: {
+        starting: [{ num: 5, name: "M. Ilić", action: "" }],
+        substitutes: [],
+        officials: [],
+      },
+      away: {
+        starting: [{ num: 8, name: "N. Novak", action: "" }],
+        substitutes: [],
+        officials: [],
+      },
+    },
+  },
+];
+
+// ---------- HELPERS ----------
+function el(tag, opts = {}) {
+  const e = document.createElement(tag);
+  if (opts.className) e.className = opts.className;
+  if (opts.text) e.textContent = opts.text;
+  if (opts.html) e.innerHTML = opts.html;
+  if (opts.attrs) {
+    Object.entries(opts.attrs).forEach(([k, v]) => e.setAttribute(k, v));
+  }
+  return e;
+}
+
+function appendPlayerAction(playerLi, text) {
+  const actionDiv = playerLi.querySelector(".player-action");
+  if (!actionDiv) {
+    const wrapper = el("div", { className: "player-info" });
+    wrapper.appendChild(el("div", { className: "player-action", text }));
+    playerLi.appendChild(wrapper);
+    return;
+  }
+  // if empty -> set, else append with comma
+  const existing = actionDiv.textContent.trim();
+  actionDiv.textContent = existing ? `${existing}, ${text}` : text;
+}
+
+// ---------- BUILD MATCH NODE----------------------------------------------------------------------
+function createMatchNode(match, isScheduled = false) {
+  const frag = document.createDocumentFragment();
+
+  // preview
+  const preview = el("div", {
+    className: "match-info-preview",
+    attrs: { role: "button", tabindex: "0", "aria-expanded": "false" },
+  });
+  const left = el("div", { className: "match-info-preview-left" });
+  left.appendChild(
+    el("span", { html: `Status: <span class="green">${match.status}</span>` })
+  );
+  left.appendChild(el("span", { text: match.datetime }));
+  left.appendChild(el("span", { text: match.competition }));
+  left.appendChild(
+    el("span", {
+      className: "team-name-preview",
+      text: `${match.teams.home.name} - ${match.teams.away.name}`,
+    })
+  );
+  const right = el("div", { className: "match-info-preview-right" });
+  right.appendChild(
+    el("img", {
+      className: "icon",
+      attrs: { src: "../assets/images/down-arrow.png", alt: "toggle" },
+    })
+  );
+  preview.appendChild(left);
+  preview.appendChild(right);
+  frag.appendChild(preview);
+
+  // details
+  const details = el("div", {
+    className: "match-info hidden",
+    attrs: { "aria-hidden": "true", "data-match-id": match.id },
+  });
+
+  // tabs
+  const tabsWrap = el("div", { className: "match-tabs" });
+  const tabsUl = el("ul", {
+    className: "nav match-tabs-list",
+    attrs: { role: "tablist" },
+  });
+  function makeTabBtn(label, target, isActive = false) {
+    const li = el("li");
+    li.setAttribute("role", "presentation");
+    const btn = el("button", {
+      className: isActive ? "nav-link-match active" : "nav-link-match",
+      text: label,
+      attrs: {
+        role: "tab",
+        "aria-selected": isActive ? "true" : "false",
+        "data-target": target,
+      },
+    });
+    li.appendChild(btn);
+    return li;
+  }
+  tabsUl.appendChild(makeTabBtn("INFO", "info", true));
+  tabsUl.appendChild(makeTabBtn("HOME", "home"));
+  tabsUl.appendChild(makeTabBtn("AWAY", "away"));
+  tabsWrap.appendChild(tabsUl);
+  details.appendChild(tabsWrap);
+
+  // panels wrapper
+  const panels = el("div", { className: "match-tab-panels" });
+
+  function createResultBlock() {
+    const result = el("div", { className: "result" });
+    const leftLogo = el("div", { className: "team-logo-container" });
+    leftLogo.appendChild(
+      el("img", {
+        className: "team-logo team-logo1",
+        attrs: { src: match.teams.home.logo, alt: match.teams.home.name },
+      })
+    );
+    result.appendChild(leftLogo);
+    result.appendChild(
+      el("div", {
+        className: "team-name team-name1",
+        text: match.teams.home.name,
+      })
+    );
+    const scoreWrap = el("div", { className: "result-numbers-container" });
+    scoreWrap.appendChild(
+      el("div", { className: "result-numbers", text: match.teams.score || "-" })
+    );
+    result.appendChild(scoreWrap);
+    result.appendChild(
+      el("div", {
+        className: "team-name team-name2",
+        text: match.teams.away.name,
+      })
+    );
+    const rightLogo = el("div", { className: "team-logo-container" });
+    rightLogo.appendChild(
+      el("img", {
+        className: "team-logo team-logo2",
+        attrs: { src: match.teams.away.logo, alt: match.teams.away.name },
+      })
+    );
+    result.appendChild(rightLogo);
+    return result;
+  }
+
+  // INFO panel
+  const infoPanel = el("div", {
+    className: "tab-panel tab-panel--info active",
+    attrs: { id: `info-${match.id}`, role: "tabpanel" },
+  });
+  infoPanel.appendChild(createResultBlock());
+  const otherInfo = el("div", { className: "other-info" });
+  otherInfo.appendChild(el("span", { html: `Status: ${match.status}` }));
+  otherInfo.appendChild(el("span", { text: `Date: ${match.datetime}` }));
+  otherInfo.appendChild(el("span", { text: `Round: ${match.round || ""}` }));
+  otherInfo.appendChild(
+    el("span", { text: `Competition: ${match.competition}` })
+  );
+  otherInfo.appendChild(el("span", { text: `Stadium: ${match.stadium}` }));
+  infoPanel.appendChild(otherInfo);
+
+  // referee-info
+  const refBox = el("div", { className: "referee-info" });
+  refBox.appendChild(el("h4", { text: "Match Officials" }));
+  (match.officials || []).forEach((o) =>
+    refBox.appendChild(el("span", { text: o }))
+  );
+  infoPanel.appendChild(refBox);
+
+  // match-time-info
+  const mt = el("div", { className: "match-time-info" });
+  mt.appendChild(el("h4", { text: "Match phases" }));
+  const mtLabels = el("div", { className: "match-time-labels" });
+  mtLabels.appendChild(el("label"));
+  mtLabels.appendChild(el("label", { text: "Start" }));
+  mtLabels.appendChild(el("label", { text: "End" }));
+  mtLabels.appendChild(el("label", { text: "Extra time" }));
+  mtLabels.appendChild(el("label", { text: "Result" }));
+  mt.appendChild(mtLabels);
+  const mtRows = el("div", { className: "match-time" });
+  (match.matchTimes || []).forEach((row) => {
+    const r = el("div");
+    r.appendChild(el("span", { text: row.phase }));
+    r.appendChild(el("span", { text: row.start }));
+    r.appendChild(el("span", { text: row.end }));
+    r.appendChild(el("span", { text: row.extra }));
+    r.appendChild(el("span", { text: row.result }));
+    mtRows.appendChild(r);
+  });
+  mt.appendChild(mtRows);
+  infoPanel.appendChild(mt);
+
+  // ako je scheduled, pokazi button START GAME
+  if (isScheduled) {
+    const btnWrap = el("div");
+    const startBtn = el("button", {
+      className: "start-game-button",
+      text: "START GAME",
+    });
+    btnWrap.appendChild(startBtn);
+    infoPanel.appendChild(btnWrap);
+
+    startBtn.addEventListener("click", () => {
+      console.log(`Start game clicked for ${match.id}`);
+      // DODAJ: promeni status, radi sa backendom itd
+    });
+  }
+
+  panels.appendChild(infoPanel);
+
+  // HOME panel
+  const homePanel = el("div", {
+    className: "tab-panel tab-panel--home hidden",
+    attrs: { id: `home-${match.id}`, role: "tabpanel", "aria-hidden": "true" },
+  });
+  homePanel.appendChild(createResultBlock());
+  // build players for HOME (and add click handlers only if scheduled)
+  homePanel.appendChild(
+    buildPlayersBlockWithHandlers(match.players.home || {})
+  );
+  panels.appendChild(homePanel);
+
+  // AWAY panel
+  const awayPanel = el("div", {
+    className: "tab-panel tab-panel--away hidden",
+    attrs: { id: `away-${match.id}`, role: "tabpanel", "aria-hidden": "true" },
+  });
+  awayPanel.appendChild(createResultBlock());
+  awayPanel.appendChild(
+    buildPlayersBlockWithHandlers(match.players.away || {})
+  );
+  panels.appendChild(awayPanel);
+
+  details.appendChild(panels);
+  frag.appendChild(details);
+
+  // preview toggle
+  preview.addEventListener("click", () => {
+    const root = isScheduled
+      ? document.querySelector(".scheduled-matches-root")
+      : document.querySelector(".past-matches-root");
+    // zatvori sve
+    document.querySelectorAll(".match-info").forEach((d) => {
+      if (d !== details) {
+        d.classList.add("hidden");
+        d.setAttribute("aria-hidden", "true");
+      }
+    });
+    document.querySelectorAll(".match-info-preview").forEach((p) => {
+      if (p !== preview) {
+        p.setAttribute("aria-expanded", "false");
+        p.classList.remove("opened");
+      }
+    });
+
+    const isOpen = !details.classList.contains("hidden");
+    if (isOpen) {
+      details.classList.add("hidden");
+      details.setAttribute("aria-hidden", "true");
+      preview.setAttribute("aria-expanded", "false");
+      preview.classList.remove("opened");
+    } else {
+      details.classList.remove("hidden");
+      details.setAttribute("aria-hidden", "false");
+      preview.setAttribute("aria-expanded", "true");
+      preview.classList.add("opened");
+    }
+  });
+
+  preview.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      preview.click();
+    }
+  });
+
+  // tab switching
+  details.addEventListener("click", (e) => {
+    const btn = e.target.closest(".nav-link-match");
+    if (!btn) return;
+    const target = btn.dataset.target;
+    const allBtns = details.querySelectorAll(".nav-link-match");
+    const allPanels = details.querySelectorAll(".tab-panel");
+    allBtns.forEach((b) => {
+      b.classList.remove("active");
+      b.setAttribute("aria-selected", "false");
+    });
+    btn.classList.add("active");
+    btn.setAttribute("aria-selected", "true");
+    allPanels.forEach((p) => {
+      p.classList.add("hidden");
+      p.setAttribute("aria-hidden", "true");
+    });
+    const panel =
+      details.querySelector(`#${target}-${match.id}`) ||
+      details.querySelector(`#${target}`);
+    if (panel) {
+      panel.classList.remove("hidden");
+      panel.setAttribute("aria-hidden", "false");
+    }
+  });
+
+  return frag;
+}
+
+// helper funkcija
+function buildPlayersBlockWithHandlers(playersObj = {}) {
+  const wrapper = el("div", { className: "players" });
+
+  // STARTING
+  const startSection = el("section", {
+    className: "players-block starting-lineup-block",
+    attrs: { "aria-labelledby": "starting-lineup-title" },
+  });
+  startSection.appendChild(
+    el("h5", {
+      className: "players-block-title",
+      attrs: { id: "starting-lineup-title" },
+      text: "Starting lineup",
+    })
+  );
+  const ulStart = el("ul", {
+    className: "players-list",
+    attrs: { role: "list" },
+  });
+  (playersObj.starting || []).forEach((pl) => {
+    const li = el("li", {
+      className: "player-card",
+      attrs: { role: "listitem", "data-player-name": pl.name },
+    });
+    li.appendChild(
+      el("img", {
+        className: "player-photo",
+        attrs: { src: "../assets/images/random-photo.jpg", alt: pl.name },
+      })
+    );
+    li.appendChild(
+      el("div", { className: "player-number", text: String(pl.num || "") })
+    );
+    const pinfo = el("div", { className: "player-info" });
+    pinfo.appendChild(el("div", { className: "player-name", text: pl.name }));
+    pinfo.appendChild(
+      el("div", { className: "player-action", text: pl.action || "" })
+    );
+    li.appendChild(pinfo);
+    ulStart.appendChild(li);
+  });
+  startSection.appendChild(ulStart);
+  wrapper.appendChild(startSection);
+
+  // SUBSTITUTES
+  const subSection = el("section", {
+    className: "players-block substitutes-block",
+    attrs: { "aria-labelledby": "substitutes-title" },
+  });
+  subSection.appendChild(
+    el("h5", {
+      className: "players-block-title",
+      attrs: { id: "substitutes-title" },
+      text: "Substitutes",
+    })
+  );
+  const ulSubs = el("ul", { className: "players-list" });
+  (playersObj.substitutes || []).forEach((pl) => {
+    const li = el("li", {
+      className: "player-card substitute",
+      attrs: { role: "listitem", "data-player-name": pl.name },
+    });
+    li.appendChild(
+      el("img", {
+        className: "player-photo",
+        attrs: { src: "../assets/images/random-photo.jpg", alt: pl.name },
+      })
+    );
+    li.appendChild(
+      el("div", { className: "player-number", text: String(pl.num || "") })
+    );
+    const pinfo = el("div", { className: "player-info" });
+    pinfo.appendChild(el("div", { className: "player-name", text: pl.name }));
+    pinfo.appendChild(
+      el("div", { className: "player-action", text: pl.action || "" })
+    );
+    li.appendChild(pinfo);
+    ulSubs.appendChild(li);
+  });
+  subSection.appendChild(ulSubs);
+  wrapper.appendChild(subSection);
+
+  // OFFICIALS
+  const offSection = el("section", {
+    className: "players-block officials-block",
+    attrs: { "aria-labelledby": "officials-title" },
+  });
+  offSection.appendChild(
+    el("h5", {
+      className: "players-block-title",
+      attrs: { id: "officials-title" },
+      text: "Team officials",
+    })
+  );
+  const ulOff = el("ul", { className: "officials-list" });
+  (playersObj.officials || []).forEach((off) => {
+    const li = el("li", { className: "official-item" });
+    li.appendChild(
+      el("div", { className: "official-role", text: off.role || "Official" })
+    );
+    li.appendChild(
+      el("div", { className: "official-name", text: off.name || "" })
+    );
+    li.appendChild(
+      el("div", { className: "official-action", text: off.action || "" })
+    );
+    ulOff.appendChild(li);
+  });
+  offSection.appendChild(ulOff);
+  wrapper.appendChild(offSection);
+
+  return wrapper;
+}
+
+// ---------- RENDERING ----------
+
+function renderPastMatches(matches) {
+  const root = document.querySelector(".past-matches-root");
+  if (!root) return;
+  root.innerHTML = "";
+  const main = el("main");
+  const frag = document.createDocumentFragment();
+  matches
+    .filter((m) => m.status === "PLAYED")
+    .forEach((m) => frag.appendChild(createMatchNode(m, false)));
+  main.appendChild(frag);
+  root.appendChild(main);
+}
+
+function renderScheduledMatches(matches) {
+  const root = document.querySelector(".scheduled-matches-root");
+  if (!root) return;
+  root.innerHTML = "";
+  const main = el("main");
+  const frag = document.createDocumentFragment();
+  // LIVE i SCHEDULED idu u scheduled tab
+  matches
+    .filter((m) => m.status === "SCHEDULED" || m.status === "LIVE")
+    .forEach((m) => frag.appendChild(createMatchNode(m, true)));
+  main.appendChild(frag);
+  root.appendChild(main);
+}
+
+renderPastMatches(fakeMatches);
+renderScheduledMatches(fakeMatches);
+
+// DODAVANJE AKCIJA IGRACU ----------------------------------------------------------------------------------------
+// tvoj postojeći selektor
 const gamePlayers = document.querySelectorAll(".player-card");
+
+// pomoćna funkcija: pronalazi status meča za dati player element
+function getMatchStatusFromPlayer(playerElement) {
+  // pretpostavka: struktura je:
+  //  <div class="match-info-preview"> ... <span class="green">STATUS</span> </div>
+  //  <div class="match-info"> ... <ul class="players-list"> <li class="player-card"> ... </li> ...
+  // playerElement se nalazi unutar .match-info — idemo do .match-info pa do PREV sibling (.match-info-preview)
+  const details = playerElement.closest(".match-info");
+  if (!details) return null;
+  const preview = details.previousElementSibling; // očekujemo da je .match-info-preview
+  if (!preview) return null;
+  const statusEl = preview.querySelector(".green");
+  return statusEl ? statusEl.textContent.trim().toUpperCase() : null;
+}
 
 gamePlayers.forEach((playerElement) => {
   playerElement.addEventListener("click", () => {
+    // PROVERA: da li je meč završen?
+    const matchStatus = getMatchStatusFromPlayer(playerElement);
+    if (matchStatus === "PLAYED") {
+      // ne dozvoljavamo dodavanje akcije za završene mečeve
+      // možeš umesto alert-a prikazati neku vizuelnu notifikaciju
+      console.log("Match finished — cannot add actions.");
+      return;
+    }
+
+    // ostali deo tvog originalnog koda (modal kreiranje, forma, itd.)
     const isSub = playerElement.classList.contains("substitute");
     const playerName =
       playerElement.querySelector(".player-name")?.textContent.trim() ||
@@ -59,7 +796,9 @@ gamePlayers.forEach((playerElement) => {
 
     // SKUPIMO IGRACE IZ STARTNE POSTAVE — zbog SUBSTITUTION
     const startingPlayers = Array.from(
-      document.querySelectorAll(".starting-lineup-block .player-card")
+      playerElement
+        .closest(".players")
+        .querySelectorAll(".starting-lineup-block .player-card")
     ).map((p) => {
       const name = p.querySelector(".player-name").textContent.trim();
       const num = p.querySelector(".player-number").textContent.trim();
@@ -68,7 +807,6 @@ gamePlayers.forEach((playerElement) => {
         value: name,
       };
     });
-    //console.log(startingPlayers);
 
     // KREIRAMO OVERLAY + MINIMALNI MODAL
     const overlay = document.createElement("div");
@@ -76,7 +814,7 @@ gamePlayers.forEach((playerElement) => {
 
     overlay.innerHTML = `
   <div class="team-modal">
-    <button class="team-modal__close">&times;</button> 
+    <button class="team-modal__close" aria-label="Close modal">&times;</button> 
 
     <h3 class="team-modal__title">${playerName} — Add action</h3>
 
@@ -137,7 +875,6 @@ gamePlayers.forEach((playerElement) => {
     document.body.appendChild(overlay);
 
     const form = overlay.querySelector("#actionForm");
-    //console.log(form);
     const closeBtn = overlay.querySelector(".team-modal__close");
 
     const actionSelect = overlay.querySelector('select[name="action"]'); // padajuca lista za akcije
@@ -146,8 +883,6 @@ gamePlayers.forEach((playerElement) => {
     const descTextarea = overlay.querySelector('textarea[name="desc"]'); // padajuca lista za opis
 
     function updateVisibility() {
-      // const a = form.elements["action"].value;
-
       const value = actionSelect.value;
 
       const isCard = value === "YellowCard" || value === "RedCard";
@@ -218,23 +953,29 @@ gamePlayers.forEach((playerElement) => {
   });
 });
 
-// ISTO TO, ALI ZA KLUPU
+// === Officials (isti princip) ===
 const officialsActions = document.querySelectorAll(".officials-list");
 
 officialsActions.forEach((official) => {
-  official.addEventListener("click", function () {
-    /* 
-    1. napravi overlay
-    2. dodaj mu izgled
-    3. na klik otvori overlay
-    4. na overlay ponudi samo zuti i crveni
-    */
+  official.addEventListener("click", function (e) {
+    // ako se klik dešava u okviru match koji je PLAYED -> ne radimo ništa
+    // pronalazimo match-info roditelja
+    const matchInfo = official.closest(".match-info");
+    const preview = matchInfo ? matchInfo.previousElementSibling : null;
+    const status = preview
+      ? (preview.querySelector(".green")?.textContent || "")
+          .trim()
+          .toUpperCase()
+      : null;
+    if (status === "PLAYED") {
+      console.log("Match finished — cannot add official actions.");
+      return;
+    }
 
-    //1
+    // tvoj postojeći kod za modal za official
     const overlay = document.createElement("div");
     overlay.className = "modal-overlay";
 
-    //2
     overlay.innerHTML = `
     <div class="team-modal">
     <button class="team-modal__close">&times;</button> 
@@ -256,10 +997,8 @@ officialsActions.forEach((official) => {
         <option value="AfterMatch">After match</option>
       </select>
 
-      
       <textarea name="desc" rows="3" class="description-input"
         placeholder="Description (optional)"></textarea>
-      
 
       <button type="submit" class="submit-button">Add action</button>
     </form>
@@ -269,7 +1008,6 @@ officialsActions.forEach((official) => {
     document.body.appendChild(overlay);
 
     const closeBtn = overlay.querySelector(".team-modal__close");
-    // ZATVARANJE
     const close = () => overlay.remove();
     overlay.addEventListener("click", (e) => {
       if (e.target === overlay) close();
@@ -288,140 +1026,21 @@ officialsActions.forEach((official) => {
 
       const description = desc ? `- ${desc}` : ``;
       text = `${action} (${min}') ${description}`;
-      console.log(text);
 
-      const officialAct = document.querySelector(".official-action");
-      officialAct.textContent += `; ${text}`;
+      // ubaci u prvi .official-action ako postoji
+      const officialAct = official.querySelector(".official-action");
+      if (officialAct) {
+        if (officialAct.textContent.trim() === "")
+          officialAct.textContent = text;
+        else officialAct.textContent += `; ${text}`;
+      } else {
+        // ako nema, napravi i dodaj
+        const newAct = document.createElement("div");
+        newAct.className = "official-action";
+        newAct.textContent = text;
+        official.appendChild(newAct);
+      }
       close();
     });
   });
 });
-
-//----------------------------------------------------ZA DASHBOARD---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------ZA DASHBOARD--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------ZA DASHBOARD--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//------------------------------------------------------ZA DASHBOARD-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------ZA DASHBOARD--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-//ZA DASHBOARD
-
-const matchesForDate = [
-  {
-    id: 1,
-    date: "2025-11-23",
-    time: "11:00",
-    round: 3,
-    homeTeam: "Kopernikus Zeleznicar",
-    awayTeam: "Sloga Leskovac",
-    competition: 'Druga kadetska liga "JUG"',
-    stadium: {
-      city: "Nis",
-      name: "Cair",
-    },
-  },
-  {
-    id: 2,
-    date: "2025-11-23",
-    time: "13:30",
-    round: 3,
-    homeTeam: "Radnicki Nis",
-    awayTeam: "FK Jagodina",
-    competition: 'Druga kadetska liga "JUG"',
-    stadium: {
-      city: "Nis",
-      name: "Cair – teren 2",
-    },
-  },
-  {
-    id: 3,
-    date: "2025-11-23",
-    time: "15:00",
-    round: 3,
-    homeTeam: "OFK Belgrad",
-    awayTeam: "TSC Backa Topola",
-    competition: "Omladinska liga Srbije",
-    stadium: {
-      city: "Belgrade",
-      name: "Omladinski stadion",
-    },
-  },
-];
-
-// ROOT kontejner u HTML-u
-// <div id="matches-panel"></div>
-const root = document.getElementById("matches-panel");
-
-function createMatchNode(match) {
-  const wrap = document.createElement("div");
-  wrap.className = "match-item";
-  wrap.dataset.matchId = match.id; // korisno za identifikaciju
-
-  const firstRow = document.createElement("div");
-  firstRow.className = "matchitem-firstrow";
-
-  const timeSpan = document.createElement("span");
-  const timeEl = document.createElement("time");
-  timeEl.dateTime = `${match.date}T${match.time}`;
-  timeEl.textContent = `${formatDisplayDate(match.date)} ${match.time}`;
-  timeSpan.appendChild(timeEl);
-
-  const roundSpan = document.createElement("span");
-  roundSpan.textContent = `Round: ${match.round}`;
-
-  firstRow.appendChild(timeSpan);
-  firstRow.appendChild(roundSpan);
-
-  const teams = document.createElement("span");
-  teams.className = "match-teams";
-  teams.textContent = `${match.homeTeam} - ${match.awayTeam}`;
-
-  const comp = document.createElement("span");
-  comp.textContent = `Competition: ${match.competition}`;
-
-  const stadium = document.createElement("span");
-  stadium.textContent = `Stadium: ${match.stadium.city}, ${match.stadium.name}`;
-
-  wrap.appendChild(firstRow);
-  wrap.appendChild(teams);
-  wrap.appendChild(comp);
-  wrap.appendChild(stadium);
-
-  return wrap;
-}
-
-function formatDisplayDate(isoDate) {
-  // jednostavno formatiranje: "23. Nov 2025."
-  const d = new Date(isoDate);
-  const day = d.getDate();
-  const month = d.toLocaleString("en-GB", { month: "short" }); // "Nov"
-  const year = d.getFullYear();
-  return `${String(day).padStart(2, "0")}. ${month} ${year}.`;
-}
-
-function renderMatches(matches, container) {
-  container.innerHTML = ""; // clear (idempotent)
-  const frag = document.createDocumentFragment();
-  matches.forEach((m) => frag.appendChild(createMatchNode(m)));
-  container.appendChild(frag);
-
-  // Document fragment je predobar za optimizaciju kad imam 1000 elemenata npr - sada bi npr. bolje bilo da radim klasicno. Ostavicu zbog VEZBE - nauceno nesto novo
-  /*
-  matches.forEach(m => {
-    container.appendChild(createMatchNode(m));
-  });
-   */
-
-  //objasnjenje gpt: DocumentFragment je mini, nevidljivi DOM koji postoji samo u memoriji i nije deo stranice.Možeš ga zamisliti kao:„kutiju u koju privremeno sklapaš HTML elemente, a na kraju celu kutiju dodaš u DOM u jednom potezu“.
-}
-
-// Event delegation: hvata klik na match-item
-root.addEventListener("click", (e) => {
-  const matchEl = e.target.closest(".match-item");
-  if (!matchEl || !root.contains(matchEl)) return;
-  const id = matchEl.dataset.matchId;
-  console.log("clicked match id", id);
-  openMatchDetails(id); // DODAJ
-});
-
-// CALL (render)
-renderMatches(matchesForDate, root);

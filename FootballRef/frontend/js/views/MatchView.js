@@ -65,10 +65,9 @@ Brzi klikovi više ne prave problem, jer currentlyOpen je jedini izvor istine. *
 //--------------MENJANJE TABOVA------------------------------------------------------------
 const matchTabs = document.querySelectorAll('.nav-link-match');
 
-matchTabs.forEach((tab)=>{
-  tab.addEventListener("click", function(){
-
-    // Aktiviraj dugme
+matchTabs.forEach((tab) => {
+  tab.addEventListener("click", function () {
+    // Aktiviraj dugme (taj work i za sve kopije)
     matchTabs.forEach((t) => {
       t.classList.remove("active");
       t.setAttribute("aria-selected", "false");
@@ -77,26 +76,49 @@ matchTabs.forEach((tab)=>{
     this.setAttribute("aria-selected", "true");
 
     // PROMENA PANELA
-    const target = this.dataset.target;
-    //console.log(target);
+    const target = this.dataset.target; // "info" | "home" | "away"
 
+    // pronadji kontejner (detalji koji sadrze tabove/panele)
     const container = this.closest('.match-info');
-    //console.log(container);
-    const panels = container.querySelectorAll('.tab-panel');
+    if (!container) return; // bezbednosna provera
 
+    // sakrij sve panele u tom kontejneru (ako ih ima)
+    const panels = container.querySelectorAll('.tab-panel');
     panels.forEach(p => {
-      // p.classList.add('hidden');
+      p.classList.add('hidden');
       p.setAttribute('aria-hidden', 'true');
       p.classList.remove('active');
     });
 
-    const activePanel = container.querySelector(`#${target}`);
-    //console.log(activePanel);
-    // activePanel.classList.remove('hidden');
+    // POKUSAJ DA NADJES PANEL:
+    // 1) exact id (#info) - radi u statičkom HTML
+    // 2) id sa sufiksom (#info-<matchId>) - radi u dinamičkom
+    // 3) fallback na klasu .tab-panel--info (ako koristiš takvu klasu)
+    let activePanel = container.querySelector(`#${target}`);
+    if (!activePanel) {
+      // ako kontejner ima data-match-id (preporučeno kada generišeš dinamiku),
+      // pokušaj sa sufiksom: #info-<matchId>
+      const matchId = container.dataset.matchId || container.getAttribute('data-match-id');
+      if (matchId) {
+        activePanel = container.querySelector(`#${target}-${matchId}`);
+      }
+    }
+    if (!activePanel) {
+      // fallback prema klasi (npr .tab-panel--info)
+      activePanel = container.querySelector(`.tab-panel--${target}`);
+    }
+
+    if (!activePanel) {
+      // ništa nije nalazeno — izloguj radi debug-a i izađi bez greške
+      console.warn('Tab panel nije pronađen za target:', target, 'u containeru:', container);
+      return;
+    }
+
+    // aktiviraj panel
+    activePanel.classList.remove('hidden');
     activePanel.classList.add('active');
     activePanel.setAttribute('aria-hidden', 'false');
-
-  })
-})
+  });
+});
 
 //---------------MENJANJE SADRZAJA TABOVA----------------------------------------------------------
