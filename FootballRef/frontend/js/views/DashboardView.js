@@ -1,103 +1,60 @@
-//#region
-const tabs = document.querySelectorAll(".nav-link");
+import { fetchMatches, fetchMatchesForDate } from "../api/fakeData.js";
 
-tabs.forEach((tab) => {
-  tab.addEventListener("click", function (event) {
-    event.preventDefault();
+let state = {
+  matches: [],
+  matchesForDate: [],
+};
 
-    // skini active sa svih
-    tabs.forEach((t) => t.classList.remove("active"));
+export async function loadMatches() {
+  const data = await fetchMatches();
+  state.matches = data;
+  return state.matches;
+}
 
-    // postavi active samo na kliknuti tab
-    this.classList.add("active");
-  });
-});
-//#endregion
+export async function loadMatchesForDate() {
+  const data = await fetchMatchesForDate();
+  state.matchesForDate = data;
+  return state.matchesForDate;
+}
 
-document.addEventListener("DOMContentLoaded", function () {
-  const calendarEl = document.getElementById("calendar");
+// document.addEventListener("DOMContentLoaded", function () {
+//   const calendarEl = document.getElementById("calendar");
 
-  const calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: "dayGridMonth",
+//   const calendar = new FullCalendar.Calendar(calendarEl, {
+//     initialView: "dayGridMonth",
 
-    /* da visina bude fleksibilnija */
-    height: "auto", // visina se prilagođava sadržaju
-    contentHeight: "auto",
-    expandRows: true, // da lepo popuni visinu, bez ogromnih praznina
+//     /* da visina bude fleksibilnija */
+//     height: "auto", // visina se prilagođava sadržaju
+//     contentHeight: "auto",
+//     expandRows: true, // da lepo popuni visinu, bez ogromnih praznina
 
-    /* responsive ponašanje */
-    handleWindowResize: true,
-    windowResizeDelay: 100,
+//     /* responsive ponašanje */
+//     handleWindowResize: true,
+//     windowResizeDelay: 100,
 
-    // početni aspectRatio zavisi od širine prozora
-    aspectRatio: window.innerWidth < 768 ? 0.8 : 1.5,
+//     // početni aspectRatio zavisi od širine prozora
+//     aspectRatio: window.innerWidth < 768 ? 0.8 : 1.5,
 
-    // kad se promeni širina prozora, prilagodi aspectRatio
-    windowResize: function () {
-      if (window.innerWidth < 768) {
-        calendar.setOption("aspectRatio", 0.8); // uži i viši na mobilnom
-      } else {
-        calendar.setOption("aspectRatio", 1.5); // širi, “pločastiji” na desktopu
-      }
-    },
-  });
+//     // kad se promeni širina prozora, prilagodi aspectRatio
+//     windowResize: function () {
+//       if (window.innerWidth < 768) {
+//         calendar.setOption("aspectRatio", 0.8); // uži i viši na mobilnom
+//       } else {
+//         calendar.setOption("aspectRatio", 1.5); // širi, “pločastiji” na desktopu
+//       }
+//     },
+//   });
 
-  calendar.render();
-});
+//   calendar.render();
+// });
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-// SUPER-SIMPLE player action modal
 
 //----------------------------------------------------ZA DASHBOARD---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------ZA DASHBOARD--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------ZA DASHBOARD--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------ZA DASHBOARD-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------ZA DASHBOARD--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-//ZA DASHBOARD
-
-const matchesForDate = [
-  {
-    id: 1,
-    date: "2025-11-23",
-    time: "11:00",
-    round: 3,
-    homeTeam: "Kopernikus Zeleznicar",
-    awayTeam: "Sloga Leskovac",
-    competition: 'Druga kadetska liga "JUG"',
-    stadium: {
-      city: "Nis",
-      name: "Cair",
-    },
-  },
-  {
-    id: 2,
-    date: "2025-11-23",
-    time: "13:30",
-    round: 3,
-    homeTeam: "Radnicki Nis",
-    awayTeam: "FK Jagodina",
-    competition: 'Druga kadetska liga "JUG"',
-    stadium: {
-      city: "Nis",
-      name: "Cair – teren 2",
-    },
-  },
-  {
-    id: 3,
-    date: "2025-11-23",
-    time: "15:00",
-    round: 3,
-    homeTeam: "OFK Belgrad",
-    awayTeam: "TSC Backa Topola",
-    competition: "Omladinska liga Srbije",
-    stadium: {
-      city: "Belgrade",
-      name: "Omladinski stadion",
-    },
-  },
-];
 
 // ROOT kontejner u HTML-u
 // <div id="matches-panel"></div>
@@ -176,150 +133,8 @@ root.addEventListener("click", (e) => {
 });
 
 // CALL (render)
-renderMatchesOnDashboard(matchesForDate, root);
-
-// ---------- FAKE DATA ----------
-const fakeMatches = [
-  {
-    id: "m-played-001",
-    status: "PLAYED",
-    datetime: "23. Nov 2025. 11:00",
-    competition: 'Druga kadetska liga "JUG"',
-    stadium: "Nis, Cair",
-    teams: {
-      home: {
-        name: "KOPERNIKUS-ZELEZNICAR",
-        logo: "../assets/images/team1.jpeg",
-      },
-      away: { name: "SLOGA LESKOVAC", logo: "../assets/images/team2.png" },
-      score: "2:3",
-    },
-    round: "3",
-    officials: [
-      "Referee: Zvonko Zvonkovic",
-      "1st Assistant Referee: Bogdan Bogdanovic",
-      "2nd Assistant Referee: Milan Milanovic",
-      "4th Official: Zvonko Zvonkovic",
-      "Match delegate: Bogdan Bogdanovic",
-      "VAR: Milan Milanovic",
-      "AVAR: Milan Milanovic",
-    ],
-    matchTimes: [
-      {
-        phase: "1st HALFTIME",
-        start: "11:01:44",
-        end: "11:47:05",
-        extra: "0",
-        result: "0:0",
-      },
-      {
-        phase: "2nd HALFTIME",
-        start: "11:58:25",
-        end: "12:45:09",
-        extra: "2",
-        result: "2:3",
-      },
-    ],
-    players: {
-      home: {
-        starting: [
-          { num: 11, name: "Nikola Nikolić", action: "Goal (23')" },
-          { num: 9, name: "Marko Marković", action: "Yellow card (55')" },
-        ],
-        substitutes: [{ num: 18, name: "Petar Petrović", action: "On (70')" }],
-        officials: [{ role: "Coach", name: "Milan Jovanović" }],
-      },
-      away: {
-        starting: [
-          { num: 7, name: "Stefan Stojanović", action: "" },
-          { num: 6, name: "Jovan Jović", action: "" },
-        ],
-        substitutes: [{ num: 19, name: "Milan Marić", action: "" }],
-        officials: [{ role: "Assistant", name: "Petar Stanković" }],
-      },
-    },
-  },
-
-  {
-    id: "m-sched-002",
-    status: "SCHEDULED",
-    datetime: "24. Nov 2025. 10:00",
-    competition: 'Zona "Centar" FSRIS 25/26',
-    stadium: "Leskovac, Main",
-    teams: {
-      home: { name: "TEAM A", logo: "../assets/images/team1.jpeg" },
-      away: { name: "TEAM B", logo: "../assets/images/team2.png" },
-      score: "-:-",
-    },
-    round: "1",
-    officials: [
-      "Referee: Zvonko Zvonkovic",
-      "1st Assistant Referee: Bogdan Bogdanovic",
-      "2nd Assistant Referee: Milan Milanovic",
-      "4th Official: Zvonko Zvonkovic",
-      "Match delegate: Bogdan Bogdanovic",
-      "VAR: Milan Milanovic",
-      "AVAR: Milan Milanovic",
-    ],
-    matchTimes: [],
-    players: {
-      home: {
-        starting: [
-          { num: 1, name: "Miloš Milošević", action: "" },
-          { num: 4, name: "Petar Petković", action: "" },
-        ],
-        substitutes: [{ num: 14, name: "Ivan Ivanović", action: "" }],
-        officials: [{ role: "Coach", name: "Nenad Novaković", action: "" }],
-      },
-      away: {
-        starting: [
-          { num: 2, name: "Ivan I.", action: "" },
-          { num: 3, name: "Marko M.", action: "" },
-        ],
-        substitutes: [{ num: 15, name: "Jovan J.", action: "" }],
-        officials: [
-          { role: "Coach", name: "Dragan D.", action: "Yellow card (55')" },
-        ],
-      },
-    },
-  },
-
-  {
-    id: "m-live-003",
-    status: "LIVE",
-    datetime: "24. Nov 2025. 12:00",
-    competition: "Prva kadetska liga FSRIS 25/26",
-    stadium: "City Stadium",
-    teams: {
-      home: { name: "RADNIČKI NIŠ", logo: "../assets/images/team2.png" },
-      away: { name: "OFK NIŠ", logo: "../assets/images/team1.jpeg" },
-      score: "0:0",
-    },
-    round: "2",
-    officials: [
-      "Referee: Zvonko Zvonkovic",
-      "1st Assistant Referee: Bogdan Bogdanovic",
-      "2nd Assistant Referee: Milan Milanovic",
-      "4th Official: Zvonko Zvonkovic",
-      "Match delegate: Bogdan Bogdanovic",
-      "VAR: Milan Milanovic",
-      "AVAR: Milan Milanovic",
-    ],
-    matchTimes: [],
-    players: {
-      home: {
-        starting: [{ num: 5, name: "M. Ilić", action: "" }],
-        substitutes: [],
-        officials: [],
-      },
-      away: {
-        starting: [{ num: 8, name: "N. Novak", action: "" }],
-        substitutes: [],
-        officials: [],
-      },
-    },
-  },
-];
+await loadMatchesForDate();
+renderMatchesOnDashboard(state.matchesForDate, root);
 
 // ---------- HELPERS ----------
 function el(tag, opts = {}) {
@@ -756,8 +571,9 @@ function renderScheduledMatches(matches) {
   root.appendChild(main);
 }
 
-renderPastMatches(fakeMatches);
-renderScheduledMatches(fakeMatches);
+await loadMatches();
+renderPastMatches(state.matches);
+renderScheduledMatches(state.matches);
 
 // DODAVANJE AKCIJA IGRACU ----------------------------------------------------------------------------------------
 // tvoj postojeći selektor
@@ -972,49 +788,103 @@ officialsActions.forEach((official) => {
       return;
     }
 
-    // tvoj postojeći kod za modal za official
+    // overlay
     const overlay = document.createElement("div");
     overlay.className = "modal-overlay";
 
-    overlay.innerHTML = `
-    <div class="team-modal">
-    <button class="team-modal__close">&times;</button> 
+    // modal container
+    const modal = document.createElement("div");
+    modal.className = "team-modal";
+    overlay.appendChild(modal);
 
-    <h3 class="team-modal__title">Official — Add action</h3>
+    // close button
+    const closeBtn = document.createElement("button");
+    closeBtn.className = "team-modal__close";
+    closeBtn.setAttribute("aria-label", "Close modal");
+    closeBtn.type = "button";
+    closeBtn.textContent = "×";
+    modal.appendChild(closeBtn);
 
-    <form id="actionForm" class="team-modal__form">
+    // title
+    const title = document.createElement("h3");
+    title.className = "team-modal__title";
+    title.textContent = "Official — Add action";
+    modal.appendChild(title);
 
-      <select name="action" class="action-select" required>
-        <option value="Yellow card">Yellow card</option>
-        <option value="Red card">Red card</option>
-      </select>
+    // form
+    const form = document.createElement("form");
+    form.id = "actionForm";
+    form.className = "team-modal__form";
+    modal.appendChild(form);
 
-      <input type="number" name="minute" class="minute-input" placeholder="Minute" required/>
+    // action select
+    const actionSelect = document.createElement("select");
+    actionSelect.name = "action";
+    actionSelect.className = "action-select";
+    actionSelect.required = true;
+    const optYellow = document.createElement("option");
+    optYellow.value = "Yellow card";
+    optYellow.textContent = "Yellow card";
+    const optRed = document.createElement("option");
+    optRed.value = "Red card";
+    optRed.textContent = "Red card";
+    actionSelect.appendChild(optYellow);
+    actionSelect.appendChild(optRed);
+    form.appendChild(actionSelect);
 
-      <select name="when" class="when-select">
-        <option value="DuringMatch">During match</option>
-        <option value="BeforeMatch">Before match</option>
-        <option value="AfterMatch">After match</option>
-      </select>
+    // minute input
+    const minuteInput = document.createElement("input");
+    minuteInput.type = "number";
+    minuteInput.name = "minute";
+    minuteInput.className = "minute-input";
+    minuteInput.placeholder = "Minute";
+    minuteInput.required = true;
+    form.appendChild(minuteInput);
 
-      <textarea name="desc" rows="3" class="description-input"
-        placeholder="Description (optional)"></textarea>
+    // when select
+    const whenSelect = document.createElement("select");
+    whenSelect.name = "when";
+    whenSelect.className = "when-select";
+    const whenOpt1 = document.createElement("option");
+    whenOpt1.value = "DuringMatch";
+    whenOpt1.textContent = "During match";
+    const whenOpt2 = document.createElement("option");
+    whenOpt2.value = "BeforeMatch";
+    whenOpt2.textContent = "Before match";
+    const whenOpt3 = document.createElement("option");
+    whenOpt3.value = "AfterMatch";
+    whenOpt3.textContent = "After match";
+    whenSelect.appendChild(whenOpt1);
+    whenSelect.appendChild(whenOpt2);
+    whenSelect.appendChild(whenOpt3);
+    form.appendChild(whenSelect);
 
-      <button type="submit" class="submit-button">Add action</button>
-    </form>
-  </div>
-    `;
+    // description textarea
+    const descTextarea = document.createElement("textarea");
+    descTextarea.name = "desc";
+    descTextarea.rows = 3;
+    descTextarea.className = "description-input";
+    descTextarea.placeholder = "Description (optional)";
+    form.appendChild(descTextarea);
 
+    // submit button
+    const submitBtn = document.createElement("button");
+    submitBtn.type = "submit";
+    submitBtn.className = "submit-button";
+    submitBtn.textContent = "Add action";
+    form.appendChild(submitBtn);
+
+    // append overlay to body
     document.body.appendChild(overlay);
 
-    const closeBtn = overlay.querySelector(".team-modal__close");
+    //const closeBtn = overlay.querySelector(".team-modal__close");
     const close = () => overlay.remove();
     overlay.addEventListener("click", (e) => {
       if (e.target === overlay) close();
     });
     closeBtn.addEventListener("click", close);
 
-    const form = overlay.querySelector("#actionForm");
+    //const form = overlay.querySelector("#actionForm");
     form.addEventListener("submit", function (e) {
       e.preventDefault();
 

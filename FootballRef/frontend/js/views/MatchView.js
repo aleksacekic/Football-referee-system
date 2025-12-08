@@ -1,3 +1,55 @@
+//novo - refactoring
+export function initCalendar(selectorOrEl, { onDateClick, onEventClick, initialEvents = [] } = {}) {
+  const el = typeof selectorOrEl === 'string' ? document.querySelector(selectorOrEl) : selectorOrEl;
+  if (!el) throw new Error('Calendar element not found: ' + selectorOrEl);
+
+  const calendar = new FullCalendar.Calendar(el, {
+    initialView: 'dayGridMonth',
+    height: 'auto',
+    contentHeight: 'auto',
+    expandRows: true,
+    handleWindowResize: true,
+    windowResizeDelay: 100,
+    aspectRatio: window.innerWidth < 768 ? 0.8 : 1.5,
+    events: initialEvents, // možeš poslati fake events ili podatke iz modela
+
+    // FullCalendar hooks -> mapiraj na tvoje callback-ove
+    dateClick(info) {
+      if (typeof onDateClick === 'function') onDateClick(info); // info.dateStr itd.
+    },
+    eventClick(info) {
+      if (typeof onEventClick === 'function') onEventClick(info.event, info);
+    },
+
+    windowResize() {
+      const ratio = window.innerWidth < 768 ? 0.8 : 1.5;
+      calendar.setOption('aspectRatio', ratio);
+    },
+
+
+  });
+
+  console.log("SACE RENDER");
+
+  calendar.render();
+
+  // vraćamo instancu da controller može da je cuva / manipulise / unisti
+  return calendar;
+}
+
+export function destroyCalendar(calendarInstance) {
+  if (!calendarInstance) return;
+  try {
+    calendarInstance.destroy();
+  } catch (err) {
+    console.warn('Failed to destroy calendar', err);
+  }
+}
+
+
+// ----------------------------------------------------------------------------------------
+
+
 const matchPreviews = document.querySelectorAll(".match-info-preview");
 
 let currentlyOpen = null;
