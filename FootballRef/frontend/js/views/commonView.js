@@ -12,3 +12,14 @@ export function initTabs() {
     });
   });
 }
+
+export function el(tag, opts = {}) {
+  const e = document.createElement(tag);
+  if (opts.className) e.className = opts.className;
+  if (opts.text) e.textContent = opts.text;
+  if (opts.html) e.innerHTML = opts.html;
+  if (opts.attrs) {
+    Object.entries(opts.attrs).forEach(([k, v]) => e.setAttribute(k, v));
+  }
+  return e;
+}
