@@ -303,15 +303,36 @@ function createMatchNode(match, isScheduled = false) {
   mtLabels.appendChild(el("label", { text: "Result" }));
   mt.appendChild(mtLabels);
   const mtRows = el("div", { className: "match-time" });
-  (match.matchTimes || []).forEach((row) => {
-    const r = el("div");
-    r.appendChild(el("span", { text: row.phase }));
-    r.appendChild(el("span", { text: row.start }));
-    r.appendChild(el("span", { text: row.end }));
-    r.appendChild(el("span", { text: row.extra }));
-    r.appendChild(el("span", { text: row.result }));
-    mtRows.appendChild(r);
-  });
+  const firstHalf = el("div", {});
+  firstHalf.appendChild(el("span", { text: "1st HALFTIME" }));
+  firstHalf.appendChild(
+    el("span", { text: "", className: "match-time-start1" })
+  );
+  firstHalf.appendChild(el("span", { text: "", className: "match-time-end1" }));
+  firstHalf.appendChild(
+    el("span", { text: "0", className: "match-time-extra1" })
+  );
+  firstHalf.appendChild(
+    el("span", { text: "0:0", className: "match-time-result1" })
+  );
+
+  const secondHalf = el("div", {});
+  secondHalf.appendChild(el("span", { text: "2nd HALFTIME" }));
+  secondHalf.appendChild(
+    el("span", { text: "", className: "match-time-start2" })
+  );
+  secondHalf.appendChild(
+    el("span", { text: "", className: "match-time-end2" })
+  );
+  secondHalf.appendChild(
+    el("span", { text: "2", className: "match-time-extra2" })
+  );
+  secondHalf.appendChild(
+    el("span", { text: "2:3", className: "match-time-result2" })
+  );
+
+  mtRows.appendChild(firstHalf);
+  mtRows.appendChild(secondHalf);
   mt.appendChild(mtRows);
   infoPanel.appendChild(mt);
 
@@ -327,7 +348,7 @@ function createMatchNode(match, isScheduled = false) {
 
     startBtn.addEventListener("click", () => {
       console.log(`Start game clicked for ${match.id}`);
-      // DODAJ: promeni status, radi sa backendom itd
+      listenForClick(startBtn);
     });
   }
 
@@ -1018,23 +1039,46 @@ export function listenForClick(element) {
   }
 
   if (count > 3) {
-    element.style = "cursor:auto; background:#93bce3;";
+    element.style.cursor = "auto";
+    element.style.background = "#93bce3";
   }
 
   const now = new Date();
   const hours = now.getHours();
   const minutes = now.getMinutes();
-  const seconds = now.getSeconds();
-  if (count == 1) {
+  let seconds = now.getSeconds();
+  if (seconds.toString().length == 1) {
+    seconds = `0${seconds}`;
+  }
+  if (minutes.toString().length == 1) {
+    minutes = `0${minutes}`;
+  }
+
+  if (count == 1 && !start1st) {
     start1st = `${hours}:${minutes}:${seconds}`;
   }
-  if (count == 2) {
+  if (count == 2 && !end1st) {
     end1st = `${hours}:${minutes}:${seconds}`;
   }
-  if (count == 3) {
+  if (count == 3 && !start2nd) {
     start2nd = `${hours}:${minutes}:${seconds}`;
   }
-  if (count == 4) {
+  if (count == 4 && !end2nd) {
     end2nd = `${hours}:${minutes}:${seconds}`;
   }
+
+  if (start1st != "") {
+    const details = element.closest(".match-info");
+    const startFirst = details.querySelector(".match-time-start1");
+    const endFirst = details.querySelector(".match-time-end1");
+    const startSecond = details.querySelector(".match-time-start2");
+    const endSecond = details.querySelector(".match-time-end2");
+
+    startFirst.textContent = start1st || "";
+    endFirst.textContent = end1st || "";
+    startSecond.textContent = start2nd || "";
+    endSecond.textContent = end2nd || "";
+  }
 }
+
+//NETSO NE VALJA!

@@ -135,7 +135,7 @@ export const fakeMatches = [
       away: {
         starting: [{ num: 8, name: "N. Novak", action: "" }],
         substitutes: [],
-        officials: [],
+        officials: [{ role: "Coach", name: "BOBIII.", action: "" },],
       },
     },
   },

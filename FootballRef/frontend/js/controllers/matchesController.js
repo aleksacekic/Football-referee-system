@@ -105,12 +105,6 @@ export function initOfficialActionsDelegation(
   });
 }
 
-export function startGameButton(rootSelector = ".match-info-preview") {
-  const root = document.querySelector(rootSelector) || document;
 
-  root.addEventListener("click", (e) => {
-    const startEl = e.target.closest(".start-game-button");
 
-    listenForClick(startEl);
-  });
-}
+

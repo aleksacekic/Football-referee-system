@@ -4,7 +4,7 @@ import {
   initMatches,
   initPlayerActionsDelegation,
   initOfficialActionsDelegation,
-  startGameButton
+  //startGameButton
 } from "./controllers/matchesController.js";
 
 initTabs();
@@ -12,4 +12,4 @@ initTabs();
 initMatches();
 initPlayerActionsDelegation();
 initOfficialActionsDelegation();
-startGameButton();
+//startGameButton();
