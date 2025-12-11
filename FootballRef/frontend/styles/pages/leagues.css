@@ -335,7 +335,7 @@
 /* body layout */
 .team-modal__body {
   display: grid;
-  grid-template-columns: 1fr 320px;
+  /* grid-template-columns: 1fr 320px; */
   gap: 18px;
 }
 @media (max-width: 880px) {

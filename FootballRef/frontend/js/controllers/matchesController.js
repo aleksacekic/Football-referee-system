@@ -5,12 +5,30 @@ import {
   initMatchClickHandler,
   renderPastMatches,
   renderScheduledMatches,
+  listenForClick,
 } from "../views/matchView.js";
-import { playerClickHandler } from "../views/matchView.js";
+import {
+  playerClickHandler,
+  officialClickHandler,
+} from "../views/matchView.js";
 import { loadMatchesForDate, loadMatches } from "../models/matchesModel.js";
+
+function highlightSelectedDay(dateStr) {
+  // ukloni staru selekciju
+  document
+    .querySelectorAll(".fc-day-selected")
+    .forEach((d) => d.classList.remove("fc-day-selected"));
+
+  // nadji novi element po attribute-u data-date
+  const dayCell = document.querySelector(`[data-date="${dateStr}"]`);
+  if (dayCell) {
+    dayCell.classList.add("fc-day-selected");
+  }
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
   const matches = await loadMatchesForDate();
+  renderMatchesOnDashboard(matches, "#matches-panel");
   //console.log(matches);
   // Prebaci matches u format koji FullCalendar ocekuje (event objekti)
   const fcEvents = matches.map((m) => ({
@@ -25,7 +43,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     initialEvents: fcEvents,
     onDateClick(info) {
       console.log("date clicked", info.dateStr);
-      // controller logika: npr. filtriraj matches za taj datum, renderuj listu u sidebar
+      highlightSelectedDay(info.dateStr);
+      renderMatchesOnDashboard(matches, "#matches-panel");
     },
     onEventClick(event, info) {
       console.log("event clicked", event.id, event.extendedProps);
@@ -37,20 +56,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   // destroyCalendar(calendar);
 });
 
-export async function initDashboard() {
-  const matches = await loadMatchesForDate();
-  renderMatchesOnDashboard(matches, "#matches-panel");
+// export async function initDashboard() {
+//   const matches = await loadMatchesForDate();
+//   renderMatchesOnDashboard(matches, "#matches-panel");
 
-  // prosledi callback koji će otvarati detalje
-  const cleanup = initMatchClickHandler("#matches-panel", (matchId) => {
-    if (!matchId) return;
-    // controller logika: npr. show match detail panel (pozovi matchView ili router)
-    openMatchDetails(matchId);
-  });
+//   // prosledi callback koji će otvarati detalje
+//   const cleanup = initMatchClickHandler("#matches-panel", (matchId) => {
+//     if (!matchId) return;
+//     // controller logika: npr. show match detail panel (pozovi matchView ili router)
+//     openMatchDetails(matchId);
+//   });
 
-  // ako treba kasnije ukloniti listener:
-  // cleanup();
-}
+//   // ako treba kasnije ukloniti listener:
+//   // cleanup();
+// }
 
 export async function initMatches() {
   const matches = await loadMatches();
@@ -70,5 +89,28 @@ export function initPlayerActionsDelegation(rootSelector = ".players") {
     //EVENT DELEGATION - POGLEDAJ OPET !
     if (!playerEl) return;
     playerClickHandler(playerEl);
+  });
+}
+
+export function initOfficialActionsDelegation(
+  rootSelector = ".officials-list"
+) {
+  const root = document.querySelector(rootSelector) || document;
+
+  root.addEventListener("click", (e) => {
+    const officialEl = e.target.closest(".official-item");
+    //EVENT DELEGATION - POGLEDAJ OPET !
+    if (!officialEl) return;
+    officialClickHandler(officialEl);
+  });
+}
+
+export function startGameButton(rootSelector = ".match-info-preview") {
+  const root = document.querySelector(rootSelector) || document;
+
+  root.addEventListener("click", (e) => {
+    const startEl = e.target.closest(".start-game-button");
+
+    listenForClick(startEl);
   });
 }

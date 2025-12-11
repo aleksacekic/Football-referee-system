@@ -117,7 +117,7 @@ export function renderMatchesOnDashboard(
     return;
   }
 
-  container.innerHTML = "";
+  container.innerHTML = `<h3 class="matches-title">Matches on selected date</h3>`;
   const frag = document.createDocumentFragment();
   matches.forEach((m) => frag.appendChild(createMatchNodeOnDashboard(m)));
   container.appendChild(frag);
@@ -866,149 +866,175 @@ export function playerClickHandler(playerElement) {
   });
 }
 
-// === Officials (isti princip) ===
-const officialsActions = document.querySelectorAll(".officials-list");
-console.log(officialsActions);
+export function officialClickHandler(officialElement) {
+  // ako se klik dešava u okviru match koji je PLAYED -> ne radimo ništa
+  // pronalazimo match-info roditelja
+  const matchInfo = officialElement.closest(".match-info");
+  const preview = matchInfo ? matchInfo.previousElementSibling : null;
+  const status = preview
+    ? (preview.querySelector(".green")?.textContent || "").trim().toUpperCase()
+    : null;
+  if (status === "PLAYED") {
+    console.log("Match finished — cannot add official actions.");
+    return;
+  }
 
-officialsActions.forEach((official) => {
-  official.addEventListener("click", function (e) {
-    // ako se klik dešava u okviru match koji je PLAYED -> ne radimo ništa
-    // pronalazimo match-info roditelja
-    const matchInfo = official.closest(".match-info");
-    const preview = matchInfo ? matchInfo.previousElementSibling : null;
-    const status = preview
-      ? (preview.querySelector(".green")?.textContent || "")
-          .trim()
-          .toUpperCase()
-      : null;
-    if (status === "PLAYED") {
-      console.log("Match finished — cannot add official actions.");
-      return;
-    }
+  // overlay
+  const overlay = document.createElement("div");
+  overlay.className = "modal-overlay";
 
-    // overlay
-    const overlay = document.createElement("div");
-    overlay.className = "modal-overlay";
+  // modal container
+  const modal = document.createElement("div");
+  modal.className = "team-modal";
+  overlay.appendChild(modal);
 
-    // modal container
-    const modal = document.createElement("div");
-    modal.className = "team-modal";
-    overlay.appendChild(modal);
+  // close button
+  const closeBtn = document.createElement("button");
+  closeBtn.className = "team-modal__close";
+  closeBtn.setAttribute("aria-label", "Close modal");
+  closeBtn.type = "button";
+  closeBtn.textContent = "×";
+  modal.appendChild(closeBtn);
 
-    // close button
-    const closeBtn = document.createElement("button");
-    closeBtn.className = "team-modal__close";
-    closeBtn.setAttribute("aria-label", "Close modal");
-    closeBtn.type = "button";
-    closeBtn.textContent = "×";
-    modal.appendChild(closeBtn);
+  // title
+  const title = document.createElement("h3");
+  title.className = "team-modal__title";
+  title.textContent = "Official — Add action";
+  modal.appendChild(title);
 
-    // title
-    const title = document.createElement("h3");
-    title.className = "team-modal__title";
-    title.textContent = "Official — Add action";
-    modal.appendChild(title);
+  // form
+  const form = document.createElement("form");
+  form.id = "actionForm";
+  form.className = "team-modal__form";
+  modal.appendChild(form);
 
-    // form
-    const form = document.createElement("form");
-    form.id = "actionForm";
-    form.className = "team-modal__form";
-    modal.appendChild(form);
+  // action select
+  const actionSelect = document.createElement("select");
+  actionSelect.name = "action";
+  actionSelect.className = "action-select";
+  actionSelect.required = true;
+  const optYellow = document.createElement("option");
+  optYellow.value = "Yellow card";
+  optYellow.textContent = "Yellow card";
+  const optRed = document.createElement("option");
+  optRed.value = "Red card";
+  optRed.textContent = "Red card";
+  actionSelect.appendChild(optYellow);
+  actionSelect.appendChild(optRed);
+  form.appendChild(actionSelect);
 
-    // action select
-    const actionSelect = document.createElement("select");
-    actionSelect.name = "action";
-    actionSelect.className = "action-select";
-    actionSelect.required = true;
-    const optYellow = document.createElement("option");
-    optYellow.value = "Yellow card";
-    optYellow.textContent = "Yellow card";
-    const optRed = document.createElement("option");
-    optRed.value = "Red card";
-    optRed.textContent = "Red card";
-    actionSelect.appendChild(optYellow);
-    actionSelect.appendChild(optRed);
-    form.appendChild(actionSelect);
+  // minute input
+  const minuteInput = document.createElement("input");
+  minuteInput.type = "number";
+  minuteInput.name = "minute";
+  minuteInput.className = "minute-input";
+  minuteInput.placeholder = "Minute";
+  minuteInput.required = true;
+  form.appendChild(minuteInput);
 
-    // minute input
-    const minuteInput = document.createElement("input");
-    minuteInput.type = "number";
-    minuteInput.name = "minute";
-    minuteInput.className = "minute-input";
-    minuteInput.placeholder = "Minute";
-    minuteInput.required = true;
-    form.appendChild(minuteInput);
+  // when select
+  const whenSelect = document.createElement("select");
+  whenSelect.name = "when";
+  whenSelect.className = "when-select";
+  const whenOpt1 = document.createElement("option");
+  whenOpt1.value = "DuringMatch";
+  whenOpt1.textContent = "During match";
+  const whenOpt2 = document.createElement("option");
+  whenOpt2.value = "BeforeMatch";
+  whenOpt2.textContent = "Before match";
+  const whenOpt3 = document.createElement("option");
+  whenOpt3.value = "AfterMatch";
+  whenOpt3.textContent = "After match";
+  whenSelect.appendChild(whenOpt1);
+  whenSelect.appendChild(whenOpt2);
+  whenSelect.appendChild(whenOpt3);
+  form.appendChild(whenSelect);
 
-    // when select
-    const whenSelect = document.createElement("select");
-    whenSelect.name = "when";
-    whenSelect.className = "when-select";
-    const whenOpt1 = document.createElement("option");
-    whenOpt1.value = "DuringMatch";
-    whenOpt1.textContent = "During match";
-    const whenOpt2 = document.createElement("option");
-    whenOpt2.value = "BeforeMatch";
-    whenOpt2.textContent = "Before match";
-    const whenOpt3 = document.createElement("option");
-    whenOpt3.value = "AfterMatch";
-    whenOpt3.textContent = "After match";
-    whenSelect.appendChild(whenOpt1);
-    whenSelect.appendChild(whenOpt2);
-    whenSelect.appendChild(whenOpt3);
-    form.appendChild(whenSelect);
+  // description textarea
+  const descTextarea = document.createElement("textarea");
+  descTextarea.name = "desc";
+  descTextarea.rows = 3;
+  descTextarea.className = "description-input";
+  descTextarea.placeholder = "Description (optional)";
+  form.appendChild(descTextarea);
 
-    // description textarea
-    const descTextarea = document.createElement("textarea");
-    descTextarea.name = "desc";
-    descTextarea.rows = 3;
-    descTextarea.className = "description-input";
-    descTextarea.placeholder = "Description (optional)";
-    form.appendChild(descTextarea);
+  // submit button
+  const submitBtn = document.createElement("button");
+  submitBtn.type = "submit";
+  submitBtn.className = "submit-button";
+  submitBtn.textContent = "Add action";
+  form.appendChild(submitBtn);
 
-    // submit button
-    const submitBtn = document.createElement("button");
-    submitBtn.type = "submit";
-    submitBtn.className = "submit-button";
-    submitBtn.textContent = "Add action";
-    form.appendChild(submitBtn);
+  // append overlay to body
+  document.body.appendChild(overlay);
 
-    // append overlay to body
-    document.body.appendChild(overlay);
-
-    //const closeBtn = overlay.querySelector(".team-modal__close");
-    const close = () => overlay.remove();
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) close();
-    });
-    closeBtn.addEventListener("click", close);
-
-    //const form = overlay.querySelector("#actionForm");
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      let text = "";
-      const action = form.elements["action"].value;
-      const min = form.elements["minute"].value;
-      const when = form.elements["when"].value;
-      const desc = form.elements["desc"].value;
-
-      const description = desc ? `- ${desc}` : ``;
-      text = `${action} (${min}') ${description}`;
-
-      // ubaci u prvi .official-action ako postoji
-      const officialAct = official.querySelector(".official-action");
-      if (officialAct) {
-        if (officialAct.textContent.trim() === "")
-          officialAct.textContent = text;
-        else officialAct.textContent += `; ${text}`;
-      } else {
-        // ako nema, napravi i dodaj
-        const newAct = document.createElement("div");
-        newAct.className = "official-action";
-        newAct.textContent = text;
-        official.appendChild(newAct);
-      }
-      close();
-    });
+  //const closeBtn = overlay.querySelector(".team-modal__close");
+  const close = () => overlay.remove();
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) close();
   });
-});
+  closeBtn.addEventListener("click", close);
+
+  //const form = overlay.querySelector("#actionForm");
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    let text = "";
+    const action = form.elements["action"].value;
+    const min = form.elements["minute"].value;
+    const when = form.elements["when"].value;
+    const desc = form.elements["desc"].value;
+
+    const description = desc ? `- ${desc}` : ``;
+    text = `${action} (${min}') ${description}`;
+
+    // ubaci u prvi .official-action ako postoji
+    const officialAct = officialElement.querySelector(".official-action");
+    if (officialAct) {
+      if (officialAct.textContent.trim() === "") officialAct.textContent = text;
+      else officialAct.textContent += `; ${text}`;
+    } else {
+      // ako nema, napravi i dodaj
+      const newAct = document.createElement("div");
+      newAct.className = "official-action";
+      newAct.textContent = text;
+      officialElement.appendChild(newAct);
+    }
+    close();
+  });
+}
+
+let count = 0;
+let start1st = "";
+let end1st = "";
+let start2nd = "";
+let end2nd = "";
+export function listenForClick(element) {
+  if (!element) return;
+  let options = ["PAUSE", "START 2nd HALF", "END GAME", "FINISHED GAME"];
+  if (count < 4) {
+    element.textContent = options[count];
+    count++;
+  }
+
+  if (count > 3) {
+    element.style = "cursor:auto; background:#93bce3;";
+  }
+
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  const seconds = now.getSeconds();
+  if (count == 1) {
+    start1st = `${hours}:${minutes}:${seconds}`;
+  }
+  if (count == 2) {
+    end1st = `${hours}:${minutes}:${seconds}`;
+  }
+  if (count == 3) {
+    start2nd = `${hours}:${minutes}:${seconds}`;
+  }
+  if (count == 4) {
+    end2nd = `${hours}:${minutes}:${seconds}`;
+  }
+}
