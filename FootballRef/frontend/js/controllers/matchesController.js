@@ -2,15 +2,12 @@ import {
   initCalendar,
   destroyCalendar,
   renderMatchesOnDashboard,
-  initMatchClickHandler,
   renderPastMatches,
   renderScheduledMatches,
-  listenForClick,
-} from "../views/matchView.js";
-import {
   playerClickHandler,
   officialClickHandler,
 } from "../views/matchView.js";
+
 import { loadMatchesForDate, loadMatches } from "../models/matchesModel.js";
 
 function highlightSelectedDay(dateStr) {
@@ -104,7 +101,3 @@ export function initOfficialActionsDelegation(
     officialClickHandler(officialEl);
   });
 }
-
-
-
-

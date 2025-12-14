@@ -1025,27 +1025,30 @@ export function officialClickHandler(officialElement) {
   });
 }
 
-let count = 0;
-let start1st = "";
-let end1st = "";
-let start2nd = "";
-let end2nd = "";
+//ova fja se koristi gore u createMatchNode
 export function listenForClick(element) {
   if (!element) return;
+
+  // inicijalizacija statea po mecu
+  if (!element.dataset.count) {
+    element.dataset.count = "0";
+    element.dataset.start1st = "";
+    element.dataset.end1st = "";
+    element.dataset.start2nd = "";
+    element.dataset.end2nd = "";
+  }
+  let count = Number(element.dataset.count);
+
   let options = ["PAUSE", "START 2nd HALF", "END GAME", "FINISHED GAME"];
   if (count < 4) {
     element.textContent = options[count];
     count++;
-  }
-
-  if (count > 3) {
-    element.style.cursor = "auto";
-    element.style.background = "#93bce3";
+    element.dataset.count = count;
   }
 
   const now = new Date();
   const hours = now.getHours();
-  const minutes = now.getMinutes();
+  let minutes = now.getMinutes();
   let seconds = now.getSeconds();
   if (seconds.toString().length == 1) {
     seconds = `0${seconds}`;
@@ -1054,31 +1057,35 @@ export function listenForClick(element) {
     minutes = `0${minutes}`;
   }
 
-  if (count == 1 && !start1st) {
-    start1st = `${hours}:${minutes}:${seconds}`;
+  if (count == 1 && !element.dataset.start1st) {
+    element.dataset.start1st = `${hours}:${minutes}:${seconds}`;
   }
-  if (count == 2 && !end1st) {
-    end1st = `${hours}:${minutes}:${seconds}`;
+  if (count == 2 && !element.dataset.end1st) {
+    element.dataset.end1st = `${hours}:${minutes}:${seconds}`;
   }
-  if (count == 3 && !start2nd) {
-    start2nd = `${hours}:${minutes}:${seconds}`;
+  if (count == 3 && !element.dataset.start2nd) {
+    element.dataset.start2nd = `${hours}:${minutes}:${seconds}`;
   }
-  if (count == 4 && !end2nd) {
-    end2nd = `${hours}:${minutes}:${seconds}`;
+  if (count == 4 && !element.dataset.end2nd) {
+    element.dataset.end2nd = `${hours}:${minutes}:${seconds}`;
   }
 
-  if (start1st != "") {
-    const details = element.closest(".match-info");
-    const startFirst = details.querySelector(".match-time-start1");
-    const endFirst = details.querySelector(".match-time-end1");
-    const startSecond = details.querySelector(".match-time-start2");
-    const endSecond = details.querySelector(".match-time-end2");
+  const details = element.closest(".match-info");
+  const startFirst = details.querySelector(".match-time-start1");
+  const endFirst = details.querySelector(".match-time-end1");
+  const startSecond = details.querySelector(".match-time-start2");
+  const endSecond = details.querySelector(".match-time-end2");
 
-    startFirst.textContent = start1st || "";
-    endFirst.textContent = end1st || "";
-    startSecond.textContent = start2nd || "";
-    endSecond.textContent = end2nd || "";
+  startFirst.textContent = element.dataset.start1st || "";
+  endFirst.textContent = element.dataset.end1st || "";
+  startSecond.textContent = element.dataset.start2nd || "";
+  endSecond.textContent = element.dataset.end2nd || "";
+
+  if (count >= 4) {
+    element.disabled = true;
+    element.style.cursor = "not-allowed";
+    element.style.background = "#93bce3";
+    return;
   }
 }
 
-//NETSO NE VALJA!
