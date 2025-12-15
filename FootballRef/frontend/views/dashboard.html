@@ -125,7 +125,7 @@
           class="dropdown-menu dropdown-menu-end"
           aria-labelledby="userMenuButton"
         >
-          <li><a class="dropdown-item" href="#">Profile</a></li>
+          <li><a class="dropdown-item" onclick="goToProfile()">Profile</a></li>
           <li><a class="dropdown-item" href="#">Settings</a></li>
           <li><hr class="dropdown-divider" /></li>
           <li><a class="dropdown-item text-danger" href="#">Logout</a></li>
@@ -159,9 +159,6 @@
 
     <div class="tab-content mt-3 px-3" id="mainTabContent">
       <!--------------------------------------------------------------------------- DASHBOARD------------------------------------------------------------------------------------------------------>
-      <!--------------------------------------------------------------------------- DASHBOARD------------------------------------------------------------------------------------------------------>
-      <!--------------------------------------------------------------------------- DASHBOARD------------------------------------------------------------------------------------------------------>
-
       <div
         class="tab-pane fade show active"
         id="panel-dashboard"
@@ -222,8 +219,10 @@
       type="module"
       defer
     ></script>
+    <script src="../js/controllers/loginController.js"></script>
     <script src="../js/views/leagueView.js" type="module" defer></script>
     <script src="../js/views/modalView.js" type="module" defer></script>
     <script src="../js/views/matchView.js" type="module" defer></script>
+
   </body>
 </html>

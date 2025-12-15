@@ -13,4 +13,4 @@ initMatches();
 initPlayerActionsDelegation();
 initOfficialActionsDelegation();
 initHamburgerMenu();
-//startGameButton();
+

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="sr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Club Representative Dashboard</title>
+
+    <link rel="stylesheet" href="../styles/pages/clubRepresentative.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-left">
+        <span class="app-logo">⚽ LeagueApp</span>
+      </div>
+
+      <div class="header-center">
+        <span class="club-name" id="clubName">
+          <!-- JS ubacuje ime kluba -->
+        </span>
+      </div>
+
+      <div class="header-right">
+        <button id="logoutBtn">Logout</button>
+      </div>
+    </header>
+
+    <main class="dashboard-layout">
+      <aside class="sidebar left-sidebar">
+        <h3>Last matches</h3>
+
+        <ul class="matches-list" id="lastMatches">
+          <!-- JS generiše <li> -->
+        </ul>
+      </aside>
+
+      <section class="main-content">
+        <h2>Create new match</h2>
+
+        <form id="createMatchForm">
+          <!-- Naš tim -->
+          <div class="form-group">
+            <label>Home team</label>
+            <input type="text" id="homeTeam" disabled />
+          </div>
+
+          <!-- Protivnik -->
+          <div class="form-group">
+            <label>Opponent</label>
+            <select id="awayTeam">
+              <!-- JS puni opcije -->
+            </select>
+          </div>
+
+          <!-- Liga -->
+          <div class="form-group">
+            <label>League</label>
+            <input type="text" id="leagueName" disabled />
+          </div>
+
+          <!-- Datum -->
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="matchDate" />
+          </div>
+
+          <!-- Vreme -->
+          <div class="form-group">
+            <label>Time</label>
+            <input type="time" id="matchTime" />
+          </div>
+
+          <!-- Mesto -->
+          <div class="form-group">
+            <label>Location</label>
+            <input type="text" id="location" />
+          </div>
+
+          <!-- Kolo -->
+          <div class="form-group">
+            <label>Round</label>
+            <input type="number" id="round" disabled />
+          </div>
+
+          <!-- PDF -->
+          <div class="form-group">
+            <label>MUP document (PDF)</label>
+            <input type="file" id="mupPdf" accept="application/pdf" />
+          </div>
+
+          <button type="submit">Create match</button>
+        </form>
+      </section>
+
+      <aside class="sidebar right-sidebar">
+        <h3>League table</h3>
+
+        <table class="league-table" id="leagueTable">
+          <!-- JS generiše <tr> -->
+        </table>
+      </aside>
+    </main>
+
+    <script src="../js/views/clubRepresentativeView.js"></script>
+  </body>
+</html>

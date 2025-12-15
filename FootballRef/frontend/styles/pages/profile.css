@@ -1,4 +1,3 @@
-/* BASE */
 body {
   background: #f5f7fb;
   font-family: system-ui, -apple-system, sans-serif;
@@ -11,13 +10,13 @@ body {
   padding: 0 16px;
 }
 
-/* CARDS */
 .card {
   background: #fff;
   border-radius: 16px;
   padding: 24px;
   margin-bottom: 20px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  padding-top:5px;
 }
 
 .card.subtle {
@@ -28,11 +27,11 @@ body {
   border: 1px solid #fee2e2;
 }
 
-/* PROFILE HEADER */
 .profile-header {
   display: flex;
   align-items: center;
   gap: 16px;
+  padding-top: 24px;
 }
 
 .avatar-wrapper {
@@ -81,6 +80,10 @@ h3 {
   gap: 16px;
 }
 
+.card-inner {
+  max-width: 880px;
+}
+
 .field.full {
   grid-column: 1 / -1;
 }
@@ -92,7 +95,13 @@ label {
 
 input {
   /* ovaj width je okej do 800px */
-  width: 300px;
+  width: -webkit-fill-available;
+  /* AKO BUDE CROSS BROWSER PROBLEM OTKOMENTARISI OVO
+    width: 100%;
+    width: -moz-available;          WebKit-based browsers will ignore this.
+    width: -webkit-fill-available;  Mozilla-based browsers will ignore this.
+    width: stretch; 
+  */
   padding: 10px 12px;
   border-radius: 10px;
   border: 1px solid #e5e7eb;
@@ -141,15 +150,16 @@ input:focus {
   margin-top: 24px;
 }
 
-/* MOBILE */
+
 @media (max-width: 600px) {
   .form-grid {
     grid-template-columns: 1fr;
   }
 }
 
-@media (max-width: 800px) {
-  input {
-    width: 100%;
+@media (max-width: 360px)
+{
+  .profile-meta p {
+    font-size: small;
   }
 }
