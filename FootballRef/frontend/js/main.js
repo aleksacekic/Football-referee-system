@@ -1,4 +1,4 @@
-import { initTabs } from "./views/commonView.js";
+import { initTabs, initHamburgerMenu } from "./views/commonView.js";
 import {
   //initDashboard,
   initMatches,
@@ -12,4 +12,5 @@ initTabs();
 initMatches();
 initPlayerActionsDelegation();
 initOfficialActionsDelegation();
+initHamburgerMenu();
 //startGameButton();

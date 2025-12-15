@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="../styles/pages/dashboard.css" />
     <link rel="stylesheet" href="../styles/pages/match.css" />
     <link rel="stylesheet" href="../styles/pages/leagues.css" />
+    <link rel="stylesheet" href="../styles/pages/header.css" />
 
     <link rel="icon" href="../assets/images/whistle.png" type="image/x-icon" />
   </head>
@@ -36,6 +37,10 @@
     <div
       class="tabs-header d-flex justify-content-between align-items-center px-3 py-2"
     >
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">
+        ☰
+      </button>
+
       <!-- LEVI DEO – LOGO + TABOVI -->
       <div class="d-flex align-items-center gap-4">
         <!-- LOGO -->
@@ -127,6 +132,29 @@
         </ul>
       </div>
     </div>
+
+    <div class="mobile-sidebar" id="mobileSidebar">
+       <img
+          src="../assets/images/fss-logo.png"
+          alt="Logo"
+          class="header-logo-sidebar"
+        />
+      <ul class="nav flex-column gap-2 p-3">
+        <li>
+          <a class="nav-link active" data-tab="#tab-dashboard">Dashboard</a>
+        </li>
+        <li>
+          <a class="nav-link" data-tab="#tab-scheduled">My scheduled matches</a>
+        </li>
+        <li>
+          <a class="nav-link" data-tab="#tab-past">My past matches</a>
+        </li>
+        <li>
+          <a class="nav-link" data-tab="#tab-leagues">Leagues</a>
+        </li>
+      </ul>
+    </div>
+
     <!-- #endregion -->
 
     <div class="tab-content mt-3 px-3" id="mainTabContent">

@@ -1,0 +1,203 @@
+/* Header background */
+.tabs-header {
+  background-color: #1e4d8b;
+  /* backdrop-filter: blur(6px); */
+  /* border-radius: 10px; */
+  padding: 10px 15px;
+}
+
+/* Moderniji stil tabova u headeru */
+.nav-pills {
+  --tab-radius: 999px;
+}
+
+/* Osnovni stil za sve tabove */
+.nav-pills .nav-link {
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  border-radius: var(--tab-radius);
+  border: 1px solid transparent;
+  padding: 6px 18px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: background-color 0.18s ease-out, color 0.18s ease-out,
+    border-color 0.18s ease-out, box-shadow 0.18s ease-out,
+    transform 0.12s ease-out;
+}
+
+/* Hover na neaktivnim tabovima */
+.nav-pills .nav-link:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Aktivni tab – gradient + senka */
+.nav-pills .nav-link.active {
+  background: linear-gradient(135deg, #1e4d8b 0%, #2d6bb7 40%, #3c8ce8 100%);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+  transform: translateY(1px);
+}
+
+/* Fokus sa tastature – da ne bude ružno plavo line */
+.nav-pills .nav-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(60, 140, 232, 0.5);
+}
+
+/* Avatar style */
+.user-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+}
+
+/* Username */
+.user-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+}
+
+/* Dropdown trigger button */
+.user-dropdown-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 12px;
+  color: white;
+}
+
+.user-dropdown-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Dropdown menu styling */
+.dropdown-menu {
+  border-radius: 10px;
+  padding: 0.5rem 0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-menu .dropdown-item {
+  padding: 10px 20px;
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background-color: #f0f3ff;
+}
+
+.user-box {
+  padding-right: 1%;
+}
+
+.header-logo {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+  padding-left: 5px;
+}
+
+.header-logo-sidebar {
+  height: 70px;
+  width: auto;
+  object-fit: contain;
+  margin-top:35px;
+}
+
+/* HAMBURGER */
+.hamburger-btn {
+  display: none;
+  font-size: 26px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color:white;
+}
+
+/* SIDEBAR */
+/* ===============================
+   MOBILE SIDEBAR
+================================ */
+
+.mobile-sidebar {
+  position: fixed;
+  top: 0;
+  left: -280px;
+  /* width: 280px; */
+  height: 100vh;
+  background: #ffffff;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+  transition: left 0.3s ease;
+  z-index: 2000;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* otvoreno stanje */
+.mobile-sidebar.open {
+  left: 0;
+}
+
+/* NAV LIST */
+.mobile-sidebar .nav {
+  margin-top: 60px; /* malo prostora od vrha */
+}
+
+/* LINK */
+.mobile-sidebar .nav-link {
+  padding: 14px 20px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #444;
+  border-radius: 8px;
+  transition: background 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+}
+
+/* hover */
+.mobile-sidebar .nav-link:hover {
+  background: #f1f4f8;
+  color: #000;
+}
+
+/* ACTIVE TAB */
+.mobile-sidebar .nav-link.active {
+  background: #e6f0ff;
+  color: #0d6efd; /* bootstrap primary */
+  font-weight: 600;
+  position: relative;
+}
+
+/* leva linija za active (app feel) */
+.mobile-sidebar .nav-link.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 4px;
+  background: #0d6efd;
+  border-radius: 0 4px 4px 0;
+}
+
+/* RESPONSIVE */
+@media (max-width: 840px) {
+  #mainTabs {
+    display: none;
+  }
+
+  .hamburger-btn {
+    display: block;
+  }
+
+  .header-logo{
+    display:none;
+  }
+}

@@ -7,121 +7,88 @@
     <link rel="stylesheet" href="../styles/pages/profile.css" />
   </head>
   <body>
-    <main class="profile-page">
-      <header class="profile-header">
-        <h1>My profile</h1>
-        <p class="muted">Manage your account and availability</p>
-      </header>
-
-      <section class="profile-card">
-        <!-- levi deo -->
-        <div class="profile-left">
-          <div class="avatar-wrap" aria-hidden="false">
-            <img
-              id="avatarImg"
-              src="../assets/images/random-photo.jpg"
-              alt="Profile photo"
-              class="avatar"
-            />
-          </div>
-
-          <div class="avatar-actions">
-            <label for="avatarUpload" class="btn btn-outline"
-              >Upload new photo</label
-            >
-            <input
-              id="avatarUpload"
-              type="file"
-              accept="image/*"
-              style="display: none"
-            />
-
-            <button
-              type="button"
-              id="removeAvatar"
-              class="btn btn-danger-outline"
-            >
-              Remove photo
-            </button>
-          </div>
-
-          <div class="account-actions">
-            <button class="btn btn-primary">Change password</button>
-            <button class="btn btn-danger">Request account deletion</button>
-          </div>
+    <div class="profile-page">
+      <!-- PROFILE HEADER -->
+      <section class="card profile-header">
+        <div class="avatar-wrapper">
+          <img src="../assets/images/random-photo.jpg" alt="Avatar" />
+          <button class="icon-btn">✎</button>
         </div>
 
-        <!-- desni deo -->
-        <div class="profile-right">
-          <form class="profile-form" autocomplete="off" novalidate>
-            <div class="form-row">
-              <label for="firstName">First name</label>
-              <input id="firstName" type="text" value="Aleksa" />
-            </div>
-
-            <div class="form-row">
-              <label for="lastName">Last name</label>
-              <input id="lastName" type="text" value="Cekic" />
-            </div>
-
-            <div class="form-row">
-              <label for="email">Email</label>
-              <input id="email" type="email" value="aleksa@example.com" />
-            </div>
-
-            <div class="form-row">
-              <label for="phone">Phone (optional)</label>
-              <input id="phone" type="tel" value="+381 60 123 4567" />
-            </div>
-
-            <fieldset class="inactive-block" aria-labelledby="inactiveTitle">
-              <legend id="inactiveTitle">Set temporary inactivity</legend>
-
-              <p class="muted small">
-                If you will be unavailable for officiating on certain dates,
-                mark the period below.
-              </p>
-
-              <div class="inactive-row">
-                <div class="form-row small">
-                  <label for="inactiveFrom">From</label>
-                  <input id="inactiveFrom" type="date" />
-                </div>
-
-                <div class="form-row small">
-                  <label for="inactiveTo">To</label>
-                  <input id="inactiveTo" type="date" />
-                </div>
-              </div>
-
-              <div class="form-row">
-                <label for="inactiveReason">Reason (optional)</label>
-                <input
-                  id="inactiveReason"
-                  type="text"
-                  placeholder="e.g. vacation"
-                />
-              </div>
-
-              <div class="inactive-actions">
-                <button class="btn btn-outline">Save inactivity</button>
-                <button class="btn btn-ghost muted">Clear</button>
-              </div>
-            </fieldset>
-
-            <div class="profile-save">
-              <button class="btn btn-primary" type="submit">
-                Save profile
-              </button>
-              <button class="btn btn-ghost">Cancel</button>
-            </div>
-          </form>
+        <div class="profile-meta">
+          <h2>Aleksa Cekić</h2>
+          <p>aleksa@example.com</p>
         </div>
       </section>
 
-      <footer class="profile-foot">
-        <small class="muted">Profile last updated: 24 Nov 2025</small>
+      <!-- PERSONAL INFO -->
+      <section class="card">
+        <h3>Personal information</h3>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>First name</label>
+            <input type="text" value="Aleksa" />
+          </div>
+
+          <div class="field">
+            <label>Last name</label>
+            <input type="text" value="Cekić" />
+          </div>
+
+          <div class="field">
+            <label>Email</label>
+            <input type="email" value="aleksa@example.com" />
+          </div>
+
+          <div class="field">
+            <label>Phone</label>
+            <input type="text" />
+          </div>
+        </div>
+      </section>
+
+      <!-- INACTIVITY -->
+      <section class="card subtle">
+        <h3>Planned inactivity</h3>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>From</label>
+            <input type="date" />
+          </div>
+
+          <div class="field">
+            <label>To</label>
+            <input type="date" />
+          </div>
+
+          <div class="field full">
+            <label>Reason</label>
+            <input type="text" />
+          </div>
+        </div>
+      </section>
+
+      <!-- SECURITY -->
+      <section class="card">
+        <h3>Security</h3>
+
+        <button class="btn secondary">Change password</button>
+      </section>
+
+      <!-- DANGER ZONE -->
+      <section class="card danger">
+        <h3>Danger zone</h3>
+
+        <button class="btn danger-btn">Request account deletion</button>
+      </section>
+
+      <!-- FOOTER ACTIONS -->
+      <footer class="page-actions">
+        <button class="btn ghost">Cancel</button>
+        <button class="btn primary">Save changes</button>
       </footer>
-    </main>
+    </div>
   </body>
 </html>

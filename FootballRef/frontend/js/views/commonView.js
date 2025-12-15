@@ -23,3 +23,49 @@ export function el(tag, opts = {}) {
   }
   return e;
 }
+
+function checkActiveTab() {
+  const headerTabs = document.querySelectorAll("#mainTabs .nav-link");
+  const sidebarLinks = document.querySelectorAll("#mobileSidebar .nav-link");
+
+  headerTabs.forEach((tab) => {
+    tab.addEventListener("shown.bs.tab", () => {
+      const id = `#${tab.id}`;
+
+      sidebarLinks.forEach((l) => l.classList.remove("active"));
+
+      const activeSide = document.querySelector(
+        `#mobileSidebar [data-tab="${id}"]`
+      );
+      if (activeSide) activeSide.classList.add("active");
+    });
+  });
+}
+
+export function initHamburgerMenu() {
+  checkActiveTab();
+  const hamburgerBtn = document.getElementById("hamburgerBtn");
+  const sidebar = document.getElementById("mobileSidebar");
+
+  /* otvaranje / zatvaranje */
+  hamburgerBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("open");
+  });
+
+  /* KLIK NA SIDEBAR TAB */
+  sidebar.addEventListener("click", (e) => {
+    const link = e.target.closest(".nav-link");
+    if (!link) return;
+
+    const targetTabSelector = link.dataset.tab;
+    const realTab = document.querySelector(targetTabSelector);
+
+    if (realTab) {
+      realTab.click(); // 🔥 BOOTSTRAP radi sve ostalo
+    }
+
+    sidebar.classList.remove("open");
+  });
+}
+
+
