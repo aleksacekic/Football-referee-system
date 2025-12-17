@@ -6,6 +6,7 @@ import {
   initOfficialActionsDelegation,
   //startGameButton
 } from "./controllers/matchesController.js";
+import { initLeagues } from "./controllers/leaguesController.js";
 
 initTabs();
 //initDashboard();
@@ -13,4 +14,5 @@ initMatches();
 initPlayerActionsDelegation();
 initOfficialActionsDelegation();
 initHamburgerMenu();
+initLeagues();
 

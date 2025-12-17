@@ -1,5 +1,3 @@
-import { fakeJSON,leaguesData } from "../api/fakeData.js";
-
 function createLeagueNode(league) {
   // wrapper koji sadrzi preview + tabelu
   const wrapper = document.createElement('div');
@@ -123,7 +121,8 @@ function createLeagueNode(league) {
   return wrapper;
 }
 
-const container = document.querySelector('.leagues-root');
+export function renderLeagues(leaguesData){
+    const container = document.querySelector('.leagues-root');
 const frag = document.createDocumentFragment();
 leaguesData.forEach(league => frag.appendChild(createLeagueNode(league)));
 container.appendChild(frag);
@@ -199,3 +198,5 @@ teamsOnTable.forEach((team) => {
     });
   });
 });
+}
+
