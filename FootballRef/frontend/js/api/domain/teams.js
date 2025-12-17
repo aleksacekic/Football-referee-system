@@ -1,7 +1,7 @@
 export const teams = [
   {
     id: 1,
-    name: "FK Radnički Niš",
+    name: "FK Radnički Nis",
     short: "RDN",
     leagueId: 1,
     representativeUserId: 1,
@@ -10,7 +10,7 @@ export const teams = [
 
   {
     id: 2,
-    name: "FK Dubočica",
+    name: "FK Dubocica",
     short: "DUB",
     leagueId: 1,
     representativeUserId: null,

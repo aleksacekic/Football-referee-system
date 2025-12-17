@@ -1,4 +1,4 @@
-import { fetchLeagues } from "../api/fakeData.js";
+import { fetchLeagues } from "../api/domain/fakeData.js";
 
 let state = {
   leagues: [],

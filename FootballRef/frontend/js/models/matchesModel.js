@@ -1,4 +1,4 @@
-import { fetchMatches, fetchMatchesForDate } from "../api/fakeData.js";
+import { fetchMatches, fetchMatchesForDate } from "../api/domain/fakeData.js";
 
 let state = {
   matches: [],

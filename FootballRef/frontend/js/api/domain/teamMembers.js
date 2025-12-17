@@ -2,7 +2,7 @@ export const players = [
   {
     id: 1,
     firstName: "Nikola",
-    lastName: "Nikolić",
+    lastName: "Nikolic",
     teamId: 1,
     number: 9,
     position: "FW",
@@ -12,7 +12,7 @@ export const players = [
   {
     id: 2,
     firstName: "Marko",
-    lastName: "Marković",
+    lastName: "Markovic",
     teamId: 1,
     number: 11,
     position: "MF",
@@ -22,7 +22,7 @@ export const players = [
   {
     id: 3,
     firstName: "Stefan",
-    lastName: "Stojanović",
+    lastName: "Stojanovic",
     teamId: 2,
     number: 7,
     position: "DF",
@@ -32,7 +32,7 @@ export const players = [
   {
     id: 4,
     firstName: "Aleksa",
-    lastName: "Alić",
+    lastName: "Alic",
     teamId: 1,
     number: 9,
     position: "FW",
@@ -42,7 +42,7 @@ export const players = [
   {
     id: 5,
     firstName: "Milan",
-    lastName: "Milanović",
+    lastName: "Milanovic",
     teamId: 2,
     number: 11,
     position: "MF",
@@ -52,7 +52,7 @@ export const players = [
   {
     id: 6,
     firstName: "Sadad",
-    lastName: "Sadadvić",
+    lastName: "Sadadvic",
     teamId: 3,
     number: 7,
     position: "DF",
@@ -62,7 +62,7 @@ export const players = [
   {
     id: 7,
     firstName: "Milan",
-    lastName: "Jovanović",
+    lastName: "Jovanovic",
     teamId: 1,
     type: "STAFF",
     staffRole: "HEAD_COACH",
@@ -71,7 +71,7 @@ export const players = [
   {
     id: 8,
     firstName: "Petar",
-    lastName: "Petrović",
+    lastName: "Petrovic",
     teamId: 1,
     type: "STAFF",
     staffRole: "PHYSIO",

@@ -1,6 +1,4 @@
-import {
-    renderLeagues
-} from "../views/leagueView.js";
+import { renderLeagues } from "../views/leagueView.js";
 
 import { loadLeagues } from "../models/leaguesModel.js";
 export async function initLeagues() {
