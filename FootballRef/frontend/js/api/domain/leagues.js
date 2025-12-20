@@ -1,7 +1,7 @@
 export const leagues = [
   {
     id: 1,
-    name: "Druga kadetska liga JUG",
+    name: "Prva kadetska liga JUG",
     season: "2025/26",
     teamIds: [1, 2, 3],
   },

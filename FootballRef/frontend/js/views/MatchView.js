@@ -65,7 +65,9 @@ function createMatchNodeOnDashboard(match) {
   const timeSpan = document.createElement("span");
   const timeEl = document.createElement("time");
   timeEl.dateTime = `${match.date}T${match.time}`;
-  timeEl.textContent = `${formatDisplayDate(match.date)} ${match.time}`;
+  timeEl.textContent = `${formatDisplayDate(
+    `${match.datetime}`
+  )} ${match.datetime.slice(10)}`;
   timeSpan.appendChild(timeEl);
 
   const roundSpan = document.createElement("span");
@@ -76,13 +78,13 @@ function createMatchNodeOnDashboard(match) {
 
   const teams = document.createElement("span");
   teams.className = "match-teams";
-  teams.textContent = `${match.homeTeam} - ${match.awayTeam}`;
+  teams.textContent = `${match.teams.home.name} - ${match.teams.away.name}`;
 
   const comp = document.createElement("span");
   comp.textContent = `Competition: ${match.competition}`;
 
   const stadium = document.createElement("span");
-  stadium.textContent = `Stadium: ${match.stadium.city}, ${match.stadium.name}`;
+  stadium.textContent = `Stadium: ${match.stadium}`;
 
   wrap.appendChild(firstRow);
   wrap.appendChild(teams);
@@ -163,7 +165,7 @@ export function initMatchClickHandler(
 }
 
 function createMatchNode(match, isScheduled = false) {
-  //console.log(match);
+ // console.log(match);
   const frag = document.createDocumentFragment();
 
   // preview
@@ -567,6 +569,7 @@ function buildPlayersBlockWithHandlers(playersObj = {}) {
 }
 
 export function renderPastMatches(matches) {
+  //console.log(matches);
   const container = document.querySelector(".past-matches-root");
   if (!container) return;
   container.innerHTML = "";
@@ -1088,4 +1091,3 @@ export function listenForClick(element) {
     return;
   }
 }
-

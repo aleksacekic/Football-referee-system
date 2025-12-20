@@ -8,7 +8,9 @@ import {
   officialClickHandler,
 } from "../views/matchView.js";
 
-import { loadMatchesForDate, loadMatches } from "../models/matchesModel.js";
+import { loadMatches } from "../models/matchesModel.js";
+
+
 
 function highlightSelectedDay(dateStr) {
   // ukloni staru selekciju
@@ -24,7 +26,8 @@ function highlightSelectedDay(dateStr) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const matches = await loadMatchesForDate();
+      const refereeId = 2; // logged-in user
+  const matches = await loadMatches(refereeId);
   renderMatchesOnDashboard(matches, "#matches-panel");
   //console.log(matches);
   // Prebaci matches u format koji FullCalendar ocekuje (event objekti)
@@ -69,13 +72,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 // }
 
 export async function initMatches() {
-  const matches = await loadMatches();
+  const refereeId = 2; // logged-in user
+  const matches = await loadMatches(refereeId);
 
-  //const past = await loadPastMatches();
+  //console.log(matches);
+
   renderPastMatches(matches);
-
-  //const scheduled = await loadScheduledMatches();
   renderScheduledMatches(matches);
+
+ 
 }
 
 export function initPlayerActionsDelegation(rootSelector = ".players") {
