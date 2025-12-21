@@ -15,10 +15,10 @@ export function getMatchesForReferee(refereeUserId) {
       const homeTeam = teams.find((t) => t.id === match.homeTeamId);
       const awayTeam = teams.find((t) => t.id === match.awayTeamId);
       const homeTeamLineup = matchLineups.find(
-        (t) => t.id === match.homeTeamId
+        (t) => t.teamId === match.homeTeamId
       );
       const awayTeamLineup = matchLineups.find(
-        (t) => t.id === match.awayTeamId
+        (t) => t.teamId === match.awayTeamId
       );
 
       function getPlayerAction(playerId) {

@@ -10,8 +10,6 @@ import {
 
 import { loadMatches } from "../models/matchesModel.js";
 
-
-
 function highlightSelectedDay(dateStr) {
   // ukloni staru selekciju
   document
@@ -26,7 +24,8 @@ function highlightSelectedDay(dateStr) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-      const refereeId = 2; // logged-in user
+  //OVO JE FEJK ZA SADA !!!!!!!!!!!!!!!!!!!!1
+  const refereeId = 2; // logged-in user
   const matches = await loadMatches(refereeId);
   renderMatchesOnDashboard(matches, "#matches-panel");
   //console.log(matches);
@@ -79,8 +78,6 @@ export async function initMatches() {
 
   renderPastMatches(matches);
   renderScheduledMatches(matches);
-
- 
 }
 
 export function initPlayerActionsDelegation(rootSelector = ".players") {
