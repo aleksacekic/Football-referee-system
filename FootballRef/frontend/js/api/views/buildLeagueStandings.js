@@ -6,14 +6,8 @@ import { matchTimes } from "../domain/matchTimes.js";
 import { matchLineups } from "../domain/matchLineups.js";
 import { teamMembers } from "../domain/teamMembers.js";
 import { matchEvents } from "../domain/matchEvents.js";
+import { computeFinalScore } from "./matchScore.js";
 
-function parseScore(score) {
-  if (!score || score === "-:-") return null;
-  const [home, away] = score.split(":").map(Number);
-  return { home, away };
-}
-
-console.log(parseScore("3:5"));
 
 function createEmptyStats(team) {
   return {
@@ -41,13 +35,9 @@ export function buildLeagueStandings() {
     const table = leagueTeams.map(createEmptyStats);
 
     leagueMatches.forEach((match) => {
-        //console.log(leagueMatches);
         const matchTajms = matchTimes.filter((t) => t.matchId === match.id);
-        const score = {
-            away: matchTajms[1].awayGoals,
-            home: matchTajms[1].homeGoals,
-        }
-      if (!score) return;
+        const score = computeFinalScore(matchTajms);
+        if (score.home === null) return;
 
       const home = table.find((t) => t.teamId === match.homeTeamId);
       const away = table.find((t) => t.teamId === match.awayTeamId);

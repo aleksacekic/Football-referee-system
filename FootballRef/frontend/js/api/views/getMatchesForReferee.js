@@ -6,10 +6,12 @@ import { matchTimes } from "../domain/matchTimes.js";
 import { matchLineups } from "../domain/matchLineups.js";
 import { teamMembers } from "../domain/teamMembers.js";
 import { matchEvents } from "../domain/matchEvents.js";
+import { formatScore } from "./matchScore.js";
 
-export function getMatchesForReferee(refereeUserId) {
+export function getMatchesForReferee(refereeUserId, date = null) {
   return matches
     .filter((match) => match.officials.some((o) => o.userId === refereeUserId))
+    .filter((match) => !date || match.date === date)
     .map((match) => {
       const league = leagues.find((l) => l.id === match.leagueId);
       const homeTeam = teams.find((t) => t.id === match.homeTeamId);
@@ -21,13 +23,26 @@ export function getMatchesForReferee(refereeUserId) {
         (t) => t.teamId === match.awayTeamId
       );
 
-      function getPlayerAction(playerId) {
-        const events = matchEvents.filter((e) => e.personId === playerId);
+     function getPlayerAction(playerId) {
+  const events = matchEvents.filter(
+    (e) =>
+      e.playerId === playerId ||
+      e.playerOutId === playerId ||
+      e.playerInId === playerId
+  );
 
-        if (events.length === 0) return "";
+  if (events.length === 0) return "";
 
-        return events.map((e) => `${e.type} (${e.minute}')`).join(", ");
+  return events
+    .map((e) => {
+      if (e.type === "SUBSTITUTION") {
+        const label = e.playerOutId === playerId ? "OUT" : "IN";
+        return `SUBSTITUTION ${label} (${e.minute}')`;
       }
+      return `${e.type} (${e.minute}')`;
+    })
+    .join(", ");
+}
 
       function mapPlayers(playerIds) {
         return playerIds.map((playerId) => {
@@ -58,6 +73,7 @@ export function getMatchesForReferee(refereeUserId) {
         id: match.id,
         status: match.status.toUpperCase(), // SCHEDULED | LIVE | PLAYED
         datetime: `${match.date} ${match.time}`,
+        date: match.date,
         competition: `${league.name} ${league.season}`,
         stadium: match.location,
         teams: {
@@ -69,7 +85,7 @@ export function getMatchesForReferee(refereeUserId) {
             name: awayTeam.name,
             logo: awayTeam.logo,
           },
-          score: buildScore(times),
+          score: formatScore(times),
         },
         round: match.round,
 
@@ -101,10 +117,4 @@ export function getMatchesForReferee(refereeUserId) {
     });
 }
 
-function buildScore(times) {
-  if (!times.length) return "-:-";
 
-  const home = times.reduce((s, t) => s + t.homeGoals, 0);
-  const away = times.reduce((s, t) => s + t.awayGoals, 0);
-  return `${home}:${away}`;
-}

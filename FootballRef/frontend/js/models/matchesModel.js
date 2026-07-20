@@ -26,18 +26,27 @@
 //   return state.matchesForDate;
 // }
 
-import { getMatchesForReferee } from "../api/views/getMatchesForReferee.js"
+import { getMatchesForReferee } from "../api/views/getMatchesForReferee.js";
+
 let state = {
-  matches: [],
+  allMatches: [],
+  panelMatches: [],
 };
 
 export async function loadMatches(refereeUserId) {
-  state.matches = getMatchesForReferee(refereeUserId);
-  //console.log(state.matches);
-  return state.matches;
+  state.allMatches = getMatchesForReferee(refereeUserId);
+  return state.allMatches;
 }
 
+export async function loadMatchesForDate(refereeUserId, date) {
+  state.panelMatches = getMatchesForReferee(refereeUserId, date);
+  return state.panelMatches;
+}
 
 export function getMatches() {
-  return state.matches;
+  return state.allMatches;
+}
+
+export function getPanelMatches() {
+  return state.panelMatches;
 }

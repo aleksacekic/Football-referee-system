@@ -30,3 +30,37 @@ C:\Users\Aleksa\Desktop\PROJEKAT 16.11.2025\FootballRef\backend\FootballRef.Api\
 C:\Users\Aleksa\Desktop\PROJEKAT 16.11.2025\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\FootballRef.Api.pdb
 C:\Users\Aleksa\Desktop\PROJEKAT 16.11.2025\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\FootballRef.Api.genruntimeconfig.cache
 C:\Users\Aleksa\Desktop\PROJEKAT 16.11.2025\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\ref\FootballRef.Api.dll
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\bin\Debug\net9.0\appsettings.Development.json
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\bin\Debug\net9.0\appsettings.json
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\bin\Debug\net9.0\FootballRef.Api.staticwebassets.endpoints.json
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\bin\Debug\net9.0\FootballRef.Api.exe
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\bin\Debug\net9.0\FootballRef.Api.deps.json
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\bin\Debug\net9.0\FootballRef.Api.runtimeconfig.json
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\bin\Debug\net9.0\FootballRef.Api.dll
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\bin\Debug\net9.0\FootballRef.Api.pdb
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\bin\Debug\net9.0\Microsoft.AspNetCore.OpenApi.dll
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\bin\Debug\net9.0\Microsoft.OpenApi.dll
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\FootballRef.Api.csproj.AssemblyReference.cache
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\rpswa.dswa.cache.json
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\FootballRef.Api.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\FootballRef.Api.AssemblyInfoInputs.cache
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\FootballRef.Api.AssemblyInfo.cs
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\FootballRef.Api.csproj.CoreCompileInputs.cache
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\FootballRef.Api.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\FootballRef.Api.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\FootballRef.Api.sourcelink.json
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\rjimswa.dswa.cache.json
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\scopedcss\bundle\FootballRef.Api.styles.css
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\staticwebassets.build.json
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\staticwebassets.build.json.cache
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\staticwebassets.development.json
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\staticwebassets.build.endpoints.json
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\swae.build.ex.cache
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\Football.B53E0F86.Up2Date
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\FootballRef.Api.dll
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\refint\FootballRef.Api.dll
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\FootballRef.Api.pdb
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\FootballRef.Api.genruntimeconfig.cache
+C:\Users\Aleksa1\Desktop\Football-referee-system\FootballRef\backend\FootballRef.Api\obj\Debug\net9.0\ref\FootballRef.Api.dll

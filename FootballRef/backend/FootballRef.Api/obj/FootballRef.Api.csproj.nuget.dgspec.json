@@ -1,35 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Aleksa\\Desktop\\PROJEKAT 16.11.2025\\FootballRef\\backend\\FootballRef.Api\\FootballRef.Api.csproj": {}
+    "C:\\Users\\Aleksa1\\Desktop\\Football-referee-system\\FootballRef\\backend\\FootballRef.Api\\FootballRef.Api.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Aleksa\\Desktop\\PROJEKAT 16.11.2025\\FootballRef\\backend\\FootballRef.Api\\FootballRef.Api.csproj": {
+    "C:\\Users\\Aleksa1\\Desktop\\Football-referee-system\\FootballRef\\backend\\FootballRef.Api\\FootballRef.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Aleksa\\Desktop\\PROJEKAT 16.11.2025\\FootballRef\\backend\\FootballRef.Api\\FootballRef.Api.csproj",
+        "projectUniqueName": "C:\\Users\\Aleksa1\\Desktop\\Football-referee-system\\FootballRef\\backend\\FootballRef.Api\\FootballRef.Api.csproj",
         "projectName": "FootballRef.Api",
-        "projectPath": "C:\\Users\\Aleksa\\Desktop\\PROJEKAT 16.11.2025\\FootballRef\\backend\\FootballRef.Api\\FootballRef.Api.csproj",
-        "packagesPath": "C:\\Users\\Aleksa\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Aleksa\\Desktop\\PROJEKAT 16.11.2025\\FootballRef\\backend\\FootballRef.Api\\obj\\",
+        "projectPath": "C:\\Users\\Aleksa1\\Desktop\\Football-referee-system\\FootballRef\\backend\\FootballRef.Api\\FootballRef.Api.csproj",
+        "packagesPath": "C:\\Users\\Aleksa1\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Aleksa1\\Desktop\\Football-referee-system\\FootballRef\\backend\\FootballRef.Api\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Aleksa\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\Aleksa1\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
+            "framework": "net9.0",
             "targetAlias": "net9.0",
             "projectReferences": {}
           }
@@ -44,10 +39,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net9.0": {
+          "framework": "net9.0",
           "targetAlias": "net9.0",
           "dependencies": {
             "Microsoft.AspNetCore.OpenApi": {
@@ -66,6 +62,24 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.17, 9.0.17]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[9.0.17, 9.0.17]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.17, 9.0.17]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[9.0.17, 9.0.17]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -74,7 +88,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
