@@ -18,6 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js"></script>
 
     <!-- css -->
+    <link rel="stylesheet" href="../styles/pages/variables.css" />
     <link rel="stylesheet" href="../styles/pages/dashboard.css" />
     <link rel="stylesheet" href="../styles/pages/match.css" />
     <link rel="stylesheet" href="../styles/pages/leagues.css" />
@@ -37,9 +38,7 @@
     <div
       class="tabs-header d-flex justify-content-between align-items-center px-3 py-2"
     >
-      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">
-        ☰
-      </button>
+      
 
       <!-- LEVI DEO – LOGO + TABOVI -->
       <div class="d-flex align-items-center gap-4">
@@ -52,7 +51,7 @@
 
         <!-- TABS -->
         <!-- TAB NAV (u headeru) -->
-        <ul class="nav nav-pills gap-2" id="mainTabs" role="tablist">
+        <ul class="nav nav-pills gap-2 d-none d-lg-flex" id="mainTabs" role="tablist">
           <li class="nav-item" role="presentation">
             <a
               class="nav-link active"
@@ -133,27 +132,6 @@
       </div>
     </div>
 
-    <div class="mobile-sidebar" id="mobileSidebar">
-       <img
-          src="../assets/images/fss-logo.png"
-          alt="Logo"
-          class="header-logo-sidebar"
-        />
-      <ul class="nav flex-column gap-2 p-3">
-        <li>
-          <a class="nav-link active" data-tab="#tab-dashboard">Dashboard</a>
-        </li>
-        <li>
-          <a class="nav-link" data-tab="#tab-scheduled">My scheduled matches</a>
-        </li>
-        <li>
-          <a class="nav-link" data-tab="#tab-past">My past matches</a>
-        </li>
-        <li>
-          <a class="nav-link" data-tab="#tab-leagues">Leagues</a>
-        </li>
-      </ul>
-    </div>
 
     <!-- #endregion -->
 
@@ -213,6 +191,27 @@
         <div class="p-3 leagues-root"></div>
       </div>
     </div>
+
+    <!-- markup za bottom navigaciju -->
+     <nav class="bottom-nav d-lg-none" id="bottomNav">
+  <button class="bottom-nav-item active" data-tab="#tab-dashboard">
+    <svg viewBox="0 0 24 24" class="bottom-nav-icon"><path d="M3 11l9-8 9 8M5 10v10h14V10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>Dashboard</span>
+  </button>
+  <button class="bottom-nav-item" data-tab="#tab-scheduled">
+    <svg viewBox="0 0 24 24" class="bottom-nav-icon"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span>Zakazano</span>
+  </button>
+  <button class="bottom-nav-item" data-tab="#tab-past">
+    <svg viewBox="0 0 24 24" class="bottom-nav-icon"><path d="M12 2a10 10 0 1 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 6v6l4 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span>Odigrano</span>
+  </button>
+  <button class="bottom-nav-item" data-tab="#tab-leagues">
+    <svg viewBox="0 0 24 24" class="bottom-nav-icon"><path d="M4 21V10M12 21V3M20 21v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span>Lige</span>
+  </button>
+</nav>
+
     <script src="../js/main.js" type="module" defer></script>
     <script
       src="../js/controllers/matchesController.js"

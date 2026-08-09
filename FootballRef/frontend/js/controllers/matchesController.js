@@ -8,7 +8,18 @@ import {
   officialClickHandler,
 } from "../views/matchView.js";
 
-import { loadMatches, loadMatchesForDate } from "../models/matchesModel.js";
+import { showMatchDetailsModal } from "../views/modalView.js";
+import { initMatchClickHandler } from "../views/matchView.js";
+import {
+  loadMatches,
+  loadMatchesForDate,
+  loadMatchDetails,
+  submitMatchEvent,
+  updateMatchStatus,
+} from "../models/matchesModel.js";
+
+
+let calendarInstance = null;
 
 function highlightSelectedDay(dateStr) {
   document
@@ -38,6 +49,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   const todaysMatches = await loadMatchesForDate(refereeId, todayStr);
   renderMatchesOnDashboard(todaysMatches, "#matches-panel");
 
+  initMatchClickHandler("#matches-panel", (matchId) => {
+    const details = loadMatchDetails(matchId);
+    if (!details) return;
+
+    showMatchDetailsModal(details, {
+      onActionAdded: (eventPayload) => submitMatchEvent(eventPayload),
+      onStatusChange: (newStatus) => updateMatchStatus(details.id, newStatus),
+    });
+  });
+
   const fcEvents = allMatches.map((m) => ({
     id: m.id,
     title: `${m.teams.home.name} - ${m.teams.away.name}`,
@@ -45,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     extendedProps: { matchId: m.id, status: m.status },
   }));
 
-  const calendar = initCalendar("#calendar", {
+  calendarInstance = initCalendar("#calendar", {
     initialEvents: fcEvents,
     async onDateClick(info) {
       highlightSelectedDay(info.dateStr);
@@ -56,6 +77,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("event clicked", event.id, event.extendedProps);
     },
   });
+
+   const dashboardTab = document.getElementById("tab-dashboard");
+  if (dashboardTab) {
+    dashboardTab.addEventListener("shown.bs.tab", () => {
+      if (calendarInstance) {
+        calendarInstance.updateSize();
+      }
+    });
+  }
 
   // za brisanje:
   // destroyCalendar(calendar);

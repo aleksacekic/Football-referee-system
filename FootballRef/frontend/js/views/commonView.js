@@ -1,18 +1,4 @@
-export function initTabs() {
-  const tabs = document.querySelectorAll(".nav-link");
-
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", function (event) {
-      event.preventDefault();
-
-      // skini active sa svih
-      tabs.forEach((t) => t.classList.remove("active"));
-      // postavi active samo na kliknuti tab
-      this.classList.add("active");
-    });
-  });
-}
-
+// Helper za kreiranje DOM elemenata — koristi ga MatchView.js
 export function el(tag, opts = {}) {
   const e = document.createElement(tag);
   if (opts.className) e.className = opts.className;
@@ -24,48 +10,42 @@ export function el(tag, opts = {}) {
   return e;
 }
 
-function checkActiveTab() {
+// Element sa data-tab="#neki-id" samo "klikne" pravi skriveni Bootstrap tab.
+export function bindTabProxy(rootEl) {
+  if (!rootEl) return;
+  rootEl.addEventListener("click", (e) => {
+    const link = e.target.closest("[data-tab]");
+    if (!link) return;
+    const realTab = document.querySelector(link.dataset.tab);
+    if (realTab) realTab.click();
+  });
+}
+
+// Sinhronizuje "active" klasu na bottom nav-u kad se top tab promeni.
+// Ostaje korisno cak i posle uklanjanja hamburger sidebar-a, jer desktop
+// korisnik moze da smanji prozor i tako "predje" na mobilni prikaz —
+// bottom nav mora da zna koji je tab trenutno aktivan.
+function syncBottomNavState() {
   const headerTabs = document.querySelectorAll("#mainTabs .nav-link");
-  const sidebarLinks = document.querySelectorAll("#mobileSidebar .nav-link");
+  const bottomLinks = document.querySelectorAll("#bottomNav [data-tab]");
 
   headerTabs.forEach((tab) => {
     tab.addEventListener("shown.bs.tab", () => {
       const id = `#${tab.id}`;
-
-      sidebarLinks.forEach((l) => l.classList.remove("active"));
-
-      const activeSide = document.querySelector(
-        `#mobileSidebar [data-tab="${id}"]`
+      bottomLinks.forEach((l) =>
+        l.classList.toggle("active", l.dataset.tab === id)
       );
-      if (activeSide) activeSide.classList.add("active");
     });
   });
 }
 
-export function initHamburgerMenu() {
-  checkActiveTab();
-  const hamburgerBtn = document.getElementById("hamburgerBtn");
-  const sidebar = document.getElementById("mobileSidebar");
-
-  /* otvaranje / zatvaranje */
-  hamburgerBtn.addEventListener("click", () => {
-    sidebar.classList.toggle("open");
-  });
-
-  /* KLIK NA SIDEBAR TAB */
-  sidebar.addEventListener("click", (e) => {
-    const link = e.target.closest(".nav-link");
-    if (!link) return;
-
-    const targetTabSelector = link.dataset.tab;
-    const realTab = document.querySelector(targetTabSelector);
-
-    if (realTab) {
-      realTab.click(); // 🔥 BOOTSTRAP radi sve ostalo
-    }
-
-    sidebar.classList.remove("open");
-  });
+export function initBottomNav() {
+  syncBottomNavState();
+  const bottomNav = document.getElementById("bottomNav");
+  bindTabProxy(bottomNav);
 }
 
-
+export function initTabs() {
+  // NAMERNO PRAZNO — Bootstrap (data-bs-toggle="tab") vec upravlja
+  // prikazom panela i "active" klasom na .nav-link unutar iste .nav grupe.
+}

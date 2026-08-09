@@ -6,14 +6,14 @@
 }
 
 body {
-  background: #f4f6f9;
-  color: #1f2937;
+  background: var(--bg-app);
+  color: var(--text-primary);
 }
 
 .app-header {
   height: 64px;
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
 
   display: flex;
   align-items: center;
@@ -29,7 +29,7 @@ body {
 
 .club-name {
   font-weight: 500;
-  color: #374151;
+  color: var(--text-secondary);
 }
 
 #logoutBtn {
@@ -37,7 +37,7 @@ body {
   border: none;
   cursor: pointer;
   font-weight: 500;
-  color: #ef4444;
+  color: var(--status-live);
 }
 
 .dashboard-layout {
@@ -50,17 +50,18 @@ body {
 }
 
 .sidebar {
-  background: #ffffff;
+  background: var(--bg-surface);
   border-radius: 10px;
   padding: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-subtle);
 }
 
 .sidebar h3 {
   margin-bottom: 12px;
   font-size: 15px;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-secondary);
 }
 
 .matches-list {
@@ -73,21 +74,24 @@ body {
 .matches-list li {
   padding: 10px;
   border-radius: 6px;
-  background: #f9fafb;
+  background: var(--bg-surface-hover);
   font-size: 14px;
+  color: var(--text-primary);
 }
 
 .main-content {
-  background: #ffffff;
+  background: var(--bg-surface);
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-subtle);
 }
 
 .main-content h2 {
   margin-bottom: 20px;
   font-size: 20px;
   font-weight: 600;
+  color: var(--text-primary);
 }
 
 #createMatchForm {
@@ -103,7 +107,7 @@ body {
 
 .form-group label {
   font-size: 13px;
-  color: #6b7280;
+  color: var(--text-secondary);
   margin-bottom: 6px;
 }
 
@@ -111,17 +115,20 @@ body {
 .form-group select {
   padding: 10px 12px;
   border-radius: 6px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
   font-size: 14px;
 }
 
 .form-group input:disabled {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--bg-surface);
+  color: var(--text-muted);
 }
 
 input[type="file"] {
   font-size: 13px;
+  color: var(--text-secondary);
 }
 
 #createMatchForm button {
@@ -132,7 +139,7 @@ input[type="file"] {
   border-radius: 8px;
   border: none;
 
-  background: #2563eb;
+  background: var(--accent-primary);
   color: #ffffff;
   font-size: 15px;
   font-weight: 500;
@@ -141,7 +148,7 @@ input[type="file"] {
 }
 
 #createMatchForm button:hover {
-  background: #1d4ed8;
+  background: var(--accent-primary-dark);
 }
 
 .league-table {
@@ -151,11 +158,12 @@ input[type="file"] {
 }
 
 .league-table tr {
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .league-table td {
   padding: 8px 4px;
+  color: var(--text-primary);
 }
 
 
@@ -164,7 +172,6 @@ input[type="file"] {
     grid-template-columns: 1fr 2fr;
   }
 
-  /* desni sidebar ide dole */
   .dashboard-layout .sidebar:last-child {
     grid-column: 1 / -1;
   }
@@ -250,4 +257,3 @@ input[type="file"] {
     font-size: 15px;
   }
 }
-

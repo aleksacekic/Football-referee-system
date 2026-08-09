@@ -1,13 +1,12 @@
 .league-preview {
   display: flex;
   flex-direction: row;
-  background-color: #ffffff;
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
   padding: 1rem 1.25rem;
-  /* min-height: 200px; */
   margin-left: 30px;
-   margin-right: 30px;
+  margin-right: 30px;
   margin-bottom: 10px !important;
   margin-top: 10px !important;
   max-width: 1200px;
@@ -15,41 +14,41 @@
 
   font-weight: 600;
   font-size: x-large;
+  color: var(--text-primary);
 
-  -webkit-user-select: none; /* Safari */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* IE 10+ */
-  user-select: none; /* Standard syntax */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 @media (max-width: 420px) {
   .league-preview {
-    margin:0px;
+    margin: 0px;
     margin-bottom: 10px;
     font-weight: 700;
     font-size: large;
   }
 }
 
-.team-table{
+.team-table {
   cursor: pointer;
 }
 
-
 /* --- card wrapper style (usklađeno sa league-preview) --- */
 .league-table {
-  display:none;
+  display: none;
   margin: 12px 30px 20px;
   max-width: 1200px;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
   padding: 12px;
   overflow: hidden;
 }
 
-.active{
-  display:block;
+.active {
+  display: block;
 }
 
 /* table basics */
@@ -57,31 +56,27 @@
   width: 100%;
   border-collapse: collapse;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  color: #0f1720;
+  color: var(--text-primary);
 }
 
-/* Ensure consistent sizing model */
 .standings, .standings th, .standings td {
   box-sizing: border-box;
 }
 
-/* Use fixed table layout so column widths are stable */
 .standings {
   table-layout: fixed;
 }
 
-/* define per-column widths so numbers line up exactly */
-.standings thead th.col-pos { width: 48px; }    /* # */
-.standings thead th.col-team { width: auto; }   /* team takes remaining space */
-.standings thead th.col-played { width: 52px; } /* M */
+.standings thead th.col-pos { width: 48px; }
+.standings thead th.col-team { width: auto; }
+.standings thead th.col-played { width: 52px; }
 .standings thead th.col-w,
 .standings thead th.col-d,
-.standings thead th.col-l { width: 44px; }     /* W D L */
-.standings thead th.col-g { width: 90px; }     /* GF:GA */
-.standings thead th.col-gd { width: 56px; }    /* GD */
-.standings thead th.col-points { width: 64px; }/* Pts */
+.standings thead th.col-l { width: 44px; }
+.standings thead th.col-g { width: 90px; }
+.standings thead th.col-gd { width: 56px; }
+.standings thead th.col-points { width: 64px; }
 
-/* Apply same widths to tds by class (important for fixed layout) */
 .standings td.col-pos { width: 48px; }
 .standings td.col-played { width: 52px; }
 .standings td.col-w, .standings td.col-d, .standings td.col-l { width: 44px; }
@@ -89,7 +84,6 @@
 .standings td.col-gd { width: 56px; }
 .standings td.col-points { width: 64px; }
 
-/* Center numeric columns */
 .standings td.col-played,
 .standings td.col-w,
 .standings td.col-d,
@@ -101,13 +95,11 @@
   white-space: nowrap;
 }
 
-/* Ensure header cells align same as body cells */
 .standings thead th {
-  text-align: left; /* keep first two left aligned by default */
+  text-align: left;
   vertical-align: middle;
 }
 
-/* make numeric headers centered too */
 .standings thead th.col-played,
 .standings thead th.col-w,
 .standings thead th.col-d,
@@ -118,13 +110,10 @@
   text-align: center;
 }
 
-/* Prevent team name from pushing layout unexpectedly */
-.team-cell { min-width: 0; }            /* allow team cell to shrink */
+.team-cell { min-width: 0; }
 .team-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* Slight tweak for mobile breakpoints (if some columns are hidden) */
 @media (max-width: 760px) {
-  /* If columns are hidden, allow table to reflow - but keep alignment */
   .standings { table-layout: auto; }
 }
 
@@ -134,8 +123,8 @@
   font-weight: 700;
   font-size: 0.92rem;
   padding: 10px 12px;
-  color: #334155;
-  border-bottom: 1px solid #eef2f6;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-subtle);
   vertical-align: middle;
 }
 
@@ -144,17 +133,17 @@
   transition: background .12s ease, transform .08s ease;
 }
 .standings tbody tr:hover {
-  background: #fbfdff;
+  background: var(--bg-surface-hover);
   transform: translateY(-1px);
 }
 
 /* cells */
 .standings td {
   padding: 10px 12px;
-  border-bottom: 1px solid #f5f7fb;
+  border-bottom: 1px solid var(--border-subtle);
   vertical-align: middle;
   font-size: 0.95rem;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 /* team cell (logo + name) */
@@ -168,7 +157,7 @@
   height: 36px;
   object-fit: cover;
   border-radius: 6px;
-  background: #eef2f6;
+  background: var(--bg-surface-hover);
   flex-shrink: 0;
 }
 .team-meta {
@@ -182,27 +171,24 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--text-primary);
 }
 .team-short {
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--text-muted);
 }
 
-/* position cell smaller */
 .col-pos { width: 48px; text-align: left; font-weight: 700; }
 
-/* numeric columns center */
 .col-played, .col-w, .col-d, .col-l, .col-gd, .col-points, .col-g {
   text-align: center;
   white-space: nowrap;
 }
 
-/* visually emphasize points */
-.col-points { font-weight: 800; color: #0d9488; }
+.col-points { font-weight: 800; color: var(--accent-teal); }
 
 /* --- RESPONSIVE: hide less important cols progressively --- */
 
-/* At medium widths hide GD (goal difference) */
 @media (max-width: 1000px) {
   .standings th.col-gd,
   .standings td.col-gd {
@@ -210,7 +196,6 @@
   }
 }
 
-/* At smaller widths hide W/D/L (show only M, G and P) */
 @media (max-width: 760px) {
   .standings th.col-w, .standings td.col-w,
   .standings th.col-d, .standings td.col-d,
@@ -219,10 +204,8 @@
   }
 }
 
-/* At very small widths show only Team | M | G | P (and collapse team text) */
 @media (max-width: 550px) {
-  /* keep team, played, goals, points visible; hide others */
-  .standings th.col-pos, .standings td.col-pos { display: none; } /* optional hide rank */
+  .standings th.col-pos, .standings td.col-pos { display: none; }
   .standings th.col-gd, .standings td.col-gd,
   .standings th.col-w, .standings td.col-w,
   .standings th.col-d, .standings td.col-d,
@@ -230,45 +213,39 @@
     display: none;
   }
 
-  /* team cell: allow wrapping or shorten */
   .team-name-standings {
     white-space: normal;
     font-size: 0.95rem;
   }
 
-  /* make logos a bit bigger for touch */
   .team-logo-standings { width: 42px; height: 42px; }
 
-  /* tighten paddings */
   .standings thead th, .standings td { padding: 8px 10px; font-size: 0.92rem; }
 
-  .p-3{padding:0 !important;}
+  .p-3 { padding: 0 !important; }
 }
 
-/* Ultra-small 320px tweaks */
 @media (max-width: 420px) {
- 
-  .league-table{margin:0px;}
+  .league-table { margin: 0px; }
 }
 
-/* Ultra-small 320px tweaks */
 @media (max-width: 360px) {
   .team-logo-standings { width: 36px; height: 36px; }
   .standings thead th, .standings td { padding: 6px 8px; font-size: 0.9rem; }
-  .league-table{margin:0px;}
+  .league-table { margin: 0px; }
 }
 
-.opened{
-  background-color: #e6f0ff;
+.opened {
+  background-color: rgba(60, 140, 232, 0.12);
 }
 
-/* ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+/* ================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================ */
 
 /* Overlay + modal */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -286,11 +263,12 @@
   width: min(920px, 96%);
   max-height: 90vh;
   overflow-y: auto;
-  background: #fff;
+  background: var(--bg-surface-raised);
   border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(6,18,31,0.3);
+  box-shadow: var(--shadow-lg);
   padding: 18px;
   position: relative;
+  color: var(--text-primary);
 }
 
 /* header */
@@ -305,16 +283,16 @@
   height: 72px;
   border-radius: 10px;
   object-fit: cover;
-  background: #f3f6f8;
+  background: var(--bg-surface-hover);
   flex-shrink: 0;
 }
 .team-modal__title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #0f1720;
+  color: var(--text-primary);
 }
 .team-modal__subtitle {
-  color: #64748b;
+  color: var(--text-muted);
   font-size: 0.9rem;
 }
 
@@ -329,13 +307,13 @@
   cursor: pointer;
   padding: 8px;
   border-radius: 8px;
+  color: var(--text-secondary);
 }
-.team-modal__close:hover { background: #f3f5f7; }
+.team-modal__close:hover { background: var(--bg-surface-hover); }
 
 /* body layout */
 .team-modal__body {
   display: grid;
-  /* grid-template-columns: 1fr 320px; */
   gap: 18px;
 }
 @media (max-width: 880px) {
@@ -344,21 +322,22 @@
 
 /* left content: history / matches (placeholder) */
 .team-modal__section {
-  background: #fbfdff;
+  background: var(--bg-surface);
   padding: 12px;
   border-radius: 10px;
-  border: 1px solid #eef4f9;
+  border: 1px solid var(--border-subtle);
   margin-bottom: 12px;
+  color: var(--text-secondary);
 }
 
 /* quick stats on right */
 .team-modal__side {
-  background: #ffffff;
+  background: var(--bg-surface);
   border-radius: 10px;
   padding: 12px;
-  border: 1px solid #eef2f6;
+  border: 1px solid var(--border-subtle);
   position: sticky;
-  top: 24px; /* sticks a bit while scrolling */
+  top: 24px;
 }
 .team-stats-grid {
   display: grid;
@@ -366,13 +345,13 @@
   gap: 10px;
 }
 .team-stat {
-  background: #f8fafc;
+  background: var(--bg-surface-hover);
   padding: 10px;
   border-radius: 8px;
   text-align: center;
 }
-.team-stat .label { color: #64748b; font-size: 0.78rem; }
-.team-stat .value { font-weight: 800; font-size: 1.05rem; color: #0d9488; }
+.team-stat .label { color: var(--text-muted); font-size: 0.78rem; }
+.team-stat .value { font-weight: 800; font-size: 1.05rem; color: var(--accent-teal); }
 
 /* small niceties */
 .modal-overlay.hidden { display: none; }

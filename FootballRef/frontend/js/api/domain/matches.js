@@ -11,8 +11,9 @@ export const matches = [
     officials: [
       { userId: 2, role: "REFEREE" },
       { userId: 5, role: "ASSISTANT_1" },
+      { userId: 1, role: "DELEGATE" },
     ],
-    status: "PLAYED",
+    status: "SCHEDULED",
     mupDocument: null,
   },
   {
@@ -27,8 +28,9 @@ export const matches = [
     officials: [
       { userId: 2, role: "REFEREE" },
       { userId: 5, role: "ASSISTANT_1" },
+      { userId: 1, role: "DELEGATE" },
     ],
-    status: "PLAYED",
+    status: "SCHEDULED",
     mupDocument: null,
   },
   {
@@ -40,8 +42,8 @@ export const matches = [
     time: "12:00",
     location: "Leskovac",
     round: 13,
-    officials: [{ userId: 2, role: "REFEREE" }],
-    status: "PLAYED",
+    officials: [{ userId: 2, role: "REFEREE" }, { userId: 1, role: "DELEGATE" }],
+    status: "SCHEDULED",
     mupDocument: null,
   },
 ];

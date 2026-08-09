@@ -1,32 +1,7 @@
-// import { fetchMatches, fetchMatchesForDate } from "../api/domain/fakeData.js";
-
-// let state = {
-//   matches: [],
-//   matchesForDate: [],
-// };
-
-// export async function loadMatches() {
-//   const data = await fetchMatches();
-//   state.matches = data;
-//   return state.matches;
-// }
-
-// export async function loadMatchesForDate() {
-//   const data = await fetchMatchesForDate();
-//   state.matchesForDate = data;
-//   return state.matchesForDate;
-// }
-
-// //dobra praksa - GETERI
-// export function getMatches() {
-//   return state.matches;
-// }
-
-// export function getMatchesForDate() {
-//   return state.matchesForDate;
-// }
-
 import { getMatchesForReferee } from "../api/views/getMatchesForReferee.js";
+import { getMatchDetailsById } from "../api/views/buildMatchDetails.js";
+import { addMatchEvent } from "../api/domain/matchEvents.js";
+import { matches } from "../api/domain/matches.js";
 
 let state = {
   allMatches: [],
@@ -49,4 +24,19 @@ export function getMatches() {
 
 export function getPanelMatches() {
   return state.panelMatches;
+}
+
+export function loadMatchDetails(matchId) {
+  return getMatchDetailsById(matchId);
+}
+
+export function submitMatchEvent(eventPayload) {
+  addMatchEvent(eventPayload);
+  return getMatchDetailsById(eventPayload.matchId);
+}
+
+export function updateMatchStatus(matchId, newStatus) {
+  const match = matches.find((m) => m.id === Number(matchId));
+  if (match) match.status = newStatus;
+  return getMatchDetailsById(matchId);
 }

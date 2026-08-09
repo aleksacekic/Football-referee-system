@@ -1,32 +1,55 @@
-
-
-/* Omotač da kalendar ne bude zalepljen uz ivice */
 #calendar-wrapper {
-  background-color: #ffffff;
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
   padding: 1rem;
+  color: var(--text-primary);
+
+  /* FullCalendar izlaže sopstvene CSS varijable za temu —
+     ne moramo da gadjamo njegove interne klase napamet */
+  --fc-border-color: var(--border-subtle);
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: var(--bg-surface-hover);
+  --fc-today-bg-color: rgba(60, 140, 232, 0.12);
+  --fc-button-bg-color: var(--bg-surface-raised);
+  --fc-button-border-color: var(--border-default);
+  --fc-button-hover-bg-color: var(--bg-surface-hover);
+  --fc-button-active-bg-color: var(--accent-primary);
 }
 
+/* Brojevi dana i naslov meseca — FullCalendar ne stavlja boju
+   na ove elemente, pa moramo eksplicitno da je damo */
+#calendar-wrapper .fc-daygrid-day-number,
+#calendar-wrapper .fc-col-header-cell-cushion,
+#calendar-wrapper .fc-toolbar-title {
+  color: var(--text-primary);
+}
 
+/* dani van trenutnog meseca - blediji */
+#calendar-wrapper .fc-daygrid-day.fc-day-other .fc-daygrid-day-number {
+  color: var(--text-muted);
+}
 
-/* Panel sa utakmicama */
 #matches-panel {
-  background-color: #ffffff;
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
   padding: 1rem 1.25rem;
   min-height: 200px;
+  color: var(--text-primary);
 }
 
 .matches-title {
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
-  color: #1e4d8b;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
 }
 
-/* Ako očekuješ puno utakmica, dodaj scroll */
 #matches-list {
   max-height: 600px;
   overflow-y: auto;
@@ -35,16 +58,19 @@
 .match-item {
   display: flex;
   flex-direction: column;
-  border: 1px solid black;
-  margin-bottom: 5px;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 6px;
-  padding-bottom: 6px;
-  background-color: #2d6bb7;
-  color: white;
-  border-radius: 5px;
+  border: 1px solid var(--border-subtle);
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  background-color: var(--bg-surface-raised);
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.match-item:hover {
+  background-color: var(--bg-surface-hover);
+  transform: translateY(-1px);
 }
 
 .matchitem-firstrow {
@@ -52,6 +78,8 @@
   flex-direction: row;
   justify-content: space-between;
   margin-bottom: -3px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
 }
 
 .match-teams {
@@ -59,7 +87,6 @@
   font-size: x-large;
 }
 
-/* Kalendar sam po sebi samo prati širinu omotača */
 #calendar {
   max-width: 100%;
 }

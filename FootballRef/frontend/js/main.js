@@ -1,4 +1,4 @@
-import { initTabs, initHamburgerMenu } from "./views/commonView.js";
+import { initTabs, initBottomNav } from "./views/commonView.js";
 import {
   //initDashboard,
   initMatches,
@@ -8,11 +8,12 @@ import {
 } from "./controllers/matchesController.js";
 import { initLeagues } from "./controllers/leaguesController.js";
 
+
 initTabs();
-//initDashboard();
+initBottomNav();
+
 initMatches();
 initPlayerActionsDelegation();
 initOfficialActionsDelegation();
-initHamburgerMenu();
 initLeagues();
 

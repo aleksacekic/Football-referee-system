@@ -25,3 +25,17 @@ export const matchEvents = [
     playerInId: 12,
   },
 ];
+
+let nextId = matchEvents.length
+  ? Math.max(...matchEvents.map((e) => e.id)) + 1
+  : 1;
+
+export function addMatchEvent(event) {
+  const newEvent = { id: nextId++, ...event };
+  matchEvents.push(newEvent);
+  return newEvent;
+}
+
+export function getEventsForMatch(matchId) {
+  return matchEvents.filter((e) => e.matchId === matchId);
+}
