@@ -5,7 +5,7 @@ export const teams = [
     short: "RDN",
     leagueId: 1,
     representativeUserId: 1,
-    logo: "../assets/images/team1.jpeg",
+    logo: "/assets/images/team-1.jpg",
   },
 
   {
@@ -14,7 +14,7 @@ export const teams = [
     short: "DUB",
     leagueId: 1,
     representativeUserId: null,
-    logo: "../assets/images/team1.jpeg",
+    logo: "/assets/images/team-1.jpg",
   },
   {
     id: 3,
@@ -22,6 +22,6 @@ export const teams = [
     short: "PIR",
     leagueId: 1,
     representativeUserId: null,
-    logo: "../assets/images/team1.jpeg",
+    logo: "/assets/images/team-1.jpg",
   },
 ];

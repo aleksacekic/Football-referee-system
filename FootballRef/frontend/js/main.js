@@ -1,12 +1,12 @@
-import { initTabs, initBottomNav } from "./views/commonView.js";
+import { initTabs, initBottomNav } from "./views/common-view.js";
 import {
   //initDashboard,
   initMatches,
   initPlayerActionsDelegation,
   initOfficialActionsDelegation,
   //startGameButton
-} from "./controllers/matchesController.js";
-import { initLeagues } from "./controllers/leaguesController.js";
+} from "./controllers/matches-controller.js";
+import { initLeagues } from "./controllers/leagues-controller.js";
 
 
 initTabs();

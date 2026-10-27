@@ -1,0 +1,12 @@
+# Node / frontend
+node_modules/
+dist/
+
+# .NET backend (build output)
+bin/
+obj/
+.vs/
+*.user
+
+# Claude
+.claude/
