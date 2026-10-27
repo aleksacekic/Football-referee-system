@@ -1,19 +1,14 @@
 import { matches } from "../domain/matches.js";
 import { teams } from "../domain/teams.js";
 import { leagues } from "../domain/leagues.js";
-import { users } from "../domain/users.js";
 import { matchTimes } from "../domain/match-times.js";
-import { matchLineups } from "../domain/match-lineups.js";
-import { teamMembers } from "../domain/team-members.js";
-import { matchEvents } from "../domain/match-events.js";
 import { computeFinalScore } from "./match-score.js";
-
 
 function createEmptyStats(team) {
   return {
     teamId: team.id,
     teamName: team.name,
-    short: team.shortName,
+    short: team.short,
     logo: team.logo,
     played: 0,
     w: 0,
@@ -25,73 +20,73 @@ function createEmptyStats(team) {
   };
 }
 
+function addResult(stats, goalsFor, goalsAgainst) {
+  stats.played++;
+  stats.goalsFor += goalsFor;
+  stats.goalsAgainst += goalsAgainst;
+
+  if (goalsFor > goalsAgainst) {
+    stats.w++;
+    stats.points += 3;
+  } else if (goalsFor < goalsAgainst) {
+    stats.l++;
+  } else {
+    stats.d++;
+    stats.points++;
+  }
+}
+
+const goalDiff = (t) => t.goalsFor - t.goalsAgainst;
+
+// Redosled: bodovi -> gol-razlika -> vise datih golova -> ime (abecedno).
+function compareStandings(a, b) {
+  return (
+    b.points - a.points ||
+    goalDiff(b) - goalDiff(a) ||
+    b.goalsFor - a.goalsFor ||
+    a.teamName.localeCompare(b.teamName)
+  );
+}
+
 export function buildLeagueStandings() {
   return leagues.map((league) => {
-    const leagueTeams = teams.filter((t) => t.leagueId === league.id);
-    const leagueMatches = matches.filter(
-      (m) => m.leagueId === league.id && m.status === "PLAYED"
-    );
+    const table = teams.filter((t) => t.leagueId === league.id).map(createEmptyStats);
 
-    const table = leagueTeams.map(createEmptyStats);
+    // U tabelu ulaze samo odigrani (zakljucani) mecevi.
+    matches
+      .filter((m) => m.leagueId === league.id && m.status === "PLAYED")
+      .forEach((match) => {
+        const score = computeFinalScore(matchTimes.filter((t) => t.matchId === match.id));
+        if (score.home === null) return; // odigran, ali bez upisanih poluvremena
 
-    leagueMatches.forEach((match) => {
-        const matchTajms = matchTimes.filter((t) => t.matchId === match.id);
-        const score = computeFinalScore(matchTajms);
-        if (score.home === null) return;
+        const home = table.find((t) => t.teamId === match.homeTeamId);
+        const away = table.find((t) => t.teamId === match.awayTeamId);
+        if (!home || !away) {
+          console.warn(`Match ${match.id}: team is not in league ${league.id}`);
+          return;
+        }
 
-      const home = table.find((t) => t.teamId === match.homeTeamId);
-      const away = table.find((t) => t.teamId === match.awayTeamId);
+        addResult(home, score.home, score.away);
+        addResult(away, score.away, score.home);
+      });
 
-      home.played++;
-      away.played++;
-
-      home.goalsFor += score.home;
-      home.goalsAgainst += score.away;
-
-      away.goalsFor += score.away;
-      away.goalsAgainst += score.home;
-
-      if (score.home > score.away) {
-        home.w++;
-        home.points += 3;
-        away.l++;
-      } else if (score.home < score.away) {
-        away.w++;
-        away.points += 3;
-        home.l++;
-      } else {
-        home.d++;
-        away.d++;
-        home.points++;
-        away.points++;
-      }
-    });
-
-    console.log(table);
-
-    const standings = table
-      .sort(
-        (a, b) =>
-          b.points - a.points ||
-          b.goalsFor - b.goalsAgainst - (a.goalsFor - a.goalsAgainst)
-      )
-      .map((team, index) => ({
-        pos: index + 1,
-        teamName: team.teamName,
-        short: team.short,
-        logo: team.logo,
-        played: team.played,
-        w: team.w,
-        d: team.d,
-        l: team.l,
-        g: `${team.goalsFor}:${team.goalsAgainst}`,
-        gd: `${team.goalsFor - team.goalsAgainst >= 0 ? "+" : ""}${
-          team.goalsFor - team.goalsAgainst
-        }`,
-        points: team.points,
-      }));
+    const standings = table.sort(compareStandings).map((team, index) => ({
+      pos: index + 1,
+      teamId: team.teamId,
+      teamName: team.teamName,
+      short: team.short,
+      logo: team.logo,
+      played: team.played,
+      w: team.w,
+      d: team.d,
+      l: team.l,
+      g: `${team.goalsFor}:${team.goalsAgainst}`,
+      gd: `${goalDiff(team) >= 0 ? "+" : ""}${goalDiff(team)}`,
+      points: team.points,
+    }));
 
     return {
+      leagueId: league.id,
       leagueName: league.name,
       standings,
     };

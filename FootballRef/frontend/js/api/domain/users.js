@@ -21,7 +21,7 @@ export const users = [
     phone: "+38164111222",
     role: "club-representative",
     teamId: 1,
-    photo: "/assets/images/users/aleksa.jpg",
+    photo: null, // slika jos ne postoji u assets/
   },
   {
     id: 2,
@@ -35,7 +35,7 @@ export const users = [
     inactivityFrom: "2025-03-10",
     inactivityTo: "2025-03-20",
     inactivityReason: "Injury",
-    photo: "/assets/images/users/referee1.jpg",
+    photo: null, // slika jos ne postoji u assets/
   },
   {
     id: 3,
@@ -54,7 +54,7 @@ export const users = [
     phone: "+38164111222",
     role: "club-representative",
     teamId: 1,
-    photo: "/assets/images/users/aleksa.jpg",
+    photo: null, // slika jos ne postoji u assets/
   },
   {
     id: 5,
@@ -68,7 +68,7 @@ export const users = [
     inactivityFrom: "2025-03-10",
     inactivityTo: "2025-03-20",
     inactivityReason: "State briga",
-    photo: "/assets/images/users/referee1.jpg",
+    photo: null, // slika jos ne postoji u assets/
   },
   {
     id: 6,

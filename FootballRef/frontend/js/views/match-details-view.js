@@ -1,5 +1,5 @@
-import { el } from "./common-view.js";
-import { canEditMatch, canSetMatchToPlayed } from "../services/auth-service.js";
+import { el, createGameStepButton } from "./common-view.js";
+import { canEditMatch } from "../services/auth-service.js";
 
 function buildResultBlock(matchDetails) {
   const result = el("div", { className: "result" });
@@ -37,11 +37,23 @@ function buildResultBlock(matchDetails) {
   return { result, scoreEl };
 }
 
+const PLAYER_STATE_CLASSES = {
+  SUBBED_OUT: "player-card--subbed-out",
+  SENT_OFF: "player-card--sent-off",
+};
+
+// Postavlja CSS klasu prema stanju igraca (zamenjen / iskljucen).
+function applyPlayerState(card, state) {
+  Object.values(PLAYER_STATE_CLASSES).forEach((c) => card.classList.remove(c));
+  if (PLAYER_STATE_CLASSES[state]) card.classList.add(PLAYER_STATE_CLASSES[state]);
+}
+
 function buildPlayerCard(player, isSub, editable, onOpenActionForm) {
   const li = el("li", {
     className: isSub ? "player-card substitute" : "player-card",
     attrs: { "data-player-id": String(player.id) },
   });
+  applyPlayerState(li, player.state);
   li.appendChild(
     el("img", {
       className: "player-photo",
@@ -58,7 +70,7 @@ function buildPlayerCard(player, isSub, editable, onOpenActionForm) {
 
   if (editable) {
     li.style.cursor = "pointer";
-    li.addEventListener("click", () => onOpenActionForm(player, isSub, actionEl));
+    li.addEventListener("click", () => onOpenActionForm(player.id));
   }
 
   return li;
@@ -100,7 +112,11 @@ function buildPlayersSection(sidePlayers, editable, onOpenActionForm) {
   return wrapper;
 }
 
-function openPlayerActionForm(player, isSub, teammates, onSubmit) {
+// canEnter      — igrac je na klupi i jos nije ulazio, pa moze da udje (izmena)
+// playersOnPitch — igraci njegovog tima koji su TRENUTNO na terenu (mogu da izadju)
+function openPlayerActionForm(player, canEnter, playersOnPitch, onSubmit) {
+  const isSub = canEnter && playersOnPitch.length > 0;
+  const teammates = playersOnPitch;
   const overlay = el("div", { className: "modal-overlay" });
   const modal = el("div", { className: "team-modal" });
 
@@ -145,6 +161,7 @@ function openPlayerActionForm(player, isSub, teammates, onSubmit) {
   let subWithSelect = null;
   const subWithWrapper = document.createElement("div");
   if (isSub) {
+    subWithWrapper.appendChild(el("label", { text: "Player going off:" }));
     subWithSelect = document.createElement("select");
     teammates.forEach((t) => addOption(subWithSelect, String(t.id), `${t.num} ${t.name}`));
     subWithWrapper.appendChild(subWithSelect);
@@ -195,7 +212,10 @@ function openPlayerActionForm(player, isSub, teammates, onSubmit) {
   });
 }
 
-export function showMatchDetailsModal(matchDetails, { onActionAdded, onStatusChange } = {}) {
+// callbacks:
+//   onActionAdded(eventPayload) -> vraca osvezene detalje meca
+//   onGameStep(matchId)         -> START GAME / END 1st HALF / ... / LOCK
+export function showMatchDetailsModal(matchDetails, { onActionAdded, onGameStep } = {}) {
   const overlay = el("div", { className: "modal-overlay" });
   const modal = el("div", {
     className: "team-modal",
@@ -246,37 +266,78 @@ export function showMatchDetailsModal(matchDetails, { onActionAdded, onStatusCha
   tabsWrap.appendChild(tabsUl);
   modal.appendChild(tabsWrap);
 
-  function handleActionSubmit(player, isSub, actionEl) {
-    const teammates = (matchDetails.players.home.starting.some((p) => p.id === player.id)
-      ? matchDetails.players.home.starting
-      : matchDetails.players.away.starting
-    ).filter((p) => p.id !== player.id);
+  // Uvek najsvezija verzija detalja meca — menja se posle svakog dogadjaja,
+  // da bi lista "ko je na terenu" bila tacna i za sledecu izmenu.
+  let current = matchDetails;
 
-    openPlayerActionForm(player, isSub, teammates, (payload) => {
+  const allPlayersOf = (details, side) => [
+    ...details.players[side].starting,
+    ...details.players[side].substitutes,
+  ];
+
+  // Kojoj strani ("home" / "away") pripada igrac i njegovi aktuelni podaci.
+  function findPlayer(playerId) {
+    for (const side of ["home", "away"]) {
+      const player = allPlayersOf(current, side).find((p) => p.id === playerId);
+      if (player) return { side, player };
+    }
+    return null;
+  }
+
+  // Posle svakog dogadjaja akcije i stanje na SVIM karticama citamo iz podataka.
+  // Tako izmena upise "IN" kod igraca koji ulazi i "OUT" kod onog koji izlazi,
+  // a prikaz i podaci ne mogu da se razidju.
+  function refreshPlayerCards(updatedDetails) {
+    const playerById = new Map();
+    ["home", "away"].forEach((side) =>
+      allPlayersOf(updatedDetails, side).forEach((p) => playerById.set(p.id, p))
+    );
+
+    modal.querySelectorAll(".player-card[data-player-id]").forEach((card) => {
+      const player = playerById.get(Number(card.dataset.playerId));
+      if (!player) return;
+      const actionEl = card.querySelector(".player-action");
+      if (actionEl) actionEl.textContent = player.action;
+      applyPlayerState(card, player.state);
+    });
+  }
+
+  function handleActionSubmit(playerId) {
+    const found = findPlayer(playerId);
+    if (!found) return;
+    const { side, player } = found;
+
+    const teamId = side === "home" ? current.homeTeamId : current.awayTeamId;
+    // Izlaziti mogu samo igraci SVOG tima koji su trenutno na terenu
+    // (starteri koji nisu zamenjeni + rezerve koje su vec usle).
+    const playersOnPitch = allPlayersOf(current, side).filter((p) => p.state === "ON_PITCH");
+    const canEnter = player.state === "BENCH";
+
+    openPlayerActionForm(player, canEnter, playersOnPitch, (payload) => {
       const eventPayload = {
         matchId: matchDetails.id,
+        teamId,
         type: payload.type,
         minute: payload.minute,
-        reason: payload.reason,
       };
 
+      // Razlog ima smisla samo za kartone.
+      if (payload.type === "YELLOW_CARD" || payload.type === "RED_CARD") {
+        eventPayload.reason = payload.reason;
+      }
+
       if (payload.type === "SUBSTITUTION") {
-        eventPayload.playerOutId = player.id;
-        eventPayload.playerInId = payload.subWithId;
+        // Kliknut je igrac sa klupe — on ULAZI, a izabrani starter IZLAZI.
+        eventPayload.playerInId = player.id;
+        eventPayload.playerOutId = payload.subWithId;
       } else {
         eventPayload.playerId = player.id;
       }
 
       const updated = onActionAdded(eventPayload);
-
-      const label =
-        payload.type === "SUBSTITUTION"
-          ? `SUBSTITUTION OUT (${payload.minute}')`
-          : `${payload.type} (${payload.minute}')${payload.reason ? " — " + payload.reason : ""}`;
-
-      actionEl.textContent = actionEl.textContent ? actionEl.textContent + "; " + label : label;
-
       if (updated) {
+        current = updated;
+        refreshPlayerCards(updated);
         scoreEl.textContent = updated.teams.score;
       }
     });
@@ -308,21 +369,14 @@ export function showMatchDetailsModal(matchDetails, { onActionAdded, onStatusCha
     homePanel.classList.remove("active");
   });
 
-  // DUGME ZA PROMENU STATUSA (uslovno, po permisijama)
-  if (matchDetails.status === "LIVE" && canSetMatchToPlayed(matchDetails)) {
-    const finishBtn = el("button", { className: "start-game-button", text: "Lock match as PLAYED" });
-    finishBtn.addEventListener("click", () => {
-      onStatusChange("PLAYED");
+  // Dugme za sledeci korak meca — isto kao u tabu "My scheduled matches".
+  // Posle klika modal se zatvara, a controller osvezava sve prikaze.
+  if (onGameStep) {
+    const stepBtn = createGameStepButton(matchDetails, (matchId) => {
       overlay.remove();
+      onGameStep(matchId);
     });
-    modal.appendChild(finishBtn);
-  } else if (matchDetails.status === "SCHEDULED" && editable) {
-    const startBtn = el("button", { className: "start-game-button", text: "Start match (set LIVE)" });
-    startBtn.addEventListener("click", () => {
-      onStatusChange("LIVE");
-      overlay.remove();
-    });
-    modal.appendChild(startBtn);
+    if (stepBtn) modal.appendChild(stepBtn);
   }
 
   overlay.appendChild(modal);

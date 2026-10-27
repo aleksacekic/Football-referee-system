@@ -693,6 +693,16 @@
   border-color: var(--border-default);
 }
 
+/* Igrac vise nije na terenu — zamenjen ili iskljucen */
+.player-card--subbed-out,
+.player-card--sent-off {
+  opacity: 0.5;
+}
+
+.player-card--sent-off {
+  border-color: var(--status-live);
+}
+
 .player-photo {
   width: 56px;
   height: 56px;

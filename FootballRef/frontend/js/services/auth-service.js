@@ -38,3 +38,12 @@ export function canSetMatchToPlayed(matchDetails) {
   const assignment = getAssignmentForMatch(matchDetails);
   return assignment?.role === "REFEREE";
 }
+
+// Sme li trenutni korisnik da izvrsi sledeci korak meca (START GAME ... LOCK).
+// Zakljucavanje (LOCK) sme samo glavni sudija; ostale korake svako ko sme da menja mec.
+export function canRunGameStep(matchDetails) {
+  const step = matchDetails.nextGameStep;
+  if (!step) return false;
+  if (step === "LOCK") return canSetMatchToPlayed(matchDetails);
+  return canEditMatch(matchDetails);
+}

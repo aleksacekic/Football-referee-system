@@ -1,4 +1,6 @@
-// Helper za kreiranje DOM elemenata — koristi ga matches-view.js
+import { canRunGameStep } from "../services/auth-service.js";
+
+// Helper za kreiranje DOM elemenata — koriste ga svi view fajlovi
 export function el(tag, opts = {}) {
   const e = document.createElement(tag);
   if (opts.className) e.className = opts.className;
@@ -8,6 +10,35 @@ export function el(tag, opts = {}) {
     Object.entries(opts.attrs).forEach(([k, v]) => e.setAttribute(k, v));
   }
   return e;
+}
+
+// Natpisi za faze meca i za sledeci korak sudije (vidi nextGameStep u build-match-details.js).
+export const PHASE_LABELS = {
+  FIRST_HALF: "1st HALF",
+  SECOND_HALF: "2nd HALF",
+};
+
+const GAME_STEP_LABELS = {
+  START_FIRST_HALF: "START GAME",
+  END_FIRST_HALF: "END 1st HALF",
+  START_SECOND_HALF: "START 2nd HALF",
+  END_GAME: "END GAME",
+  LOCK: "LOCK MATCH AS PLAYED",
+};
+
+// Dugme za sledeci korak meca. Vraca null ako nema koraka ili korisnik nema dozvolu.
+// Isto dugme koriste tab "My scheduled matches" i modal sa dashboard-a.
+export function createGameStepButton(matchDetails, onGameStep) {
+  const step = matchDetails.nextGameStep;
+  if (!step || !canRunGameStep(matchDetails)) return null;
+
+  const btn = el("button", {
+    className: "start-game-button",
+    text: GAME_STEP_LABELS[step],
+    attrs: { type: "button", "data-game-step": step },
+  });
+  btn.addEventListener("click", () => onGameStep(matchDetails.id));
+  return btn;
 }
 
 // Element sa data-tab="#neki-id" samo "klikne" pravi skriveni Bootstrap tab.

@@ -1,25 +1,27 @@
 import {
   initCalendar,
-  destroyCalendar,
   renderMatchesOnDashboard,
   renderPastMatches,
   renderScheduledMatches,
+  initMatchClickHandler,
   playerClickHandler,
   officialClickHandler,
 } from "../views/matches-view.js";
-
 import { showMatchDetailsModal } from "../views/match-details-view.js";
-import { initMatchClickHandler } from "../views/matches-view.js";
 import {
   loadMatches,
   loadMatchesForDate,
   loadMatchDetails,
   submitMatchEvent,
-  updateMatchStatus,
+  advanceGameStep,
 } from "../models/matches-model.js";
-
+import { getCurrentUser } from "../services/auth-service.js";
+import { refreshLeagues } from "./leagues-controller.js";
 
 let calendarInstance = null;
+let selectedDate = getTodayIsoDate(); // dan izabran u kalendaru (panel desno)
+
+const currentUserId = () => getCurrentUser().userId;
 
 function highlightSelectedDay(dateStr) {
   document
@@ -40,83 +42,108 @@ function getTodayIsoDate() {
   return `${year}-${month}-${day}`;
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  const refereeId = 2; // logged-in user
-
-  const allMatches = await loadMatches(refereeId);
-
-  const todayStr = getTodayIsoDate();
-  const todaysMatches = await loadMatchesForDate(refereeId, todayStr);
-  renderMatchesOnDashboard(todaysMatches, "#matches-panel");
-
-  initMatchClickHandler("#matches-panel", (matchId) => {
-    const details = loadMatchDetails(matchId);
-    if (!details) return;
-
-    showMatchDetailsModal(details, {
-      onActionAdded: (eventPayload) => submitMatchEvent(eventPayload),
-      onStatusChange: (newStatus) => updateMatchStatus(details.id, newStatus),
-    });
-  });
-
-  const fcEvents = allMatches.map((m) => ({
-    id: m.id,
+function toCalendarEvents(matches) {
+  return matches.map((m) => ({
+    id: String(m.id),
     title: `${m.teams.home.name} - ${m.teams.away.name}`,
     start: m.date,
     extendedProps: { matchId: m.id, status: m.status },
   }));
+}
 
-  calendarInstance = initCalendar("#calendar", {
-    initialEvents: fcEvents,
-    async onDateClick(info) {
-      highlightSelectedDay(info.dateStr);
-      const matchesOnDate = await loadMatchesForDate(refereeId, info.dateStr);
-      renderMatchesOnDashboard(matchesOnDate, "#matches-panel");
-    },
-    onEventClick(event, info) {
-      console.log("event clicked", event.id, event.extendedProps);
-    },
-  });
+async function renderDashboardPanel() {
+  const matchesOnDate = await loadMatchesForDate(currentUserId(), selectedDate);
+  renderMatchesOnDashboard(matchesOnDate, "#matches-panel");
+}
 
-   const dashboardTab = document.getElementById("tab-dashboard");
-  if (dashboardTab) {
-    dashboardTab.addEventListener("shown.bs.tab", () => {
-      if (calendarInstance) {
-        calendarInstance.updateSize();
-      }
-    });
-  }
-
-  // za brisanje:
-  // destroyCalendar(calendar);
-});
-
-export async function initMatches() {
-  const refereeId = 2; // logged-in user
-  const matches = await loadMatches(refereeId);
+// Posle svake promene (dogadjaj na mecu, korak meca) sve prikaze crtamo
+// ponovo iz podataka — kalendar, panel, oba taba i tabelu lige.
+async function refreshAllViews() {
+  const matches = await loadMatches(currentUserId());
 
   renderPastMatches(matches);
-  renderScheduledMatches(matches);
+  renderScheduledMatches(matches, { onGameStep: handleGameStep });
+  await renderDashboardPanel();
+
+  if (calendarInstance) {
+    calendarInstance.removeAllEvents();
+    calendarInstance.addEventSource(toCalendarEvents(matches));
+  }
+
+  await refreshLeagues();
 }
 
-export function initPlayerActionsDelegation(rootSelector = ".players") {
-  const root = document.querySelector(rootSelector) || document;
+// START GAME / END 1st HALF / START 2nd HALF / END GAME / LOCK
+function handleGameStep(matchId) {
+  advanceGameStep(matchId);
+  refreshAllViews();
+}
 
-  root.addEventListener("click", (e) => {
-    const playerEl = e.target.closest(".player-card");
-    if (!playerEl) return;
-    playerClickHandler(playerEl);
+function openMatchModal(matchId) {
+  const details = loadMatchDetails(matchId);
+  if (!details) return;
+
+  showMatchDetailsModal(details, {
+    onActionAdded: (eventPayload) => {
+      const updated = submitMatchEvent(eventPayload);
+      refreshAllViews();
+      return updated;
+    },
+    onGameStep: handleGameStep,
   });
 }
 
-export function initOfficialActionsDelegation(
-  rootSelector = ".officials-list"
-) {
-  const root = document.querySelector(rootSelector) || document;
+export async function initMatches() {
+  const matches = await loadMatches(currentUserId());
 
-  root.addEventListener("click", (e) => {
-    const officialEl = e.target.closest(".official-item");
-    if (!officialEl) return;
-    officialClickHandler(officialEl);
+  renderPastMatches(matches);
+  renderScheduledMatches(matches, { onGameStep: handleGameStep });
+  await renderDashboardPanel();
+
+  initMatchClickHandler("#matches-panel", openMatchModal);
+
+  calendarInstance = initCalendar("#calendar", {
+    initialEvents: toCalendarEvents(matches),
+    async onDateClick(info) {
+      selectedDate = info.dateStr;
+      highlightSelectedDay(selectedDate);
+      await renderDashboardPanel();
+    },
+    onEventClick(event) {
+      openMatchModal(event.extendedProps.matchId);
+    },
   });
+  highlightSelectedDay(selectedDate);
+
+  const dashboardTab = document.getElementById("tab-dashboard");
+  if (dashboardTab) {
+    dashboardTab.addEventListener("shown.bs.tab", () => {
+      calendarInstance?.updateSize();
+    });
+  }
+}
+
+// Klikovi na igrace/sluzbena lica u tabovima "Scheduled" i "Past".
+// Slusamo SAMO na ta dva kontejnera (postoje u HTML-u od starta) — ne na
+// celom document-u, jer bi inace hvatali i klikove u modalu sa dashboard-a,
+// pa bi se otvarale dve forme jedna preko druge.
+const MATCH_TAB_ROOTS = [".scheduled-matches-root", ".past-matches-root"];
+
+function delegateClick(rootSelectors, itemSelector, handler) {
+  rootSelectors.forEach((selector) => {
+    const root = document.querySelector(selector);
+    if (!root) return;
+    root.addEventListener("click", (e) => {
+      const item = e.target.closest(itemSelector);
+      if (item) handler(item);
+    });
+  });
+}
+
+export function initPlayerActionsDelegation(rootSelectors = MATCH_TAB_ROOTS) {
+  delegateClick(rootSelectors, ".player-card", playerClickHandler);
+}
+
+export function initOfficialActionsDelegation(rootSelectors = MATCH_TAB_ROOTS) {
+  delegateClick(rootSelectors, ".official-item", officialClickHandler);
 }

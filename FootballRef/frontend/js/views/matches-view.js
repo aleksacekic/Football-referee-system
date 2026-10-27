@@ -1,4 +1,4 @@
-import { el } from "./common-view.js";
+import { el, PHASE_LABELS, createGameStepButton } from "./common-view.js";
 
 //DASHBOARD
 export function initCalendar(
@@ -164,8 +164,35 @@ export function initMatchClickHandler(
   };
 }
 
-function createMatchNode(match, isScheduled = false) {
- // console.log(match);
+// Tabela "Match phases" — puni se iz podataka (match.matchTimes).
+// Uvek prikazuje oba poluvremena; prazna polja = faza jos nije pocela/zavrsena.
+function buildPhasesBlock(match) {
+  const mt = el("div", { className: "match-time-info" });
+  mt.appendChild(el("h4", { text: "Match phases" }));
+
+  const labels = el("div", { className: "match-time-labels" });
+  ["", "Start", "End", "Extra time", "Result"].forEach((text) =>
+    labels.appendChild(el("label", { text }))
+  );
+  mt.appendChild(labels);
+
+  const rows = el("div", { className: "match-time" });
+  Object.entries(PHASE_LABELS).forEach(([phase, label]) => {
+    const data = (match.matchTimes || []).find((t) => t.phase === phase) ?? {};
+    const row = el("div", { attrs: { "data-phase": phase } });
+    row.appendChild(el("span", { text: label }));
+    row.appendChild(el("span", { text: data.start ?? "" }));
+    row.appendChild(el("span", { text: data.end ?? "" }));
+    row.appendChild(el("span", { text: String(data.extra ?? "") }));
+    row.appendChild(el("span", { text: data.result ?? "" }));
+    rows.appendChild(row);
+  });
+  mt.appendChild(rows);
+
+  return mt;
+}
+
+function createMatchNode(match, isScheduled = false, callbacks = {}) {
   const frag = document.createDocumentFragment();
 
   // preview
@@ -294,64 +321,17 @@ function createMatchNode(match, isScheduled = false) {
   );
   infoPanel.appendChild(refBox);
 
-  // match-time-info
-  const mt = el("div", { className: "match-time-info" });
-  mt.appendChild(el("h4", { text: "Match phases" }));
-  const mtLabels = el("div", { className: "match-time-labels" });
-  mtLabels.appendChild(el("label"));
-  mtLabels.appendChild(el("label", { text: "Start" }));
-  mtLabels.appendChild(el("label", { text: "End" }));
-  mtLabels.appendChild(el("label", { text: "Extra time" }));
-  mtLabels.appendChild(el("label", { text: "Result" }));
-  mt.appendChild(mtLabels);
-  const mtRows = el("div", { className: "match-time" });
-  const firstHalf = el("div", {});
-  firstHalf.appendChild(el("span", { text: "1st HALFTIME" }));
-  firstHalf.appendChild(
-    el("span", { text: "", className: "match-time-start1" })
-  );
-  firstHalf.appendChild(el("span", { text: "", className: "match-time-end1" }));
-  firstHalf.appendChild(
-    el("span", { text: "0", className: "match-time-extra1" })
-  );
-  firstHalf.appendChild(
-    el("span", { text: "0:0", className: "match-time-result1" })
-  );
+  infoPanel.appendChild(buildPhasesBlock(match));
 
-  const secondHalf = el("div", {});
-  secondHalf.appendChild(el("span", { text: "2nd HALFTIME" }));
-  secondHalf.appendChild(
-    el("span", { text: "", className: "match-time-start2" })
-  );
-  secondHalf.appendChild(
-    el("span", { text: "", className: "match-time-end2" })
-  );
-  secondHalf.appendChild(
-    el("span", { text: "2", className: "match-time-extra2" })
-  );
-  secondHalf.appendChild(
-    el("span", { text: "2:3", className: "match-time-result2" })
-  );
-
-  mtRows.appendChild(firstHalf);
-  mtRows.appendChild(secondHalf);
-  mt.appendChild(mtRows);
-  infoPanel.appendChild(mt);
-
-  // ako je scheduled, pokazi button START GAME
-  if (isScheduled) {
-    const btnWrap = el("div");
-    const startBtn = el("button", {
-      className: "start-game-button",
-      text: "START GAME",
-    });
-    btnWrap.appendChild(startBtn);
-    infoPanel.appendChild(btnWrap);
-
-    startBtn.addEventListener("click", () => {
-      console.log(`Start game clicked for ${match.id}`);
-      listenForClick(startBtn);
-    });
+  // Dugme za sledeci korak meca (START GAME -> ... -> LOCK MATCH AS PLAYED).
+  // Pojavljuje se samo ako korisnik sme da ga koristi.
+  if (isScheduled && callbacks.onGameStep) {
+    const stepBtn = createGameStepButton(match, callbacks.onGameStep);
+    if (stepBtn) {
+      const btnWrap = el("div");
+      btnWrap.appendChild(stepBtn);
+      infoPanel.appendChild(btnWrap);
+    }
   }
 
   panels.appendChild(infoPanel);
@@ -384,17 +364,16 @@ function createMatchNode(match, isScheduled = false) {
 
   // preview toggle
   preview.addEventListener("click", () => {
-    const root = isScheduled
-      ? document.querySelector(".scheduled-matches-root")
-      : document.querySelector(".past-matches-root");
-    // zatvori sve
-    document.querySelectorAll(".match-info").forEach((d) => {
+    // zatvori ostale kartice — samo u ovom tabu (Scheduled ili Past)
+    const root =
+      document.querySelector(isScheduled ? SCHEDULED_ROOT : PAST_ROOT) ?? document;
+    root.querySelectorAll(".match-info").forEach((d) => {
       if (d !== details) {
         d.classList.add("hidden");
         d.setAttribute("aria-hidden", "true");
       }
     });
-    document.querySelectorAll(".match-info-preview").forEach((p) => {
+    root.querySelectorAll(".match-info-preview").forEach((p) => {
       if (p !== preview) {
         p.setAttribute("aria-expanded", "false");
         p.classList.remove("opened");
@@ -568,32 +547,59 @@ function buildPlayersBlockWithHandlers(playersObj = {}) {
   return wrapper;
 }
 
-export function renderPastMatches(matches) {
-  //console.log(matches);
-  const container = document.querySelector(".past-matches-root");
-  if (!container) return;
-  container.innerHTML = "";
-  const main = el("main");
-  const frag = document.createDocumentFragment();
-  matches
-    .filter((m) => m.status === "PLAYED")
-    .forEach((m) => frag.appendChild(createMatchNode(m, false)));
-  main.appendChild(frag);
-  container.appendChild(main);
+const PAST_ROOT = ".past-matches-root";
+const SCHEDULED_ROOT = ".scheduled-matches-root";
+
+// Koji mec je otvoren i na kom unutrasnjem tabu (INFO/HOME/AWAY) —
+// da posle ponovnog iscrtavanja korisnik ostane tamo gde je bio.
+function getOpenMatchState(container) {
+  const details = container.querySelector(".match-info:not(.hidden)");
+  if (!details) return null;
+  return {
+    matchId: details.dataset.matchId,
+    tab: details.querySelector(".nav-link-match.active")?.dataset.target ?? "info",
+  };
 }
 
-export function renderScheduledMatches(matches) {
-  const container = document.querySelector(".scheduled-matches-root");
+function restoreOpenMatchState(container, openState) {
+  if (!openState) return;
+  const details = container.querySelector(
+    `.match-info[data-match-id="${openState.matchId}"]`
+  );
+  if (!details) return; // mec je presao u drugi tab (npr. zakljucan -> Past)
+  details.previousElementSibling?.click(); // otvori karticu
+  details.querySelector(`.nav-link-match[data-target="${openState.tab}"]`)?.click();
+}
+
+function renderMatchList(rootSelector, matches, isScheduled, callbacks) {
+  const container = document.querySelector(rootSelector);
   if (!container) return;
+
+  const openState = getOpenMatchState(container);
   container.innerHTML = "";
   const main = el("main");
-  const frag = document.createDocumentFragment();
-  // LIVE i SCHEDULED idu u scheduled tab
-  matches
-    .filter((m) => m.status === "SCHEDULED" || m.status === "LIVE")
-    .forEach((m) => frag.appendChild(createMatchNode(m, true)));
-  main.appendChild(frag);
+  matches.forEach((m) => main.appendChild(createMatchNode(m, isScheduled, callbacks)));
   container.appendChild(main);
+  restoreOpenMatchState(container, openState);
+}
+
+export function renderPastMatches(matches) {
+  renderMatchList(
+    PAST_ROOT,
+    matches.filter((m) => m.status === "PLAYED"),
+    false
+  );
+}
+
+// LIVE i SCHEDULED idu u scheduled tab.
+// callbacks.onGameStep(matchId) — klik na dugme START GAME / END 1st HALF / ...
+export function renderScheduledMatches(matches, callbacks = {}) {
+  renderMatchList(
+    SCHEDULED_ROOT,
+    matches.filter((m) => m.status === "SCHEDULED" || m.status === "LIVE"),
+    true,
+    callbacks
+  );
 }
 
 
@@ -965,66 +971,3 @@ export function officialClickHandler(officialElement) {
   });
 }
 
-//ova fja se koristi gore u createMatchNode
-export function listenForClick(element) {
-  if (!element) return;
-
-  // inicijalizacija statea po mecu
-  if (!element.dataset.count) {
-    element.dataset.count = "0";
-    element.dataset.start1st = "";
-    element.dataset.end1st = "";
-    element.dataset.start2nd = "";
-    element.dataset.end2nd = "";
-  }
-  let count = Number(element.dataset.count);
-
-  let options = ["PAUSE", "START 2nd HALF", "END GAME", "FINISHED GAME"];
-  if (count < 4) {
-    element.textContent = options[count];
-    count++;
-    element.dataset.count = count;
-  }
-
-  const now = new Date();
-  const hours = now.getHours();
-  let minutes = now.getMinutes();
-  let seconds = now.getSeconds();
-  if (seconds.toString().length == 1) {
-    seconds = `0${seconds}`;
-  }
-  if (minutes.toString().length == 1) {
-    minutes = `0${minutes}`;
-  }
-
-  if (count == 1 && !element.dataset.start1st) {
-    element.dataset.start1st = `${hours}:${minutes}:${seconds}`;
-  }
-  if (count == 2 && !element.dataset.end1st) {
-    element.dataset.end1st = `${hours}:${minutes}:${seconds}`;
-  }
-  if (count == 3 && !element.dataset.start2nd) {
-    element.dataset.start2nd = `${hours}:${minutes}:${seconds}`;
-  }
-  if (count == 4 && !element.dataset.end2nd) {
-    element.dataset.end2nd = `${hours}:${minutes}:${seconds}`;
-  }
-
-  const details = element.closest(".match-info");
-  const startFirst = details.querySelector(".match-time-start1");
-  const endFirst = details.querySelector(".match-time-end1");
-  const startSecond = details.querySelector(".match-time-start2");
-  const endSecond = details.querySelector(".match-time-end2");
-
-  startFirst.textContent = element.dataset.start1st || "";
-  endFirst.textContent = element.dataset.end1st || "";
-  startSecond.textContent = element.dataset.start2nd || "";
-  endSecond.textContent = element.dataset.end2nd || "";
-
-  if (count >= 4) {
-    element.disabled = true;
-    element.style.cursor = "not-allowed";
-    element.style.background = "#93bce3";
-    return;
-  }
-}

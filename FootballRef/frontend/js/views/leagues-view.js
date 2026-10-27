@@ -1,202 +1,194 @@
-function createLeagueNode(league) {
-  // wrapper koji sadrzi preview + tabelu
-  const wrapper = document.createElement('div');
-  wrapper.classList.add('league-block');
+import { el } from "./common-view.js";
 
-  const leaguePreview = document.createElement('div');
-  leaguePreview.type = 'div';
-  leaguePreview.classList.add('league-preview');
-  leaguePreview.textContent = league.leagueName;
-  // leaguePreview.setAttribute('aria-expanded', 'false');
-  // leaguePreview.setAttribute('aria-controls', `league-table-${id}`);
+const LEAGUES_ROOT = ".leagues-root";
+const DEFAULT_LOGO = "/assets/images/team-1.jpg";
 
-  const leagueTableWrap = document.createElement('div');
-  leagueTableWrap.classList.add('league-table');
+const COLUMNS = [
+  { cls: "col-pos", text: "#" },
+  { cls: "col-team", text: "Team" },
+  { cls: "col-played", text: "M" },
+  { cls: "col-w", text: "W" },
+  { cls: "col-d", text: "D" },
+  { cls: "col-l", text: "L" },
+  { cls: "col-g", text: "G" },
+  { cls: "col-gd", text: "GD" },
+  { cls: "col-points", text: "Pts" },
+];
 
-  const table = document.createElement('table');
-  table.classList.add('standings');
-  table.setAttribute('aria-label', `League standings — ${league.leagueName}`);
-
-  //za screen readere
-  const caption = document.createElement('caption');
-  caption.classList.add('visually-hidden'); // definisi u css ?? OVO JE NEDOVRSENO! ali je dobra praksa.
-  caption.textContent = `Standings — ${league.leagueName}`;
-  table.appendChild(caption);
-
-  // THEAD
-  const thead = document.createElement('thead');
-  const headTr = document.createElement('tr');
-
-  const cols = [
-    { cls: 'col-pos', text: '#' },
-    { cls: 'col-team', text: 'Team' },
-    { cls: 'col-played', text: 'M' },
-    { cls: 'col-w', text: 'W' },
-    { cls: 'col-d', text: 'D' },
-    { cls: 'col-l', text: 'L' },
-    { cls: 'col-g', text: 'G' },
-    { cls: 'col-gd', text: 'GD' },
-    { cls: 'col-points', text: 'Pts' }
-  ];
-
-  cols.forEach(c => {
-    const th = document.createElement('th');
-    th.classList.add(c.cls);
-    th.setAttribute('scope', 'col');
-    th.textContent = c.text;
-    headTr.appendChild(th);
+function createTeamRow(team) {
+  const tr = el("tr", {
+    className: "team-table",
+    attrs: { "data-team-id": String(team.teamId) },
   });
 
+  tr.appendChild(el("td", { className: "col-pos", text: String(team.pos) }));
+
+  const tdTeam = el("td", { className: "col-team" });
+  const teamCell = el("div", { className: "team-cell" });
+  teamCell.appendChild(
+    el("img", {
+      className: "team-logo-standings",
+      attrs: { src: team.logo || DEFAULT_LOGO, alt: `Grb ${team.teamName}` },
+    })
+  );
+  const meta = el("div", { className: "team-meta" });
+  meta.appendChild(el("div", { className: "team-name-standings", text: team.teamName }));
+  if (team.short) meta.appendChild(el("div", { className: "team-short", text: team.short }));
+  teamCell.appendChild(meta);
+  tdTeam.appendChild(teamCell);
+  tr.appendChild(tdTeam);
+
+  [
+    ["col-played", team.played],
+    ["col-w", team.w],
+    ["col-d", team.d],
+    ["col-l", team.l],
+    ["col-g", team.g],
+    ["col-gd", team.gd],
+    ["col-points", team.points],
+  ].forEach(([cls, value]) => tr.appendChild(el("td", { className: cls, text: String(value) })));
+
+  return tr;
+}
+
+function createLeagueNode(league) {
+  // wrapper koji sadrzi preview (naslov lige) + tabelu
+  const wrapper = el("div", {
+    className: "league-block",
+    attrs: { "data-league-id": String(league.leagueId) },
+  });
+
+  const preview = el("div", { className: "league-preview", text: league.leagueName });
+  const tableWrap = el("div", { className: "league-table" });
+
+  const table = el("table", {
+    className: "standings",
+    attrs: { "aria-label": `League standings — ${league.leagueName}` },
+  });
+  // za screen readere
+  table.appendChild(
+    el("caption", { className: "visually-hidden", text: `Standings — ${league.leagueName}` })
+  );
+
+  const thead = el("thead");
+  const headTr = el("tr");
+  COLUMNS.forEach((c) =>
+    headTr.appendChild(el("th", { className: c.cls, text: c.text, attrs: { scope: "col" } }))
+  );
   thead.appendChild(headTr);
   table.appendChild(thead);
 
-  // TBODY
-  const tbody = document.createElement('tbody');
-
-  league.standings.forEach(team => {
-    const tr = document.createElement('tr');
-    tr.classList.add('team-table');
-    tr.dataset.teamId = team.short || team.teamName;// ??
-
-    const tdPos = document.createElement('td');
-    tdPos.classList.add('col-pos');
-    tdPos.textContent = String(team.pos);
-    tr.appendChild(tdPos);
-
-    const tdTeam = document.createElement('td');
-    tdTeam.classList.add('col-team');
-
-    const teamCell = document.createElement('div');
-    teamCell.classList.add('team-cell');
-
-    const img = document.createElement('img');
-    img.classList.add('team-logo-standings');
-    img.setAttribute('src', team.logo || '/assets/images/team-1.jpg');
-    img.setAttribute('alt', `Grb ${team.teamName}`);
-    teamCell.appendChild(img);
-
-    const meta = document.createElement('div');
-    meta.classList.add('team-meta');
-
-    const nameDiv = document.createElement('div');
-    nameDiv.classList.add('team-name-standings');
-    nameDiv.textContent = team.teamName;
-    meta.appendChild(nameDiv);
-
-    // optional short code
-    if (team.short) {
-      const shortDiv = document.createElement('div');
-      shortDiv.classList.add('team-short');
-      shortDiv.textContent = team.short;
-      meta.appendChild(shortDiv);
-    }
-
-    teamCell.appendChild(meta);
-    tdTeam.appendChild(teamCell);
-    tr.appendChild(tdTeam);
-
-    // played, w, d, l, g, gd, points
-    const tdPlayed = document.createElement('td'); tdPlayed.classList.add('col-played'); tdPlayed.textContent = String(team.played); tr.appendChild(tdPlayed);
-    const tdW = document.createElement('td'); tdW.classList.add('col-w'); tdW.textContent = String(team.w); tr.appendChild(tdW);
-    const tdD = document.createElement('td'); tdD.classList.add('col-d'); tdD.textContent = String(team.d); tr.appendChild(tdD);
-    const tdL = document.createElement('td'); tdL.classList.add('col-l'); tdL.textContent = String(team.l); tr.appendChild(tdL);
-    const tdG = document.createElement('td'); tdG.classList.add('col-g'); tdG.textContent = String(team.g); tr.appendChild(tdG);
-    const tdGD = document.createElement('td'); tdGD.classList.add('col-gd'); tdGD.textContent = String(team.gd); tr.appendChild(tdGD);
-
-    const tdPoints = document.createElement('td');
-    tdPoints.classList.add('col-points');
-    tdPoints.textContent = String(team.points);
-    tr.appendChild(tdPoints);
-
-    tbody.appendChild(tr);
-  });
-
+  const tbody = el("tbody");
+  league.standings.forEach((team) => tbody.appendChild(createTeamRow(team)));
   table.appendChild(tbody);
-  leagueTableWrap.appendChild(table);
 
-  // assemble wrapper
-  wrapper.appendChild(leaguePreview);
-  wrapper.appendChild(leagueTableWrap);
-
+  tableWrap.appendChild(table);
+  wrapper.appendChild(preview);
+  wrapper.appendChild(tableWrap);
   return wrapper;
 }
 
-export function renderLeagues(leaguesData){
-    const container = document.querySelector('.leagues-root');
-const frag = document.createDocumentFragment();
-leaguesData.forEach(league => frag.appendChild(createLeagueNode(league)));
-container.appendChild(frag);
+// Otvara jednu ligu (accordion), a ostale zatvara. Ponovni klik zatvara otvorenu.
+function toggleLeague(container, block) {
+  const preview = block.querySelector(".league-preview");
+  const table = block.querySelector(".league-table");
+  const wasOpen = preview.classList.contains("opened");
 
+  container.querySelectorAll(".league-preview").forEach((p) => p.classList.remove("opened"));
+  container.querySelectorAll(".league-table").forEach((t) => t.classList.remove("active"));
 
-//MEHANIZAM OTVARANJA-ZATVARANJA KLIKOM NA PREVIEW
-const leagues = document.querySelectorAll(".league-preview");
-const leagueTables = document.querySelectorAll(".league-table");
+  if (!wasOpen) {
+    preview.classList.add("opened");
+    table.classList.add("active");
+  }
+}
 
-leagues.forEach((league) => {
-  league.addEventListener("click", function () {
-    //NAPOMENA: this pokazuje na konkretni .league-preview koji je kliknut
-    //ako bi bila arrow funkcija gore kod eventListenera
-    //  onda bismo morali da imamo (umesto this jer ne postoji) dole liniju-
-    //  const clicked = e.currentTarget;
-    const table = league.nextElementSibling;
-    if (this.classList.contains("opened")) {
-      //ako je vec otvoren, i opet kliknemo na njega.
-      this.classList.remove("opened");
-      table.classList.remove("active");
+// callbacks.onTeamClick({ teamId, teamName, logo }) — klik na tim u tabeli
+export function renderLeagues(leaguesData, { onTeamClick } = {}) {
+  const container = document.querySelector(LEAGUES_ROOT);
+  if (!container) return;
+
+  // zapamti otvorenu ligu, da ostane otvorena posle ponovnog iscrtavanja
+  const openLeagueId = container
+    .querySelector(".league-preview.opened")
+    ?.closest(".league-block")?.dataset.leagueId;
+
+  container.innerHTML = "";
+  leaguesData.forEach((league) => container.appendChild(createLeagueNode(league)));
+
+  if (openLeagueId) {
+    const block = container.querySelector(`.league-block[data-league-id="${openLeagueId}"]`);
+    if (block) toggleLeague(container, block);
+  }
+
+  // Jedan listener na kontejneru — postavlja se samo prvi put
+  // (renderLeagues se poziva ponovo pri svakom osvezavanju).
+  if (container.dataset.listening) return;
+  container.dataset.listening = "true";
+  container.addEventListener("click", (e) => {
+    const preview = e.target.closest(".league-preview");
+    if (preview) {
+      toggleLeague(container, preview.closest(".league-block"));
       return;
     }
 
-    leagues.forEach((le) => le.classList.remove("opened"));
-    leagueTables.forEach((le) => le.classList.remove("active"));
-
-    this.classList.add("opened");
-    table.classList.add("active");
+    const row = e.target.closest(".team-table");
+    if (row && container.onTeamClick) {
+      container.onTeamClick({
+        teamId: Number(row.dataset.teamId),
+        teamName: row.querySelector(".team-name-standings").textContent.trim(),
+        logo: row.querySelector(".team-logo-standings").getAttribute("src"),
+      });
+    }
   });
-});
-
-
-//KLIK NA TIM OTVARA OVERLAY
-const teamsOnTable = document.querySelectorAll(".team-table");
-
-teamsOnTable.forEach((team) => {
-  team.addEventListener("click", () => {
-    const teamName = team
-      .querySelector(".team-name-standings")
-      .textContent.trim();
-    const logo = team.querySelector(".team-logo-standings").src;
-
-    const overlay = document.createElement("div");
-    overlay.className = "modal-overlay";
-
-    overlay.innerHTML = `
-      <div class="team-modal">
-        <button class="team-modal__close">&times;</button>
-        <div class="team-modal__header">
-          <img src="${logo}" class="team-modal__logo" />
-          <div class="team-modal__title">${teamName}</div>
-        </div>
-
-        <div class="team-modal__body">
-          <div class="team-modal__section">
-            <strong>Recent matches</strong>
-            <div>2025-01-01 vs Team X — 2:1</div>
-            <div>2025-01-08 vs Team Y — 0:0</div>
-            <div>2025-01-15 vs Team Z — 1:3</div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    document.body.appendChild(overlay);
-
-    overlay.addEventListener("click", (e) => {
-      if (
-        e.target === overlay ||
-        e.target.classList.contains("team-modal__close")
-      )
-        overlay.remove();
-    });
-  });
-});
+  container.onTeamClick = onTeamClick;
 }
 
+const OUTCOME_LABELS = { W: "W", D: "D", L: "L" };
+
+// Modal sa poslednjim mecevima tima (podaci dolaze iz controller-a).
+export function showTeamModal(team, recentMatches) {
+  const overlay = el("div", { className: "modal-overlay" });
+  const modal = el("div", { className: "team-modal" });
+
+  const closeBtn = el("button", {
+    className: "team-modal__close",
+    text: "×",
+    attrs: { type: "button", "aria-label": "Close modal" },
+  });
+  modal.appendChild(closeBtn);
+
+  const header = el("div", { className: "team-modal__header" });
+  header.appendChild(
+    el("img", { className: "team-modal__logo", attrs: { src: team.logo, alt: team.teamName } })
+  );
+  header.appendChild(el("div", { className: "team-modal__title", text: team.teamName }));
+  modal.appendChild(header);
+
+  const body = el("div", { className: "team-modal__body" });
+  const section = el("div", { className: "team-modal__section" });
+  section.appendChild(el("strong", { text: "Recent matches" }));
+
+  if (recentMatches.length === 0) {
+    section.appendChild(el("div", { text: "No played matches yet." }));
+  } else {
+    recentMatches.forEach((m) =>
+      section.appendChild(
+        el("div", {
+          text: `${m.date} vs ${m.opponent} (${m.venue}) — ${m.score} ${OUTCOME_LABELS[m.outcome]}`,
+        })
+      )
+    );
+  }
+  body.appendChild(section);
+  modal.appendChild(body);
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  const close = () => overlay.remove();
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) close();
+  });
+  closeBtn.addEventListener("click", close);
+}
