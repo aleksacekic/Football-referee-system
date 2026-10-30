@@ -8,23 +8,36 @@ import { teamMembers } from "../domain/team-members.js";
 import { getEventsForMatch } from "../domain/match-events.js";
 import { formatScore, computeLiveScore } from "./match-score.js";
 
-function getPlayerAction(playerId, events) {
-  const relevant = events.filter(
-    (e) =>
-      e.playerId === playerId ||
-      e.playerOutId === playerId ||
-      e.playerInId === playerId
-  );
-  if (relevant.length === 0) return "";
+// Hronoloski redosled dogadjaja: pre meca -> po minutu -> posle meca.
+// (karton "pre/posle meca" nema minut)
+function eventOrder(e) {
+  if (e.timing === "BEFORE_MATCH") return -1;
+  if (e.timing === "AFTER_MATCH") return 1000;
+  return e.minute ?? 0;
+}
+const byTime = (a, b) => eventOrder(a) - eventOrder(b) || a.id - b.id;
 
-  return relevant
+const TIMING_LABELS = {
+  BEFORE_MATCH: "before match",
+  AFTER_MATCH: "after match",
+};
+
+// Tekst akcija jednog clana tima, npr. "GOAL (23'), YELLOW_CARD (55') — Rough start".
+function getMemberAction(memberId, events) {
+  return events
+    .filter(
+      (e) => e.playerId === memberId || e.playerOutId === memberId || e.playerInId === memberId
+    )
+    .sort(byTime)
     .map((e) => {
+      const when =
+        e.minute != null ? ` (${e.minute}')` : TIMING_LABELS[e.timing] ? ` (${TIMING_LABELS[e.timing]})` : "";
       if (e.type === "SUBSTITUTION") {
-        const label = e.playerOutId === playerId ? "OUT" : "IN";
-        return `SUBSTITUTION ${label} (${e.minute}')`;
+        return `SUBSTITUTION ${e.playerOutId === memberId ? "OUT" : "IN"}${when}`;
       }
       const reason = e.reason ? ` — ${e.reason}` : "";
-      return `${e.type} (${e.minute}')${reason}`;
+      const note = e.note ? ` (${e.note})` : "";
+      return `${e.type}${when}${reason}${note}`;
     })
     .join(", ");
 }
@@ -58,7 +71,7 @@ function computePlayerStates(lineup, events) {
   (lineup?.benchPlayers ?? []).forEach((id) => states.set(id, "BENCH"));
 
   [...events]
-    .sort((a, b) => a.minute - b.minute || a.id - b.id)
+    .sort(byTime)
     .forEach((e) => {
       if (e.type === "SUBSTITUTION") {
         if (states.has(e.playerOutId)) states.set(e.playerOutId, "SUBBED_OUT");
@@ -79,7 +92,7 @@ function mapPlayers(playerIds, events, states) {
       id: person.id,
       num: person.number ?? "",
       name: `${person.firstName} ${person.lastName}`,
-      action: getPlayerAction(person.id, events),
+      action: getMemberAction(person.id, events),
       state: states.get(person.id),
     }));
 }
@@ -89,11 +102,11 @@ function mapSide(lineup, events) {
   return {
     starting: mapPlayers(lineup?.startingPlayers ?? [], events, states),
     substitutes: mapPlayers(lineup?.benchPlayers ?? [], events, states),
-    officials: mapOfficials(lineup?.staffIds ?? []),
+    officials: mapOfficials(lineup?.staffIds ?? [], events),
   };
 }
 
-function mapOfficials(staffIds) {
+function mapOfficials(staffIds, events) {
   return staffIds
     .map(findMember)
     .filter(Boolean)
@@ -101,6 +114,7 @@ function mapOfficials(staffIds) {
       id: person.id,
       role: STAFF_ROLE_LABELS[person.staffRole] ?? person.staffRole,
       name: `${person.firstName} ${person.lastName}`,
+      action: getMemberAction(person.id, events),
     }));
 }
 

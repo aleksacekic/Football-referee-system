@@ -29,7 +29,9 @@
           <input id="password" type="password" placeholder="••••••••••" required />
         </div>
 
-        <button type="submit" class="btn-login" onclick="goToDashboard()">Log In</button>
+        <p id="loginError" class="login-error" role="alert" hidden></p>
+
+        <button type="submit" class="btn-login">Log In</button>
 
         <div class="forgot-wrapper">
           <a href="#" class="forgot-link">Forgot your password?</a>
@@ -40,6 +42,6 @@
   </div>
 
 </body>
-<script src="/js/controllers/login-controller.js"></script>
+<script type="module" src="/js/controllers/login-controller.js"></script>
 </html>
 

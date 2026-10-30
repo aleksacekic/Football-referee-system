@@ -1,4 +1,4 @@
-import { el, PHASE_LABELS, createGameStepButton } from "./common-view.js";
+import { el, PHASE_LABELS, createGameStepButton, applyPlayerState } from "./common-view.js";
 
 //DASHBOARD
 export function initCalendar(
@@ -192,6 +192,13 @@ function buildPhasesBlock(match) {
   return mt;
 }
 
+// "Status: LIVE" — status je obojen (.green); pravi se bez innerHTML.
+function statusLabel(status) {
+  const span = el("span", { text: "Status: " });
+  span.appendChild(el("span", { className: "green", text: status }));
+  return span;
+}
+
 function createMatchNode(match, isScheduled = false, callbacks = {}) {
   const frag = document.createDocumentFragment();
 
@@ -202,7 +209,7 @@ function createMatchNode(match, isScheduled = false, callbacks = {}) {
   });
   const left = el("div", { className: "match-info-preview-left" });
   left.appendChild(
-    el("span", { html: `Status: <span class="green">${match.status}</span>` })
+    statusLabel(match.status)
   );
   left.appendChild(el("span", { text: match.datetime }));
   left.appendChild(el("span", { text: match.competition }));
@@ -304,7 +311,7 @@ function createMatchNode(match, isScheduled = false, callbacks = {}) {
   });
   infoPanel.appendChild(createResultBlock());
   const otherInfo = el("div", { className: "other-info" });
-  otherInfo.appendChild(el("span", { html: `Status: ${match.status}` }));
+  otherInfo.appendChild(el("span", { text: `Status: ${match.status}` }));
   otherInfo.appendChild(el("span", { text: `Date: ${match.datetime}` }));
   otherInfo.appendChild(el("span", { text: `Round: ${match.round || ""}` }));
   otherInfo.appendChild(
@@ -342,9 +349,8 @@ function createMatchNode(match, isScheduled = false, callbacks = {}) {
     attrs: { id: `home-${match.id}`, role: "tabpanel", "aria-hidden": "true" },
   });
   homePanel.appendChild(createResultBlock());
-  // build players for HOME (and add click handlers only if scheduled)
   homePanel.appendChild(
-    buildPlayersBlockWithHandlers(match.players.home || {})
+    buildPlayersBlock(match.players.home || {}, match.id, "home")
   );
   panels.appendChild(homePanel);
 
@@ -355,7 +361,7 @@ function createMatchNode(match, isScheduled = false, callbacks = {}) {
   });
   awayPanel.appendChild(createResultBlock());
   awayPanel.appendChild(
-    buildPlayersBlockWithHandlers(match.players.away || {})
+    buildPlayersBlock(match.players.away || {}, match.id, "away")
   );
   panels.appendChild(awayPanel);
 
@@ -432,117 +438,63 @@ function createMatchNode(match, isScheduled = false, callbacks = {}) {
   return frag;
 }
 
-// helper funkcija
-function buildPlayersBlockWithHandlers(playersObj = {}) {
+// Kartice igraca i sluzbenih lica jednog tima u tabovima "Scheduled" / "Past".
+// Klik na karticu hvata matches-controller (data-member-id) i otvara zajednicku formu.
+function buildPlayerCard(player, isSub) {
+  const li = el("li", {
+    className: isSub ? "player-card substitute" : "player-card",
+    attrs: { role: "listitem", "data-member-id": String(player.id) },
+  });
+  applyPlayerState(li, player.state);
+  li.appendChild(
+    el("img", {
+      className: "player-photo",
+      attrs: { src: "/assets/images/avatar-placeholder.jpg", alt: player.name },
+    })
+  );
+  li.appendChild(el("div", { className: "player-number", text: String(player.num || "") }));
+  const info = el("div", { className: "player-info" });
+  info.appendChild(el("div", { className: "player-name", text: player.name }));
+  info.appendChild(el("div", { className: "player-action", text: player.action || "" }));
+  li.appendChild(info);
+  return li;
+}
+
+function buildPlayersBlock(playersObj, matchId, side) {
   const wrapper = el("div", { className: "players" });
 
-  // STARTING
-  const startSection = el("section", {
-    className: "players-block starting-lineup-block",
-    attrs: { "aria-labelledby": "starting-lineup-title" },
-  });
-  startSection.appendChild(
-    el("h5", {
-      className: "players-block-title",
-      attrs: { id: "starting-lineup-title" },
-      text: "Starting lineup",
-    })
-  );
-  const ulStart = el("ul", {
-    className: "players-list",
-    attrs: { role: "list" },
-  });
-  (playersObj.starting || []).forEach((pl) => {
-    const li = el("li", {
-      className: "player-card",
-      attrs: { role: "listitem", "data-player-name": pl.name },
+  // id-jevi naslova moraju biti jedinstveni na stranici (aria-labelledby)
+  const section = (className, title, list) => {
+    const titleId = `${className}-${matchId}-${side}`;
+    const s = el("section", {
+      className: `players-block ${className}`,
+      attrs: { "aria-labelledby": titleId },
     });
-    li.appendChild(
-      el("img", {
-        className: "player-photo",
-        attrs: { src: "/assets/images/avatar-placeholder.jpg", alt: pl.name },
-      })
-    );
-    li.appendChild(
-      el("div", { className: "player-number", text: String(pl.num || "") })
-    );
-    const pinfo = el("div", { className: "player-info" });
-    pinfo.appendChild(el("div", { className: "player-name", text: pl.name }));
-    pinfo.appendChild(
-      el("div", { className: "player-action", text: pl.action || "" })
-    );
-    li.appendChild(pinfo);
-    ulStart.appendChild(li);
-  });
-  startSection.appendChild(ulStart);
-  wrapper.appendChild(startSection);
+    s.appendChild(el("h5", { className: "players-block-title", text: title, attrs: { id: titleId } }));
+    s.appendChild(list);
+    return s;
+  };
 
-  // SUBSTITUTES
-  const subSection = el("section", {
-    className: "players-block substitutes-block",
-    attrs: { "aria-labelledby": "substitutes-title" },
-  });
-  subSection.appendChild(
-    el("h5", {
-      className: "players-block-title",
-      attrs: { id: "substitutes-title" },
-      text: "Substitutes",
-    })
-  );
-  const ulSubs = el("ul", { className: "players-list" });
-  (playersObj.substitutes || []).forEach((pl) => {
-    const li = el("li", {
-      className: "player-card substitute",
-      attrs: { role: "listitem", "data-player-name": pl.name },
-    });
-    li.appendChild(
-      el("img", {
-        className: "player-photo",
-        attrs: { src: "/assets/images/avatar-placeholder.jpg", alt: pl.name },
-      })
-    );
-    li.appendChild(
-      el("div", { className: "player-number", text: String(pl.num || "") })
-    );
-    const pinfo = el("div", { className: "player-info" });
-    pinfo.appendChild(el("div", { className: "player-name", text: pl.name }));
-    pinfo.appendChild(
-      el("div", { className: "player-action", text: pl.action || "" })
-    );
-    li.appendChild(pinfo);
-    ulSubs.appendChild(li);
-  });
-  subSection.appendChild(ulSubs);
-  wrapper.appendChild(subSection);
+  const ulStart = el("ul", { className: "players-list", attrs: { role: "list" } });
+  (playersObj.starting || []).forEach((p) => ulStart.appendChild(buildPlayerCard(p, false)));
+  wrapper.appendChild(section("starting-lineup-block", "Starting lineup", ulStart));
 
-  // OFFICIALS
-  const offSection = el("section", {
-    className: "players-block officials-block",
-    attrs: { "aria-labelledby": "officials-title" },
-  });
-  offSection.appendChild(
-    el("h5", {
-      className: "players-block-title",
-      attrs: { id: "officials-title" },
-      text: "Team officials",
-    })
-  );
+  const ulSubs = el("ul", { className: "players-list", attrs: { role: "list" } });
+  (playersObj.substitutes || []).forEach((p) => ulSubs.appendChild(buildPlayerCard(p, true)));
+  wrapper.appendChild(section("substitutes-block", "Substitutes", ulSubs));
+
   const ulOff = el("ul", { className: "officials-list" });
   (playersObj.officials || []).forEach((off) => {
-    const li = el("li", { className: "official-item" });
-    li.appendChild(
-      el("div", { className: "official-role", text: off.role || "Official" })
-    );
-    li.appendChild(
-      el("div", { className: "official-name", text: off.name || "" })
-    );
-    li.appendChild(
-      el("div", { className: "official-action", text: off.action || "" })
-    );
+    const li = el("li", {
+      className: "official-item",
+      attrs: { "data-member-id": String(off.id) },
+    });
+    li.appendChild(el("div", { className: "official-role", text: off.role || "Official" }));
+    li.appendChild(el("div", { className: "official-name", text: off.name || "" }));
+    li.appendChild(el("div", { className: "official-action", text: off.action || "" }));
     ulOff.appendChild(li);
   });
-  offSection.appendChild(ulOff);
-  wrapper.appendChild(offSection);
+  wrapper.appendChild(section("officials-block", "Team officials", ulOff));
 
   return wrapper;
 }
@@ -601,373 +553,3 @@ export function renderScheduledMatches(matches, callbacks = {}) {
     callbacks
   );
 }
-
-
-//---------------AKCIJE IGRACA----------------------------------------------------------
-
-function getMatchStatusFromPlayer(playerElement) {
-  const details = playerElement.closest(".match-info");
-  if (!details) return null;
-  const preview = details.previousElementSibling; // očekujemo da je .match-info-preview
-  if (!preview) return null;
-  const statusEl = preview.querySelector(".green");
-  return statusEl ? statusEl.textContent.trim().toUpperCase() : null;
-}
-
-export function playerClickHandler(playerElement) {
-  const matchStatus = getMatchStatusFromPlayer(playerElement);
-  if (matchStatus === "PLAYED") {
-    console.log("Match finished — cannot add actions.");
-    return;
-  }
-
-  const isSub = playerElement.classList.contains("substitute");
-  const playerName =
-    playerElement.querySelector(".player-name")?.textContent.trim() || "Player";
-
-  // SKUPIMO IGRACE IZ STARTNE POSTAVE — zbog SUBSTITUTION
-  const playersContainer = playerElement.closest(".players");
-  const startingPlayers = playersContainer
-    ? Array.from(
-        playersContainer.querySelectorAll(".starting-lineup-block .player-card")
-      ).map((p) => {
-        const name = p.querySelector(".player-name")?.textContent.trim() || "";
-        const num = p.querySelector(".player-number")?.textContent.trim() || "";
-        return {
-          label: `${num} ${name}`.trim(),
-          value: name,
-        };
-      })
-    : [];
-
-  // KREIRAMO OVERLAY + MINIMALNI MODAL
-  const overlay = document.createElement("div");
-  overlay.className = "modal-overlay";
-
-  const modal = document.createElement("div");
-  modal.className = "team-modal";
-
-  // close button
-  const closeBtn = document.createElement("button");
-  closeBtn.className = "team-modal__close";
-  closeBtn.setAttribute("aria-label", "Close modal");
-  closeBtn.type = "button";
-  closeBtn.textContent = "×";
-
-  // title
-  const title = document.createElement("h3");
-  title.className = "team-modal__title";
-  title.textContent = `${playerName} — Add action`;
-
-  // form
-  const form = document.createElement("form");
-  form.id = "actionForm";
-  form.className = "team-modal__form";
-
-  // ACTION select
-  const actionSelect = document.createElement("select");
-  actionSelect.name = "action";
-  actionSelect.className = "action-select";
-  actionSelect.required = true;
-
-  const addOption = (select, value, label) => {
-    const o = document.createElement("option");
-    o.value = value;
-    o.textContent = label ?? value;
-    select.appendChild(o);
-  };
-
-  addOption(actionSelect, "Goal", "Goal");
-  addOption(actionSelect, "OwnGoal", "OwnGoal");
-  addOption(actionSelect, "Penalty", "Penalty");
-  addOption(actionSelect, "MissedPenalty", "Missed penalty");
-  addOption(actionSelect, "YellowCard", "Yellow card");
-  addOption(actionSelect, "RedCard", "Red card");
-  if (isSub) addOption(actionSelect, "Substitution", "Substitution");
-
-  // minute input
-  const minuteInput = document.createElement("input");
-  minuteInput.type = "number";
-  minuteInput.name = "minute";
-  minuteInput.className = "minute-input";
-  minuteInput.placeholder = "Minute";
-
-  // when select
-  const whenSelect = document.createElement("select");
-  whenSelect.name = "when";
-  whenSelect.className = "when-select";
-  addOption(whenSelect, "DuringMatch", "During match");
-  addOption(whenSelect, "BeforeMatch", "Before match");
-  addOption(whenSelect, "AfterMatch", "After match");
-
-  // reason wrapper + select
-  const reasonWrapper = document.createElement("div");
-  reasonWrapper.id = "reason-wrapper";
-  const reasonSelect = document.createElement("select");
-  reasonSelect.name = "reason";
-  reasonSelect.className = "reason-select";
-  [
-    "Rough start",
-    "Preventing a promising attack",
-    "Preventing obvious opportunity to obtain a goal",
-    "Pausing the game",
-    "Neglecting words or movements",
-    "Frequent violation of the game rules",
-    "Misconduct",
-  ].forEach((r) => addOption(reasonSelect, r, r));
-  reasonWrapper.appendChild(reasonSelect);
-
-  // sub_with select (only if isSub)
-  let subWithWrapper = null;
-  let subWithSelect = null;
-  if (isSub) {
-    subWithWrapper = document.createElement("div");
-    subWithWrapper.className = "sub-with-wrapper";
-    subWithSelect = document.createElement("select");
-    subWithSelect.name = "sub_with";
-    subWithSelect.className = "sub-with-select";
-    startingPlayers.forEach((p) => addOption(subWithSelect, p.value, p.label));
-    subWithWrapper.appendChild(subWithSelect);
-  }
-
-  // desc wrapper + textarea
-  const descWrapper = document.createElement("div");
-  descWrapper.id = "desc-wrapper";
-  const descTextarea = document.createElement("textarea");
-  descTextarea.name = "desc";
-  descTextarea.rows = 3;
-  descTextarea.className = "description-input";
-  descTextarea.placeholder = "Description (optional)";
-  descWrapper.appendChild(descTextarea);
-
-  // submit button
-  const submitButton = document.createElement("button");
-  submitButton.type = "submit";
-  submitButton.className = "submit-button";
-  submitButton.textContent = "Add action";
-
-  // append children to form in same order as original markup
-  form.appendChild(actionSelect);
-  form.appendChild(minuteInput);
-  form.appendChild(whenSelect);
-  form.appendChild(reasonWrapper);
-  if (subWithWrapper) form.appendChild(subWithWrapper);
-  form.appendChild(descWrapper);
-  form.appendChild(submitButton);
-
-  // assemble modal
-  modal.appendChild(closeBtn);
-  modal.appendChild(title);
-  modal.appendChild(form);
-  overlay.appendChild(modal);
-  document.body.appendChild(overlay);
-
-  // funkcija za update vidljivosti
-  function updateVisibility() {
-    const value = actionSelect.value;
-    const isCard = value === "YellowCard" || value === "RedCard";
-
-    // opis i razlog samo za zuti/crveni
-    descWrapper.style.display = isCard ? "block" : "none";
-    reasonWrapper.style.display = isCard ? "block" : "none";
-    whenSelect.style.display = isCard ? "block" : "none";
-
-    // ako nije karton — očisti description
-    if (!isCard) {
-      descTextarea.value = "";
-    }
-
-    if (subWithSelect) {
-      subWithSelect.style.display = value === "Substitution" ? "block" : "none";
-    }
-  }
-
-  // event listeners
-  actionSelect.addEventListener("change", updateVisibility);
-  updateVisibility(); // inicijalno
-
-  const close = () => {
-    overlay.remove();
-  };
-
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) close();
-  });
-  closeBtn.addEventListener("click", close);
-
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const a = form.elements["action"].value;
-    const minute = form.elements["minute"].value;
-    const when = form.elements["when"]?.value;
-    const reason = form.elements["reason"]?.value;
-    const desc = form.elements["desc"].value.trim();
-    const subWith = form.elements["sub_with"]?.value;
-
-    let text = "";
-
-    if (a === "Goal") text = `Goal (${minute}')`;
-    else if (a === "OwnGoal") text = `Own goal (${minute}')`;
-    else if (a === "Penalty") text = `Penalty scored (${minute}')`;
-    else if (a === "MissedPenalty") text = `Missed penalty (${minute}')`;
-    else if (a === "YellowCard")
-      text = `Yellow card (${minute}') — ${reason || ""}`.trim();
-    else if (a === "RedCard")
-      text = `Red card (${minute}') — ${reason || ""}`.trim();
-    else if (a === "Substitution")
-      text = `Substitution: on ${subWith} (${minute}')`;
-
-    if (desc) text += ` — ${desc}`;
-
-    const actionDiv = playerElement.querySelector(".player-action");
-    if (actionDiv) {
-      if (actionDiv.textContent.trim() === "") {
-        actionDiv.textContent = text;
-      } else {
-        actionDiv.textContent += "; " + text;
-      }
-    }
-
-    close();
-  });
-}
-
-export function officialClickHandler(officialElement) {
-  // ako se klik dešava u okviru match koji je PLAYED -> ne radimo ništa
-  // pronalazimo match-info roditelja
-  const matchInfo = officialElement.closest(".match-info");
-  const preview = matchInfo ? matchInfo.previousElementSibling : null;
-  const status = preview
-    ? (preview.querySelector(".green")?.textContent || "").trim().toUpperCase()
-    : null;
-  if (status === "PLAYED") {
-    console.log("Match finished — cannot add official actions.");
-    return;
-  }
-
-  // overlay
-  const overlay = document.createElement("div");
-  overlay.className = "modal-overlay";
-
-  // modal container
-  const modal = document.createElement("div");
-  modal.className = "team-modal";
-  overlay.appendChild(modal);
-
-  // close button
-  const closeBtn = document.createElement("button");
-  closeBtn.className = "team-modal__close";
-  closeBtn.setAttribute("aria-label", "Close modal");
-  closeBtn.type = "button";
-  closeBtn.textContent = "×";
-  modal.appendChild(closeBtn);
-
-  // title
-  const title = document.createElement("h3");
-  title.className = "team-modal__title";
-  title.textContent = "Official — Add action";
-  modal.appendChild(title);
-
-  // form
-  const form = document.createElement("form");
-  form.id = "actionForm";
-  form.className = "team-modal__form";
-  modal.appendChild(form);
-
-  // action select
-  const actionSelect = document.createElement("select");
-  actionSelect.name = "action";
-  actionSelect.className = "action-select";
-  actionSelect.required = true;
-  const optYellow = document.createElement("option");
-  optYellow.value = "Yellow card";
-  optYellow.textContent = "Yellow card";
-  const optRed = document.createElement("option");
-  optRed.value = "Red card";
-  optRed.textContent = "Red card";
-  actionSelect.appendChild(optYellow);
-  actionSelect.appendChild(optRed);
-  form.appendChild(actionSelect);
-
-  // minute input
-  const minuteInput = document.createElement("input");
-  minuteInput.type = "number";
-  minuteInput.name = "minute";
-  minuteInput.className = "minute-input";
-  minuteInput.placeholder = "Minute";
-  minuteInput.required = true;
-  form.appendChild(minuteInput);
-
-  // when select
-  const whenSelect = document.createElement("select");
-  whenSelect.name = "when";
-  whenSelect.className = "when-select";
-  const whenOpt1 = document.createElement("option");
-  whenOpt1.value = "DuringMatch";
-  whenOpt1.textContent = "During match";
-  const whenOpt2 = document.createElement("option");
-  whenOpt2.value = "BeforeMatch";
-  whenOpt2.textContent = "Before match";
-  const whenOpt3 = document.createElement("option");
-  whenOpt3.value = "AfterMatch";
-  whenOpt3.textContent = "After match";
-  whenSelect.appendChild(whenOpt1);
-  whenSelect.appendChild(whenOpt2);
-  whenSelect.appendChild(whenOpt3);
-  form.appendChild(whenSelect);
-
-  // description textarea
-  const descTextarea = document.createElement("textarea");
-  descTextarea.name = "desc";
-  descTextarea.rows = 3;
-  descTextarea.className = "description-input";
-  descTextarea.placeholder = "Description (optional)";
-  form.appendChild(descTextarea);
-
-  // submit button
-  const submitBtn = document.createElement("button");
-  submitBtn.type = "submit";
-  submitBtn.className = "submit-button";
-  submitBtn.textContent = "Add action";
-  form.appendChild(submitBtn);
-
-  // append overlay to body
-  document.body.appendChild(overlay);
-
-  //const closeBtn = overlay.querySelector(".team-modal__close");
-  const close = () => overlay.remove();
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) close();
-  });
-  closeBtn.addEventListener("click", close);
-
-  //const form = overlay.querySelector("#actionForm");
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    let text = "";
-    const action = form.elements["action"].value;
-    const min = form.elements["minute"].value;
-    const when = form.elements["when"].value;
-    const desc = form.elements["desc"].value;
-
-    const description = desc ? `- ${desc}` : ``;
-    text = `${action} (${min}') ${description}`;
-
-    // ubaci u prvi .official-action ako postoji
-    const officialAct = officialElement.querySelector(".official-action");
-    if (officialAct) {
-      if (officialAct.textContent.trim() === "") officialAct.textContent = text;
-      else officialAct.textContent += `; ${text}`;
-    } else {
-      // ako nema, napravi i dodaj
-      const newAct = document.createElement("div");
-      newAct.className = "official-action";
-      newAct.textContent = text;
-      officialElement.appendChild(newAct);
-    }
-    close();
-  });
-}
-

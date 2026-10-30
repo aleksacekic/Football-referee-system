@@ -1,17 +1,5 @@
-// export const users = [
-//   {
-//     id: 1,
-//     name: "Aleksa Cekić",
-//     role: "REFEREE"
-//   },
-//   {
-//     id: 2,
-//     name: "Marko Petrović",
-//     role: "CLUB_REPRESENTATIVE",
-//     teamId: 101
-//   }
-// ];
-
+// Korisnici sistema. Email mora biti jedinstven — po njemu se (za sada lazno) prijavljuje.
+// Uloge: referee | club-representative | super-admin
 export const users = [
   {
     id: 1,
@@ -46,16 +34,7 @@ export const users = [
     role: "super-admin",
     photo: null,
   },
-   {
-    id: 4,
-    firstName: "Aleksa",
-    lastName: "Cekić",
-    email: "aleksa@club.com",
-    phone: "+38164111222",
-    role: "club-representative",
-    teamId: 1,
-    photo: null, // slika jos ne postoji u assets/
-  },
+  // id 4 je bio duplikat korisnika 1 (isti email) — obrisan
   {
     id: 5,
     firstName: "Babo",

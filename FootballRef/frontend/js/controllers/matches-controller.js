@@ -4,10 +4,9 @@ import {
   renderPastMatches,
   renderScheduledMatches,
   initMatchClickHandler,
-  playerClickHandler,
-  officialClickHandler,
 } from "../views/matches-view.js";
 import { showMatchDetailsModal } from "../views/match-details-view.js";
+import { openMatchActionForm } from "../views/match-action-form.js";
 import {
   loadMatches,
   loadMatchesForDate,
@@ -15,7 +14,7 @@ import {
   submitMatchEvent,
   advanceGameStep,
 } from "../models/matches-model.js";
-import { getCurrentUser } from "../services/auth-service.js";
+import { getCurrentUser, canEditMatch } from "../services/auth-service.js";
 import { refreshLeagues } from "./leagues-controller.js";
 
 let calendarInstance = null;
@@ -129,21 +128,27 @@ export async function initMatches() {
 // pa bi se otvarale dve forme jedna preko druge.
 const MATCH_TAB_ROOTS = [".scheduled-matches-root", ".past-matches-root"];
 
-function delegateClick(rootSelectors, itemSelector, handler) {
+// Ista forma kao u modalu; dogadjaj ide u podatke, pa se svi prikazi osveze.
+// Da li sme da se menja odlucuje auth-service na osnovu podataka o mecu
+// (status + uloga korisnika), a ne tekst sa stranice.
+function handleMemberClick(matchId, memberId) {
+  const details = loadMatchDetails(matchId);
+  if (!details || !canEditMatch(details)) return;
+
+  openMatchActionForm(details, memberId, (eventPayload) => {
+    submitMatchEvent(eventPayload);
+    refreshAllViews();
+  });
+}
+
+export function initMatchTabActions(rootSelectors = MATCH_TAB_ROOTS) {
   rootSelectors.forEach((selector) => {
     const root = document.querySelector(selector);
     if (!root) return;
     root.addEventListener("click", (e) => {
-      const item = e.target.closest(itemSelector);
-      if (item) handler(item);
+      const item = e.target.closest("[data-member-id]");
+      const matchId = item?.closest(".match-info")?.dataset.matchId;
+      if (item && matchId) handleMemberClick(Number(matchId), Number(item.dataset.memberId));
     });
   });
-}
-
-export function initPlayerActionsDelegation(rootSelectors = MATCH_TAB_ROOTS) {
-  delegateClick(rootSelectors, ".player-card", playerClickHandler);
-}
-
-export function initOfficialActionsDelegation(rootSelectors = MATCH_TAB_ROOTS) {
-  delegateClick(rootSelectors, ".official-item", officialClickHandler);
 }

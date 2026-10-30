@@ -1,4 +1,5 @@
 import { loadCurrentUserProfile } from "../models/user-model.js";
+import { logout } from "../services/auth-service.js";
 
 const AVATAR_PLACEHOLDER = "/assets/images/avatar-placeholder.jpg";
 
@@ -17,4 +18,13 @@ export function initHeader() {
     avatarEl.src = user.photo || AVATAR_PLACEHOLDER;
     avatarEl.alt = fullName;
   }
+}
+
+// Logout: brise sesiju i vraca na login stranicu.
+export function initLogout(selector = "#logoutLink") {
+  document.querySelector(selector)?.addEventListener("click", (e) => {
+    e.preventDefault();
+    logout();
+    location.replace("/");
+  });
 }

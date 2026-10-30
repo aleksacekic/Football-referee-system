@@ -12,6 +12,17 @@ export function el(tag, opts = {}) {
   return e;
 }
 
+const PLAYER_STATE_CLASSES = {
+  SUBBED_OUT: "player-card--subbed-out",
+  SENT_OFF: "player-card--sent-off",
+};
+
+// CSS klasa kartice prema stanju igraca (zamenjen / iskljucen) — vidi computePlayerStates.
+export function applyPlayerState(card, state) {
+  Object.values(PLAYER_STATE_CLASSES).forEach((c) => card.classList.remove(c));
+  if (PLAYER_STATE_CLASSES[state]) card.classList.add(PLAYER_STATE_CLASSES[state]);
+}
+
 // Natpisi za faze meca i za sledeci korak sudije (vidi nextGameStep u build-match-details.js).
 export const PHASE_LABELS = {
   FIRST_HALF: "1st HALF",

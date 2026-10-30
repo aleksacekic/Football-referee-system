@@ -92,6 +92,12 @@ body {
   background-color: var(--bg-surface);
 }
 
+.login-error {
+  margin: 0 0 0.75rem;
+  color: var(--status-live);
+  font-size: 0.9rem;
+}
+
 .btn-login {
   width: 100%;
   margin-top: 0.5rem;

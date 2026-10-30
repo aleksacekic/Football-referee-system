@@ -125,10 +125,9 @@
           class="dropdown-menu dropdown-menu-end"
           aria-labelledby="userMenuButton"
         >
-          <li><a class="dropdown-item" onclick="goToProfile()">Profile</a></li>
-          <li><a class="dropdown-item" href="#">Settings</a></li>
+          <li><a class="dropdown-item" href="/profile.html">Profile</a></li>
           <li><hr class="dropdown-divider" /></li>
-          <li><a class="dropdown-item text-danger" href="#">Logout</a></li>
+          <li><a class="dropdown-item text-danger" href="/" id="logoutLink">Logout</a></li>
         </ul>
       </div>
     </div>
@@ -213,16 +212,8 @@
   </button>
 </nav>
 
-    <script src="/js/main.js" type="module" defer></script>
-    <script
-      src="/js/controllers/matches-controller.js"
-      type="module"
-      defer
-    ></script>
-    <script src="/js/controllers/login-controller.js"></script>
-    <script src="/js/views/leagues-view.js" type="module" defer></script>
-    <script src="/js/views/match-details-view.js" type="module" defer></script>
-    <script src="/js/views/matches-view.js" type="module" defer></script>
+    <!-- main.js uvozi sve ostale module (controllers, views...) -->
+    <script src="/js/main.js" type="module"></script>
 
   </body>
 </html>
